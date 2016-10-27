@@ -7,3 +7,9 @@ plugins/
 sccs/
 hooks/
 www/lib/
+.bowerrc
+.editorconfig
+bower.json
+config.xml
+scss/
+www/service-worker.js

@@ -4,6 +4,7 @@ define([
 ], function (app) {
   'use strict';
 
+  console.log("ready to create DashboardCtrl");
   app.controller('DashboardCtrl', [
     '$scope',
     'myService',

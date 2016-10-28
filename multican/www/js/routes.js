@@ -16,7 +16,7 @@ define([
         // app states
         .state('dashboard', {
           url: '/dashboard',
-          templateUrl: '../templates/dashboard.html',
+          templateUrl: 'templates/dashboard.html',
           controller: 'DashboardCtrl'
         });
     }

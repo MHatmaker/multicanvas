@@ -9,11 +9,8 @@ define([
       var canvases = [];
       canvases[0] = new Canvas(document.getElementById('one'));
       canvases[1] = new Canvas(document.getElementById('two'));
-      
+
       console.log("CanvasService to return canvas");
-      this.getName = function() {
-        return 'Ionic-Heads';
-      };
 
       this.addCanvas = function() {
         var doc = document.getElementById('canvasholder'),

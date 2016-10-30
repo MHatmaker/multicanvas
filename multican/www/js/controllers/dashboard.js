@@ -1,7 +1,6 @@
 define([
   'app',
-  'services/service',
-  'controllers/CanvasHolderCtrl'
+  'services/service'
 ], function (app) {
   'use strict';
 

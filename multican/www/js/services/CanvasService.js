@@ -1,14 +1,20 @@
+require(['services/MultiCanvas'
+]);
+
 define([
-  'app'
-], function(app) {
+  'app',
+  'services/MultiCanvas',
+], function(app, MultiCanvas) {
   'use strict';
 
   console.log("ready to create canvas service");
   app.service('CanvasService', [
     function() {
       var canvases = [];
-      canvases[0] = new Canvas(document.getElementById('one'));
-      canvases[1] = new Canvas(document.getElementById('two'));
+      canvases[0] = new MultiCanvas.Canvas(document.getElementById('one'));
+      canvases[0].init();
+      canvases[1] = new MultiCanvas.Canvas(document.getElementById('two'));
+      canvases[1].init();
 
       console.log("CanvasService to return canvas");
 
@@ -21,7 +27,7 @@ define([
         doc.appendChild(newCanvas);
         newChild = document.getElementById('three');
         console.debug(newChild);
-        canvases.push(new Canvas(newChild));
+        canvases.push(new MultiCanvas.Canvas(newChild));
         canvases[canvases.length - 1].init();
       };
     }

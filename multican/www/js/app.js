@@ -1,6 +1,7 @@
 
 define([
-  'ionic'
+  'ionic',
+  'services/MultiCanvas',
 ], function () {
   'use strict';
 

@@ -17,8 +17,20 @@ define([
         var newCanvasDiv = CanvasService.makeCanvasDiv(currIndex);
         $scope.addSlide(newCanvasDiv, currIndex);
         CanvasService.loadCanvas(newCanvasDiv, currIndex);
+        $scope.safeApply();
         currIndex++;
       };
+
+    $scope.safeApply = function (fn) {
+        var phase = this.$root.$$phase;
+        if (phase === '$apply' || phase === '$digest') {
+            if (fn && (typeof fn === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
+        }
+    };
 
       $scope.myInterval = 5000;
       $scope.noWrapSlides = false;

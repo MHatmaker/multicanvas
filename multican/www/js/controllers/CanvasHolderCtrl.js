@@ -10,9 +10,27 @@ define([
     'CanvasService',
     function($scope, CanvasService) {
       console.log("CanvasHolderCtrl calling into CanvasService");
+      var slides = $scope.slides = [];
+      var currIndex = 0;
+
       $scope.addCanvas = function(clickedItem) {
-        CanvasService.addCanvas();
-      }
+        var newCanvasDiv = CanvasService.makeCanvasDiv(currIndex);
+        $scope.addSlide(newCanvasDiv, currIndex);
+        CanvasService.loadCanvas(newCanvasDiv, currIndex);
+        currIndex++;
+      };
+
+      $scope.myInterval = 5000;
+      $scope.noWrapSlides = false;
+      $scope.active = 0;
+
+      $scope.addSlide = function(div, currIndex) {
+        var newWidth = 600 + slides.length + 1;
+        slides.push({
+          div : div,
+          id: currIndex
+        });
+      };
     }
   ]);
 });

@@ -4,6 +4,12 @@
         Hello, {{name}}!
     </div>
     <div id='canvasholder' ng-controller='CanvasHolderCtrl'>
+      <div style="height: 305px">
+        <div uib-carousel active="active">
+          <div uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+            <img ng-src="{{slide.image}}" style="margin:auto;">
+          </div>
+        </div>
         <button id="addcanbtn" ng-click="addCanvas()" value="Add Canvas" class="btn">Add Canvas</button>
         <div id="one">gfdsgf</div>
         <div id="two">aaa</div>

@@ -14,6 +14,9 @@
             Canvas.prototype.init = function () {
                 this.el.style.backgroundColor = "#888";
                 this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
+                var mapdiv = document.createElement('div');
+                mapdiv.innerHTML = this.el.id + " mapdiv";
+                this.el.appendChild(mapdiv);
             };
             Canvas.prototype.onMouseDown = function () {
                 console.log('onMouseDown: ', this.el);

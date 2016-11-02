@@ -21,6 +21,7 @@ define([
         this.makeCanvasDiv = function(ndx) {
             var newCanvasDiv = document.createElement('div');
             newCanvasDiv.id = "Slide" + ndx;
+            newCanvasDiv.innerHTML = "Slide " + ndx;
             return newCanvasDiv;
         };
         this.loadCanvas = function(div, ndx) {
@@ -28,6 +29,9 @@ define([
             //    var doc = document.getElementById('div');
             // div.innerhtml = "here is slide" + ndx;
             canvases.push(new MultiCanvas.Canvas(div));
+            canvases[canvases.length - 1].init();
+            // var slideDiv = document.getElementById(div.id);
+            // div.appendChild(canvases[canvases.length - 1]);
             // doc.appendChild(div);
         };
 

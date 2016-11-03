@@ -16,9 +16,8 @@ define([
       $scope.addCanvas = function(clickedItem) {
         var newCanvasDiv = CanvasService.makeCanvasDiv(currIndex);
         $scope.addSlide(newCanvasDiv, currIndex);
-        CanvasService.loadCanvas(newCanvasDiv, currIndex);
-        $scope.safeApply();
-        currIndex++;
+        CanvasService.loadCanvas(slides[slides.length - 1], currIndex++);
+        // $scope.safeApply();
       };
 
     $scope.safeApply = function (fn) {

@@ -7,6 +7,7 @@
       <div style="height: 305px">
         <div uib-carousel active="active">
           <div uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+            <div id="parent{{slide.id}}"></div>
           </div>
         </div>
         <button id="addcanbtn" ng-click="addCanvas()" value="Add Canvas" class="btn">Add Canvas</button>

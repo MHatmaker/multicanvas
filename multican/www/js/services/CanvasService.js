@@ -11,16 +11,16 @@ define([
     app.service('CanvasService', [
     function() {
         var canvases = [];
-        canvases[0] = new MultiCanvas.Canvas(document.getElementById('one'));
-        canvases[0].init();
-        canvases[1] = new MultiCanvas.Canvas(document.getElementById('two'));
-        canvases[1].init();
+        // canvases[0] = new MultiCanvas.Canvas(document.getElementById('one'));
+        // canvases[0].init();
+        // canvases[1] = new MultiCanvas.Canvas(document.getElementById('two'));
+        // canvases[1].init();
 
         console.log("CanvasService to return canvas");
 
         this.makeCanvasDiv = function(ndx) {
             var newCanvasDiv = document.createElement('div');
-            newCanvasDiv.id = "Slide" + ndx;
+            newCanvasDiv.id = "slide" + ndx;
             newCanvasDiv.innerHTML = "Slide " + ndx;
             return newCanvasDiv;
         };
@@ -28,7 +28,7 @@ define([
             // google, leaflet, arcgis create map
             //    var doc = document.getElementById('div');
             // div.innerhtml = "here is slide" + ndx;
-            canvases.push(new MultiCanvas.Canvas(div));
+            canvases.push(new MultiCanvas.Canvas(div, ndx));
             canvases[canvases.length - 1].init();
             // var slideDiv = document.getElementById(div.id);
             // div.appendChild(canvases[canvases.length - 1]);

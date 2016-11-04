@@ -1,3 +1,5 @@
+/*global console, define, document */
+
 (function () {
     "use strict";
 
@@ -7,21 +9,23 @@
             /*
              * Canvas object
              */
-            var Canvas = function (el) {
+            var Canvas = function (el, ndx) {
                 this.el = el;
+                this.ndx = ndx;
             },
             canvases = [];
             Canvas.prototype.init = function () {
                 this.el.style.backgroundColor = "#888";
                 this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
-                var mapdiv = document.createElement('div');
+                var mapdiv = document.createElement('div'),
+                    mapParent = document.getElementById('parent' + this.ndx);
                 mapdiv.innerHTML = this.el.id + " mapdiv";
-                this.el.appendChild(mapdiv);
+                mapParent.appendChild(mapdiv);
             };
             Canvas.prototype.onMouseDown = function () {
                 console.log('onMouseDown: ', this.el);
             };
-            function addCanvas(){
+            function addCanvas () {
                var doc = document.getElementById('canvasholder'),
                   newCanvas = document.createElement('div'),
                   newChild;

@@ -2,7 +2,8 @@
 
 define([
     'app',
-    'services/CanvasService'
+    'services/CanvasService',
+    'services/SimpleSlides'
 ], function(app) {
     'use strict';
 
@@ -18,7 +19,7 @@ define([
             $scope.addCanvas = function(clickedItem) {
                 $scope.addSlide(null, currIndex);
                 $scope.slides[$scope.slides.length - 1].id = 0;
-                $scope.slides.setActive(currIndex);
+
                 $scope.safeApply();
                 var newCanvasDiv = CanvasService.makeCanvasDiv(currIndex);
                 CanvasService.loadCanvas(newCanvasDiv, currIndex);

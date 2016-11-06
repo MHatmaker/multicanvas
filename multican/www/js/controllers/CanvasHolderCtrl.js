@@ -11,7 +11,8 @@ define([
     app.controller('CanvasHolderCtrl', [
         '$scope',
         'CanvasService',
-        function($scope, CanvasService) {
+        'SimpleSlidesService',
+        function($scope, CanvasService, SimpleSlidesService) {
             console.log("CanvasHolderCtrl calling into CanvasService");
             var slides = $scope.slides = [],
                 currIndex = 0;
@@ -23,6 +24,7 @@ define([
                 $scope.safeApply();
                 var newCanvasDiv = CanvasService.makeCanvasDiv(currIndex);
                 CanvasService.loadCanvas(newCanvasDiv, currIndex);
+                SimpleSlidesService.addSlide(newCanvasDiv);
                 currIndex++;
             };
 

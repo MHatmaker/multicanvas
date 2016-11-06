@@ -5,7 +5,7 @@ define([
 ], function (app) {
     "use strict";
     console.log("ready to create SimpleSlides service");
-    app.service('SimpleServiceService', [
+    app.service('SimpleSlidesService', [
         function () {
                 // Read necessary elements from the DOM once
             var box = document.querySelector('.carouselbox'),
@@ -14,10 +14,20 @@ define([
             // Define the global counter, the items and the
             // current item
                 counter = 0,
-                items = box.querySelectorAll('.content li'),
+                items = [], //box.getElementsByClassName('.content li'),
                 amount = items.length,
                 current = items[0];
-            box.classList.add('active');
+            box.classList.add('carouselactive');
+
+            this.addSlide = function (newMapLi) {
+                if (items.length > 0) {
+                    current.classList.remove('current');
+                }
+                items.push(newMapLi);
+                current = items[items.length - 1];
+                current.classList.add('current');
+                amount = items.length;
+            };
             // navigate through the carousel
             function navigate(direction) {
             // hide the old current list item
@@ -40,6 +50,8 @@ define([
             });
                 // show the first element
                 // (when direction is 0 counter doesn't change)
-            navigate(0);
+            if (items.length > 0) {
+                navigate(0);
+            }
         }]);
 });

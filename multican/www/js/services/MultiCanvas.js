@@ -17,9 +17,10 @@
             Canvas.prototype.init = function () {
                 this.el.style.backgroundColor = "#888";
                 this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
-                var mapdiv = document.createElement('div'),
-                    mapParent = document.getElementById('parent' + this.ndx);
+                var mapdiv = document.createElement('li'),
+                    mapParent = document.getElementsByClassName('carouselcontent')[0]; //' + this.ndx);
                 mapdiv.innerHTML = this.el.id + " mapdiv";
+                mapdiv.addEventListener("mousedown", this.onMouseDown.bind(this));
                 mapParent.appendChild(mapdiv);
             };
             Canvas.prototype.onMouseDown = function () {

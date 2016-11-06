@@ -16,15 +16,18 @@
             canvases = [];
             Canvas.prototype.init = function () {
                 this.el.style.backgroundColor = "#888";
-                this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
+                // this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
                 var mapdiv = document.createElement('li'),
-                    mapParent = document.getElementsByClassName('carouselcontent')[0]; //' + this.ndx);
-                mapdiv.innerHTML = this.el.id + " mapdiv";
-                mapdiv.addEventListener("mousedown", this.onMouseDown.bind(this));
-                mapParent.appendChild(mapdiv);
+                    mapParent = document.getElementsByClassName('content')[0]; //' + this.ndx);
+                mapdiv.innerHTML = this.el.id + " mapli";
+                this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
+
+                mapParent.appendChild(this.el);
             };
-            Canvas.prototype.onMouseDown = function () {
+            Canvas.prototype.onMouseDown = function (event) {
                 console.log('onMouseDown: ', this.el);
+                event.cancelBubble=true;
+                event.stopPropagation();
             };
             function addCanvas () {
                var doc = document.getElementById('canvasholder'),

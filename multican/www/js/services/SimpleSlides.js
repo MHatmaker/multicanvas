@@ -17,7 +17,7 @@ define([
                 items = [], //box.getElementsByClassName('.content li'),
                 amount = items.length,
                 current = items[0];
-            box.classList.add('carouselactive');
+            box.classList.add('active');
 
             this.addSlide = function (newMapLi) {
                 if (items.length > 0) {
@@ -33,19 +33,25 @@ define([
             // hide the old current list item
                 current.classList.remove('current');
 
+                console.log("change counter from " + counter);
                 // calculate the new position
                 counter = (counter + direction) % amount;
                 counter = counter < 0 ? amount - 1 : counter;
+                console.log("to counter " + counter);
                 // set new current element
                 // and add CSS class
                 current = items[counter];
+                console.debug(current.classList);
                 current.classList.add('current');
+                console.debug(current.classList);
             }
             // add event handlers to buttons
             next.addEventListener('click', function (ev) {
+                console.log("next")
                 navigate(1);
             });
             prev.addEventListener('click', function (ev) {
+                console.log("prev");
                 navigate(-1);
             });
                 // show the first element

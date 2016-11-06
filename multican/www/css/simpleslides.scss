@@ -2,18 +2,18 @@
     .carouselbox {
       font-family: helvetica,sans-serif;
       font-size: 14px;
-      width: 200px;
+      width: 100px;
       position: relative;
       margin: 1em;
       border: 1px solid #ccc;
       box-shadow: 2px 2px 10px #ccc;
       overflow: hidden;
     }
-    .carouselcontent {
+    .content {
       margin: 0;
       padding: 0;
     }
-    .carouselcontent li {
+    .content li {
       font-size: 100px;
       margin: 0;
       padding: 0;
@@ -22,42 +22,35 @@
       text-align: center;
       z-index: 2;
     }
-    .carouselactive {
-      height: 215px;
+    .active {
+      height: 130px;
     }
-    .carouselbox button {
-      border: none;
-      visibility: hidden;
-    }
-    .carouselactive button {
-      visibility: visible;
-    }
-    .offscreen {
+    .active li {
       position: absolute;
-      left: -2000px;
+      top: 200px;
     }
-    .carouselactive .carouselbuttons {
+    .active li.current {
+      top: 30px;
+    }
+    .buttons {
+      display: none;
+    }
+    .active .buttons {
+      display: block;
       padding: 5px 0;
       background: #eee;
       text-align: center;
       z-index: 10;
       position: relative;
     }
-    .carouselactive li {
+    .carouselbox button {
+      border: none;
+      visibility: hidden;
+    }
+    .active button {
+      visibility: visible;
+    }
+    .offscreen {
       position: absolute;
-      top: 20px;
-      opacity: 0;
-      transform: scale(0);
-      transition: 1s;
-    }
-    .carouselactive li.current {
-      top: 20px;
-      opacity: 1;
-      transform: scale(1);
-      transition: 1s;
-    }
-    .li img {
-      width: 200px;
-      height: 200px;
-      display: block;
+      left: -2000px;
     }

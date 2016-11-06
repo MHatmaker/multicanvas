@@ -19,7 +19,7 @@ define([
         console.log("CanvasService to return canvas");
 
         this.makeCanvasDiv = function(ndx) {
-            var newCanvasDiv = document.createElement('div');
+            var newCanvasDiv = document.createElement('li');
             newCanvasDiv.id = "slide" + ndx;
             newCanvasDiv.innerHTML = "Slide " + ndx;
             return newCanvasDiv;

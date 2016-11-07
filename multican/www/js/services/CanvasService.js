@@ -18,17 +18,17 @@ define([
 
         console.log("CanvasService to return canvas");
 
-        this.makeCanvasDiv = function(ndx) {
-            var newCanvasDiv = document.createElement('li');
-            newCanvasDiv.id = "slide" + ndx;
-            newCanvasDiv.innerHTML = "Slide " + ndx;
-            return newCanvasDiv;
+        this.makeCanvasItem = function(ndx) {
+            var newCanvasItem = document.createElement('li');
+            newCanvasItem.id = "slide" + ndx;
+            newCanvasItem.innerHTML = "Slide " + ndx;
+            return newCanvasItem;
         };
-        this.loadCanvas = function(div, ndx) {
+        this.loadCanvas = function(elem, ndx) {
             // google, leaflet, arcgis create map
             //    var doc = document.getElementById('div');
             // div.innerhtml = "here is slide" + ndx;
-            canvases.push(new MultiCanvas.Canvas(div, ndx));
+            canvases.push(new MultiCanvas.Canvas(elem, ndx));
             canvases[canvases.length - 1].init();
             // var slideDiv = document.getElementById(div.id);
             // div.appendChild(canvases[canvases.length - 1]);

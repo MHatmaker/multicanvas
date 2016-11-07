@@ -15,11 +15,9 @@
             },
             canvases = [];
             Canvas.prototype.init = function () {
+                var mapParent = document.getElementsByClassName('content')[0]; //' + this.ndx);
+
                 this.el.style.backgroundColor = "#888";
-                // this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
-                var mapdiv = document.createElement('li'),
-                    mapParent = document.getElementsByClassName('content')[0]; //' + this.ndx);
-                mapdiv.innerHTML = this.el.id + " mapli";
                 this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
 
                 mapParent.appendChild(this.el);
@@ -29,18 +27,18 @@
                 event.cancelBubble=true;
                 event.stopPropagation();
             };
-            function addCanvas () {
-               var doc = document.getElementById('canvasholder'),
-                  newCanvas = document.createElement('div'),
-                  newChild;
-               newCanvas.id = "three";
-               newCanvas.innerHTML = 'three';
-               doc.appendChild(newCanvas);
-               newChild = document.getElementById('three');
-               console.debug(newChild);
-               canvases.push(new Canvas(newChild));
-               canvases[canvases.length-1].init();
-            }
+            // function addCanvas () {
+            //    var doc = document.getElementById('canvasholder'),
+            //       newCanvas = document.createElement('div'),
+            //       newChild;
+            //    newCanvas.id = "three";
+            //    newCanvas.innerHTML = 'three';
+            //    doc.appendChild(newCanvas);
+            //    newChild = document.getElementById('three');
+            //    console.debug(newChild);
+            //    canvases.push(new Canvas(newChild));
+            //    canvases[canvases.length-1].init();
+            // }
 
             // window.onload = function () {
             //     console.log("window.onload");

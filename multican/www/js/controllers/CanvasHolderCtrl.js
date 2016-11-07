@@ -22,9 +22,9 @@ define([
                 $scope.slides[$scope.slides.length - 1].id = 0;
 
                 $scope.safeApply();
-                var newCanvasDiv = CanvasService.makeCanvasDiv(currIndex);
-                CanvasService.loadCanvas(newCanvasDiv, currIndex);
-                SimpleSlidesService.addSlide(newCanvasDiv);
+                var newCanvasItem = CanvasService.makeCanvasItem(currIndex);
+                CanvasService.loadCanvas(newCanvasItem, currIndex);
+                SimpleSlidesService.addSlide(newCanvasItem);
                 currIndex++;
             };
 

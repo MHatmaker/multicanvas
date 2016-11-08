@@ -43,10 +43,10 @@ define([
             $scope.noWrapSlides = false;
             $scope.active = 0;
 
-            $scope.addSlide = function(div, currIndex) {
+            $scope.addSlide = function(itm, currIndex) {
                 // var newWidth = 600 + slides.length + 1;
                 slides.push({
-                    div: div,
+                    item: itm,
                     id: currIndex
                 });
             };

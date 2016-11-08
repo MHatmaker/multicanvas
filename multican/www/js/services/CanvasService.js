@@ -21,7 +21,6 @@ define([
         this.makeCanvasItem = function(ndx) {
             var newCanvasItem = document.createElement('li');
             newCanvasItem.id = "slide" + ndx;
-            newCanvasItem.innerHTML = "Slide " + ndx;
             return newCanvasItem;
         };
         this.loadCanvas = function(elem, ndx) {
@@ -30,8 +29,9 @@ define([
             // div.innerhtml = "here is slide" + ndx;
             canvases.push(new MultiCanvas.Canvas(elem, ndx));
             canvases[canvases.length - 1].init();
-            // var slideDiv = document.getElementById(div.id);
-            // div.appendChild(canvases[canvases.length - 1]);
+            var mapDiv = document.createElement('div');
+            mapDiv.id = 'map' + ndx;
+            elem.appendChild(mapDiv);
             // doc.appendChild(div);
         };
 

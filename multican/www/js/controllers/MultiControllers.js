@@ -1,8 +1,37 @@
-// Code goes here
-
+/
 console.log("open module")
 var app = angular.module('myApp', []);
 mapInstance = 0;
+
+app.controller('unusedController', function($scope) {
+  $scope.open = function(){
+    alert('this is never called, this controller is not actually used');
+  };
+});
+
+app.controller('appCtrl', function($scope) {
+  $scope.addCanvas = function(clickedItem) {
+    var mapDctv = document.createElement('mapDirective'),
+      parentDiv = document.getElementById('MapContainer');
+    parentDiv.appendChild(mapDctv);
+  }
+});
+
+app.directive('mapdirective', function ($compile) {
+  return {
+    restrict : 'E',
+    controller : 'unusedController',
+    link : function(s, e, a) {
+      var mapDiv = angular.element(
+                '<div ng-controller="MapCtrl" style="width:400px;height:400px">' +
+                  '<div data-tap-disabled="true" class="map"></div> ' +
+                '</div>');
+      e.append(mapDiv);
+      $compile(mapDiv)(s);
+    }
+  }
+});
+
 
 console.log("instantiate controller");
 app.controller('MapCtrl', function($scope, $compile) {
@@ -59,9 +88,9 @@ app.controller('MapCtrl', function($scope, $compile) {
       };
 
     });
-  
 
-/*<!DOCTYPE html>
+/*
+<!DOCTYPE html>
 <html ng-app="myApp">
 
   <head>
@@ -71,7 +100,27 @@ app.controller('MapCtrl', function($scope, $compile) {
     <script src="script.js"></script>
   </head>
 
-  <body>
+  <body ng-controller="appCtrl">
+    <h1>Hello Plunker!</h1>
+    <div id="MapContainer">
+      <button id="addcanbtn" ng-click="addCanvas()" value="Add Canvas" class="btn">Add Canvas</button>
+    </div>
+  </body>
+
+</html>
+*/
+/*
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+  <head>
+    <script data-require="angular.js@*" data-semver="1.2.14" src="http://code.angularjs.org/1.2.14/angular.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyB16sGmIekuGIvYOfNoW9T44377IU2d2Es&sensor=true"></script>
+    <script src="script.js"></script>
+  </head>
+
+  <body ng-controller="appCtrl">
     <h1>Hello Plunker!</h1>
     <div ng-controller="MapCtrl" style="width:400px;height:400px">
       <div id="map0" data-tap-disabled="true" class="map"></div>
@@ -79,6 +128,7 @@ app.controller('MapCtrl', function($scope, $compile) {
     <div ng-controller="MapCtrl" style="width:400px;height:400px">
       <div id="map1" data-tap-disabled="true" class="map"></div>
     </div>
+    <button id="addcanbtn" ng-click="addCanvas()" value="Add Canvas" class="btn">Add Canvas</button>
   </body>
 
 </html>

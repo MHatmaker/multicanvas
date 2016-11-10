@@ -1,19 +1,37 @@
-/
+
 console.log("open module")
 var app = angular.module('myApp', []);
 mapInstance = 0;
 
+console.log("instantiate unused controller");
 app.controller('unusedController', function($scope) {
   $scope.open = function(){
     alert('this is never called, this controller is not actually used');
   };
 });
 
+console.log("instantiate app controller");
 app.controller('appCtrl', function($scope) {
+  $scope.safeApply = function (fn) {
+    var phase = this.$root.$$phase;
+    if (phase === '$apply' || phase === '$digest') {
+        if (fn && (typeof fn === 'function')) {
+            fn();
+        }
+    } else {
+        this.$apply(fn);
+    }
+};
   $scope.addCanvas = function(clickedItem) {
-    var mapDctv = document.createElement('mapDirective'),
+    var mapDctv = document.createElement('mapdirective'),
       parentDiv = document.getElementById('MapContainer');
     parentDiv.appendChild(mapDctv);
+    angular.element(mapDctv).injector().invoke(function($compile) {
+      var scope = angular.element(mapDctv).scope();
+      $compile(mapDctv)(scope);
+    });
+
+    $scope.safeApply(function () {console.log("safeApply callback")});
   }
 });
 
@@ -33,7 +51,7 @@ app.directive('mapdirective', function ($compile) {
 });
 
 
-console.log("instantiate controller");
+console.log("instantiate Map controller");
 app.controller('MapCtrl', function($scope, $compile) {
       function initialize() {
         console.log("initialize controller");

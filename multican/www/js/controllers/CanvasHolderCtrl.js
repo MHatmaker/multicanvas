@@ -3,7 +3,8 @@
 define([
     'app',
     'services/CanvasService',
-    'services/SimpleSlides'
+    'services/SimpleSlides',
+    'services/MapIntanceService'
 ], function(app) {
     'use strict';
 
@@ -12,6 +13,7 @@ define([
         '$scope',
         'CanvasService',
         'SimpleSlidesService',
+        'MapIntanceService'
         function($scope, CanvasService, SimpleSlidesService) {
             console.log("CanvasHolderCtrl calling into CanvasService");
             var slides = $scope.slides = [],

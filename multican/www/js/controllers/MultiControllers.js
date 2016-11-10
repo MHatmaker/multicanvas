@@ -1,10 +1,11 @@
-
 console.log("open module")
 var app = angular.module('myApp', []);
 mapInstance = 0;
 
 console.log("instantiate unused controller");
 app.controller('unusedController', function($scope) {
+  console.log("unusedController");
+  console.debug($scope);
   $scope.open = function(){
     alert('this is never called, this controller is not actually used');
   };
@@ -29,6 +30,9 @@ app.controller('appCtrl', function($scope) {
     angular.element(mapDctv).injector().invoke(function($compile) {
       var scope = angular.element(mapDctv).scope();
       $compile(mapDctv)(scope);
+      console.log("compiled mapDctv");
+      console.debug(scope);
+      scope.startMap();
     });
 
     $scope.safeApply(function () {console.log("safeApply callback")});
@@ -36,21 +40,22 @@ app.controller('appCtrl', function($scope) {
 });
 
 app.directive('mapdirective', function ($compile) {
+  var mapId = "map" + mapInstance;
   return {
     restrict : 'E',
-    controller : 'unusedController',
+    controller : 'MapCtrl',
     link : function(s, e, a) {
       var mapDiv = angular.element(
-                '<div ng-controller="MapCtrl" style="width:400px;height:400px">' +
+                '<div ng-controller="MapCtrl" id="map' + mapInstance + '" style="width:400px;height:400px">' +
                   '<div data-tap-disabled="true" class="map"></div> ' +
                 '</div>');
-      e.append(mapDiv);
       $compile(mapDiv)(s);
+      e.append(mapDiv);
     }
   }
 });
 
-
+mapInstance = 0;
 console.log("instantiate Map controller");
 app.controller('MapCtrl', function($scope, $compile) {
       function initialize() {
@@ -87,6 +92,9 @@ app.controller('MapCtrl', function($scope, $compile) {
         $scope.map = map;
       }
       google.maps.event.addDomListener(window, 'load', initialize);
+      $scope.startMap = function() {
+        initialize();
+      }
 
       $scope.centerOnMe = function() {
         if(!$scope.map) {
@@ -104,6 +112,7 @@ app.controller('MapCtrl', function($scope, $compile) {
       $scope.clickTest = function() {
         alert('Example of infowindow with ng-click')
       };
+      // initialize();
 
     });
 

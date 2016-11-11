@@ -35,19 +35,6 @@ define([
             // doc.appendChild(div);
         };
 
-        this.addCanvas = function() {
-            var doc = document.getElementById('canvasholder'),
-                newCanvas = document.createElement('div'),
-                newChild;
-            newCanvas.id = "three";
-            newCanvas.innerHTML = 'three';
-            doc.appendChild(newCanvas);
-            newChild = document.getElementById('three');
-            console.debug(newChild);
-            canvases.push(new MultiCanvas.Canvas(newChild));
-            canvases[canvases.length - 1].init();
-            return newCanvas;
-        };
         this.getCanvas = function(ndx) {
             return canvases[ndx];
         };

@@ -1,10 +1,13 @@
 /*global define, console */
+// require(['services/MapInstanceService']);
 
 define([
     'app',
     'services/CanvasService',
     'services/SimpleSlides',
-    'services/MapIntanceService'
+    'services/MapInstanceService',
+    'controllers/MapDirective',
+    'controllers/MapCtrl'
 ], function(app) {
     'use strict';
 
@@ -13,19 +16,34 @@ define([
         '$scope',
         'CanvasService',
         'SimpleSlidesService',
-        'MapIntanceService'
-        function($scope, CanvasService, SimpleSlidesService) {
+        'MapInstanceService',
+        'controllers/MapDirective',
+        function($scope, CanvasService, SimpleSlidesService, MapInstanceService, MapDirective) {
             console.log("CanvasHolderCtrl calling into CanvasService");
             var slides = $scope.slides = [],
-                currIndex = 0;
+                currIndex = MapInstanceService.getMapNumber();
 
             $scope.addCanvas = function(clickedItem) {
+                currIndex = MapInstanceService.getMapNumber();
                 $scope.addSlide(null, currIndex);
                 $scope.slides[$scope.slides.length - 1].id = 0;
 
                 $scope.safeApply();
                 var newCanvasItem = CanvasService.makeCanvasItem(currIndex);
                 CanvasService.loadCanvas(newCanvasItem, currIndex);
+
+                var mapDctv = document.createElement('mapdirective'),
+                  parentDiv = newCanvasItem; //document.getElementById('MapContainer');
+                parentDiv.appendChild(mapDctv);
+                angular.element(mapDctv).injector().invoke(function($compile) {
+                  var scope = angular.element(mapDctv).scope();
+                  $compile(mapDctv)(scope);
+                  console.log("compiled mapDctv");
+                  console.debug(scope);
+                  scope.startMap();
+                });
+
+                $scope.safeApply(function () {console.log("safeApply callback")});
                 SimpleSlidesService.addSlide(newCanvasItem);
                 currIndex++;
             };

@@ -5,7 +5,7 @@ define([
 
     console.log("ready to create MapIntanceService");
     var mapInstance = 0;
-    app.service('mapInstance', [
+    app.service('MapInstanceService', [
         function() {
             console.log("service to return MapInstance");
             this.getMapNumber = function() {

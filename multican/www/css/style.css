@@ -10,3 +10,8 @@
     height: 480px;
     width: 1100px;
 }
+
+.MapContainer {
+  width : 500px;
+  height : 600px;
+}

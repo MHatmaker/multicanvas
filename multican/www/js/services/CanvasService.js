@@ -29,9 +29,9 @@ define([
             // div.innerhtml = "here is slide" + ndx;
             canvases.push(new MultiCanvas.Canvas(elem, ndx));
             canvases[canvases.length - 1].init();
-            var mapDiv = document.createElement('div');
-            mapDiv.id = 'map' + ndx;
-            elem.appendChild(mapDiv);
+            // var mapDiv = document.createElement('div');
+            // mapDiv.id = 'map' + ndx;
+            // elem.appendChild(mapDiv);
             // doc.appendChild(div);
         };
 

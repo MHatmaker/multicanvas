@@ -23,7 +23,7 @@ define([
               console.log("in mapdirective link function");
               var mapInstance = "map" + mapInstanceService.getMapNumber(),
                   mapDiv = angular.element(
-                      '<div ng-controller="MapCtrl" id="' + mapInstance + '" style="width:400px;height:400px">' +
+                      '<div ng-controller="MapCtrl" id="' + mapInstance + '" class="map_canvas">' +
                           '<div data-tap-disabled="true" class="map"></div> ' +
                           '</div>'
                   );

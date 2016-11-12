@@ -14,7 +14,7 @@ define([
             controller : 'MapCtrl',
             link : function (s, e) {
                 var mapDiv = angular.element(
-                        '<div ng-controller="MapCtrl" id="map' + mapInstance + '" style="width:400px;height:400px">' +
+                        '<div ng-controller="MapCtrl" id="map' + mapInstance + '>' +
                             '<div data-tap-disabled="true" class="map"></div> ' +
                             '</div>'
                     );

@@ -1,1 +1,12 @@
 /* Empty. Add your own CSS if you like */
+
+.map_canvas {
+    border:solid 4px #666;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    border-radius:6px;
+    margin:0;   /*15px 20px 15px 20px;*/
+    padding:0;
+    height: 480px;
+    width: 1100px;
+}

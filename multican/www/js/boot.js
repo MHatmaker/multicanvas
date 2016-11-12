@@ -3,7 +3,7 @@ require([
   'routes',
   'config',
   'run',
-  'controllers/CanvasHolderCtrl'
+  'controllers/CanvasHolderCtrl',
 ], function () {
   'use strict';
   // Here you have to set your app name to bootstrap it manually

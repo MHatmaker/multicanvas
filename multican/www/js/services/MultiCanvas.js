@@ -15,7 +15,7 @@
             },
             canvases = [];
             Canvas.prototype.init = function () {
-                var mapParent = document.getElementsByClassName('content')[0]; //' + this.ndx);
+                var mapParent = document.getElementsByClassName('MapContainer')[0]; //' + this.ndx);
 
                 this.el.innerHTML = "Map " + this.ndx;
                 this.el.style.backgroundColor = "#888";

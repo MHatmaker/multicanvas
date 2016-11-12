@@ -6,7 +6,7 @@ define([
     'services/CanvasService',
     'services/SimpleSlides',
     'services/MapInstanceService',
-    'controllers/MapDirective',
+    // 'controllers/MapDirective',
     'controllers/MapCtrl'
 ], function(app) {
     'use strict';
@@ -17,8 +17,8 @@ define([
         'CanvasService',
         'SimpleSlidesService',
         'MapInstanceService',
-        'controllers/MapDirective',
-        function($scope, CanvasService, SimpleSlidesService, MapInstanceService, MapDirective) {
+        // 'controllers/MapDirective',
+        function($scope, CanvasService, SimpleSlidesService, MapInstanceService) {
             console.log("CanvasHolderCtrl calling into CanvasService");
             var slides = $scope.slides = [],
                 currIndex = MapInstanceService.getMapNumber();

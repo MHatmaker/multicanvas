@@ -7,7 +7,7 @@ define([
     'use strict';
 
     console.log("ready to create MapDirective");
-    app.directive('mapdirective', ['$compile', 'services/MapInstanceService', function ($compile, mapInstanceService) {
+    app.directive('mapdirective', ['$compile', 'MapInstanceService', function ($compile, mapInstanceService) {
         var mapInstance = "map" + mapInstanceService.getMapNumber();
         return {
             restrict : 'E',

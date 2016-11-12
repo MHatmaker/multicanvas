@@ -24,11 +24,11 @@
       z-index: 2;
     }
     .active {
-      height: 250px;
+      height: 100%;
     }
     .active li {
       position: absolute;
-      top: 200px;
+      top: 500px;
     }
     .active li.current {
       top: 30px;

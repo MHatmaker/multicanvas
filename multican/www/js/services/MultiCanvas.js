@@ -17,7 +17,7 @@
             Canvas.prototype.init = function () {
                 var mapParent = document.getElementsByClassName('MapContainer')[0]; //' + this.ndx);
 
-                this.el.innerHTML = "Map " + this.ndx;
+                // this.el.innerHTML = "Map " + this.ndx;
                 this.el.style.backgroundColor = "#888";
                 this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
 

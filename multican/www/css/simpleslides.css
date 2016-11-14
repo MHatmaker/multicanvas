@@ -55,3 +55,23 @@
       position: absolute;
       left: -2000px;
     }
+
+    .chevron-next {
+        /*clip-path: inset(2px 2px 2px 2px);*/
+        -webkit-clip-path: inset(2px 2px 2px 2px);
+        background-image: url(../img/chevron-right.png);
+        background-color: #6E9096;
+        background-size: 100% 100%;
+        width: 25px;
+        height:25px;
+    }
+
+    .chevron-prev {
+        /*clip-path: inset(2px 2px 2px 2px);*/
+        -webkit-clip-path: inset(2px 2px 2px 2px);
+        background-image: url(../img/chevron-down.png);
+        background-color: #6E9096;
+        background-size: 100% 100%;
+        width: 25px;
+        height:25px;
+    }

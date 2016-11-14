@@ -3,20 +3,25 @@
     <div id='canvasholder' ng-controller='CanvasHolderCtrl'>
       <div style="height: 500px">
         <div class="carouselbox" ng-controller="CarouselCtrl">
-          <div class="buttons">
-            <button class="prev" ng-click="onClickPrev()">
-               ◀ <span class="offscreen">Previous</span>
-            </button>
-            <button class="next" ng-click="onClickNext()">
-              <span class="offscreen">Next</span> ▶
-            </button>
+          <div class="buttons row">
+            <div class="col-md-1 col-xs-1">
+              <button class="chevron-prev" ng-click="onClickPrev()">
+                <span class="offscreen">Previous</span>
+              </button>
+            </div>
+            <div class="col-md-3 col-xs-3">Map # {{MapNo}}</div>
+            <div class="col-md-1 col-xs-1">
+              <button class="chevron-next" ng-click="onClickNext()">
+                <span class="offscreen">Next</span>
+              </button>
+            </div>
           </div>
 
           <ol class="MapContainer style="height: 400px; width: 400px;">
           </ol>
         </div>
 
-        <button id="addcanbtn" ng-click="addCanvas()" value="Add Canvas" class="btn">Add Canvas</button>
+        <button id="addcanbtn" ng-click="addCanvas()" value="Add Map" class="btn">Add Map</button>
     </div>
   </ion-content>
 </ion-view>

@@ -51,6 +51,7 @@
                     // set new current element
                     // and add CSS class
                     current = items[counter];
+                    $scope.MapNo = counter;
                     console.debug(current.classList);
                     current.classList.add('current');
                     console.debug(current.classList);

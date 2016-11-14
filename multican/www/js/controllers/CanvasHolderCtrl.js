@@ -10,18 +10,16 @@
         'services/CanvasService',
         'services/MapInstanceService',
         'controllers/CarouselCtrl',
-        'controllers/MapCtrl'
-    ], function(app, CanvasService, MapInstanceService, CarouselCtrl, MapCtrl) {
+        'controllers/MapCtrl',
+    ], function(app, CanvasService, MapInstanceService) {
 
         console.log("ready to create CanvasHolderCtrl");
-        console.debug(CarouselCtrl);
         app.controller('CanvasHolderCtrl', [
             '$scope',
             'CanvasService',
             'MapInstanceService',
             function($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
-                console.debug(CarouselCtrl);
                 var slides = $scope.slides = [],
                     currIndex = MapInstanceService.getMapNumber();
 
@@ -47,7 +45,6 @@
 
                     $scope.safeApply(function () {console.log("safeApply callback")});
                     $scope.$broadcast('addslide', {newMapLi : newCanvasItem});
-//                    CarouselCtrl.addSlide(newCanvasItem);
                     currIndex++;
                 };
 

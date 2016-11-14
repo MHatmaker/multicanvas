@@ -1,4 +1,11 @@
 
+  define('angular', function () {
+      if (angular) {
+          return angular;
+      }
+      return {};
+  });
+  
 define([
   'ionic',
   'services/MultiCanvas',

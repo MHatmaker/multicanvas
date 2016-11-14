@@ -2,12 +2,12 @@
   <ion-content>
     <div id='canvasholder' ng-controller='CanvasHolderCtrl'>
       <div style="height: 500px">
-        <div class="carouselbox">
+        <div class="carouselbox" ng-controller="CarouselCtrl">
           <div class="buttons">
-            <button class="prev">
+            <button class="prev" ng-click="onClickPrev()">
                ◀ <span class="offscreen">Previous</span>
             </button>
-            <button class="next">
+            <button class="next" ng-click="onClickNext()">
               <span class="offscreen">Next</span> ▶
             </button>
           </div>

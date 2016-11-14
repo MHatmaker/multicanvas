@@ -1,78 +1,82 @@
 /*global define, console, google, document, window*/
-define([
-    'app',
-    'services/CanvasService',
-    'services/SimpleSlides',
-    'services/MapInstanceService'
-], function (app) {
-    'use strict';
 
-    console.log("ready to create MapCtrl");
-    app.controller('MapCtrl', [
-        '$scope',
-        '$compile',
-        'CanvasService',
-        'SimpleSlidesService',
-        'MapInstanceService',
-        function ($scope, $compile, CanvasService, SimpleSlidesService, MapInstanceService) {
+(function () {
+    "use strict";
 
-            function initialize() {
-                console.log("initialize controller");
-                var myLatlng = new google.maps.LatLng(43.07493, -89.381388),
+    console.log('MapCtrl setup');
+    define([
+        'app',
+        'services/CanvasService',
+        'services/SimpleSlides',
+        'services/MapInstanceService'
+    ], function (app) {
 
-                    mapOptions = {
-                        center: myLatlng,
-                        zoom: 16,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    },
-                    map = new google.maps.Map(document.getElementById("map" + MapInstanceService.getMapNumber()),
-                        mapOptions),
+        console.log("ready to create MapCtrl");
+        app.controller('MapCtrl', [
+            '$scope',
+            '$compile',
+            'CanvasService',
+            'MapInstanceService',
+            function ($scope, $compile, CanvasService,  MapInstanceService) {
 
-                    //Marker + infowindow + angularjs compiled ng-click
-                    contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>",
-                    compiled = $compile(contentString)($scope),
+                function initialize() {
+                    console.log("initialize controller");
+                    var myLatlng = new google.maps.LatLng(43.07493, -89.381388),
 
-                    infowindow = new google.maps.InfoWindow({
-                        content: compiled[0]
-                    }),
+                        mapOptions = {
+                            center: myLatlng,
+                            zoom: 16,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        },
+                        map = new google.maps.Map(document.getElementById("map" + MapInstanceService.getMapNumber()),
+                            mapOptions),
 
-                    marker = new google.maps.Marker({
-                        position: myLatlng,
-                        map: map,
-                        title: 'Uluru (Ayers Rock)'
+                        //Marker + infowindow + angularjs compiled ng-click
+                        contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>",
+                        compiled = $compile(contentString)($scope),
+
+                        infowindow = new google.maps.InfoWindow({
+                            content: compiled[0]
+                        }),
+
+                        marker = new google.maps.Marker({
+                            position: myLatlng,
+                            map: map,
+                            title: 'Uluru (Ayers Rock)'
+                        });
+
+                    MapInstanceService.incrementMapNumber();
+                    google.maps.event.addListener(marker, 'click', function () {
+                        infowindow.open(map, marker);
                     });
 
-                MapInstanceService.incrementMapNumber();
-                google.maps.event.addListener(marker, 'click', function () {
-                    infowindow.open(map, marker);
-                });
-
-                $scope.map = map;
-            }
-            // google.maps.event.addDomListener(window, 'load', initialize);
-            $scope.startMap = function () {
-                initialize();
-            }
-
-            $scope.centerOnMe = function () {
-                if(!$scope.map) {
-                    return;
+                    $scope.map = map;
+                }
+                // google.maps.event.addDomListener(window, 'load', initialize);
+                $scope.startMap = function () {
+                    initialize();
                 }
 
-                navigator.geolocation.getCurrentPosition(function(pos) {
-                    $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-                    $scope.loading.hide();
-                  }, function(error) {
-                      alert('Unable to get location: ' + error.message);
-                });
-            };
+                $scope.centerOnMe = function () {
+                    if(!$scope.map) {
+                        return;
+                    }
 
-            $scope.clickTest = function() {
-                alert('Example of infowindow with ng-click')
-            };
-            // initialize();
+                    navigator.geolocation.getCurrentPosition(function(pos) {
+                        $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+                        $scope.loading.hide();
+                      }, function(error) {
+                          alert('Unable to get location: ' + error.message);
+                    });
+                };
+
+                $scope.clickTest = function() {
+                    alert('Example of infowindow with ng-click')
+                };
+                // initialize();
 
 
-      }
-    ]);
-});
+          }
+        ]);
+    });
+}());

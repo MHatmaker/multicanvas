@@ -18,8 +18,10 @@
             'CanvasService',
             'MapInstanceService',
             function ($scope, $compile, CanvasService,  MapInstanceService) {
+                var mapNumber = MapInstanceService.getMapNumber();
 
-                function initialize() {
+                function initialize(mapNo) {
+                    mapNumber = mapNo;
                     console.log("initialize controller");
                     var myLatlng = new google.maps.LatLng(43.07493, -89.381388),
 
@@ -28,11 +30,11 @@
                             zoom: 16,
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         },
-                        map = new google.maps.Map(document.getElementById("map" + MapInstanceService.getMapNumber()),
+                        map = new google.maps.Map(document.getElementById("map" + mapNumber),
                             mapOptions),
 
                         //Marker + infowindow + angularjs compiled ng-click
-                        contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>",
+                        contentString = "<div><a ng-click='clickTest()'>Click me from map " + mapNumber + "!</a></div>",
                         compiled = $compile(contentString)($scope),
 
                         infowindow = new google.maps.InfoWindow({
@@ -45,7 +47,7 @@
                             title: 'Uluru (Ayers Rock)'
                         });
 
-                    MapInstanceService.incrementMapNumber();
+                    // MapInstanceService.incrementMapNumber();
                     google.maps.event.addListener(marker, 'click', function () {
                         infowindow.open(map, marker);
                     });
@@ -53,8 +55,8 @@
                     $scope.map = map;
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
-                $scope.startMap = function () {
-                    initialize();
+                $scope.startMap = function (mapNumber) {
+                    initialize(mapNumber);
                 }
 
                 $scope.centerOnMe = function () {
@@ -71,7 +73,7 @@
                 };
 
                 $scope.clickTest = function() {
-                    alert('Example of infowindow with ng-click')
+                    alert('infowindow with ng-click on map ' + mapNumber);
                 };
                 // initialize();
 

@@ -40,12 +40,12 @@
                       $compile(mapDctv)(scope);
                       console.log("compiled mapDctv");
                       console.debug(scope);
-                      scope.startMap();
+                      scope.startMap(currIndex);
                     });
 
                     $scope.safeApply(function () {console.log("safeApply callback")});
                     $scope.$broadcast('addslide', {newMapLi : newCanvasItem});
-                    currIndex++;
+                    MapInstanceService.incrementMapNumber();
                 };
 
                 $scope.safeApply = function(fn) {

@@ -1,7 +1,7 @@
 <ion-view view-title="Dashboard">
   <ion-content>
     <div id='canvasholder' ng-controller='CanvasHolderCtrl'>
-      <div style="height: 500px">
+      <div style="height: 500px; width: 500px;">
         <div class="carouselbox" ng-controller="CarouselCtrl">
           <div class="buttons row " ng-class="{'mapsshowing' : amount > 1, 'mapshidden' : amount < 2}">
             <div class="col-md-1 col-xs-1">
@@ -17,10 +17,10 @@
             </div>
           </div>
 
-          <ol class="MapContainer style="height: 400px; width: 400px;">
+          <ol class="MapContainer">
           </ol>
         </div>
-
+      </div>
         <button id="addcanbtn" ng-click="addCanvas()" value="Add Map" class="btn">Add Map</button>
     </div>
   </ion-content>

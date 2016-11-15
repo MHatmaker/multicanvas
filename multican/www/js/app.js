@@ -5,7 +5,7 @@
       }
       return {};
   });
-  
+
 define([
   'ionic',
   'services/MultiCanvas',
@@ -31,7 +31,7 @@ define([
               var mapInstance = "map" + mapInstanceService.getMapNumber(),
                   mapDiv = angular.element(
                       '<div ng-controller="MapCtrl" id="' + mapInstance + '" class="map_canvas">' +
-                          '<div data-tap-disabled="true" class="map"></div> ' +
+                          '<div data-tap-disabled="true"></div> ' +
                           '</div>'
                   );
               $compile(mapDiv)(s);

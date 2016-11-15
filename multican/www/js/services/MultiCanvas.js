@@ -25,8 +25,8 @@
             };
             Canvas.prototype.onMouseDown = function (event) {
                 console.log('onMouseDown: ', this.el);
-                event.cancelBubble=true;
-                event.stopPropagation();
+                // event.cancelBubble=true;
+                // event.stopPropagation();
             };
             // function addCanvas () {
             //    var doc = document.getElementById('canvasholder'),

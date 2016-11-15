@@ -20,13 +20,10 @@
             'MapInstanceService',
             function($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
-                var slides = $scope.slides = [],
-                    currIndex = MapInstanceService.getMapNumber();
+                var currIndex = MapInstanceService.getMapNumber();
 
                 $scope.addCanvas = function(clickedItem) {
                     currIndex = MapInstanceService.getMapNumber();
-                    $scope.addSlide(null, currIndex);
-                    $scope.slides[$scope.slides.length - 1].id = 0;
 
                     $scope.safeApply();
                     var newCanvasItem = CanvasService.makeCanvasItem(currIndex);
@@ -62,14 +59,6 @@
                 $scope.myInterval = 5000;
                 $scope.noWrapSlides = false;
                 $scope.active = 0;
-
-                $scope.addSlide = function(itm, currIndex) {
-                    // var newWidth = 600 + slides.length + 1;
-                    slides.push({
-                        item: itm,
-                        id: currIndex
-                    });
-                };
             }
         ]);
     });

@@ -51,6 +51,18 @@
     .active button {
       visibility: visible;
     }
+    .mapsshowing button {
+      visibility: visible;
+    }
+    .mapshidden button {
+      visibility: hidden;
+    }
+    .mapsshowingtext {
+      visibility: visible;
+    }
+    .mapshiddentext {
+      visibility: hidden;
+    }
     .offscreen {
       position: absolute;
       left: -2000px;
@@ -69,7 +81,7 @@
     .chevron-prev {
         /*clip-path: inset(2px 2px 2px 2px);*/
         -webkit-clip-path: inset(2px 2px 2px 2px);
-        background-image: url(../img/chevron-down.png);
+        background-image: url(../img/chevron-left.png);
         background-color: #6E9096;
         background-size: 100% 100%;
         width: 25px;

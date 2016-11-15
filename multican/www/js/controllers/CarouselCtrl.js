@@ -16,8 +16,8 @@
                 // current item
                     counter = 0,
                     items = [], //box.getElementsByClassName('.content li'),
-                    amount = items.length,
                     current = items[0];
+                $scope.amount = items.length;
                 box.classList.add('active');
 
                 $scope.$on('addslide', function (event, data) {
@@ -26,18 +26,10 @@
                     }
                     items.push(data.newMapLi);
                     current = items[items.length - 1];
+                    $scope.MapNo = items.length - 1;
                     current.classList.add('current');
-                    amount = items.length;
+                    $scope.amount = items.length;
                 });
-                this.addSlide = function (newMapLi) {
-                    if (items.length > 0) {
-                        current.classList.remove('current');
-                    }
-                    items.push(newMapLi);
-                    current = items[items.length - 1];
-                    current.classList.add('current');
-                    amount = items.length;
-                };
                 // navigate through the carousel
                 function navigate(direction) {
                 // hide the old current list item
@@ -45,8 +37,8 @@
 
                     console.log("change counter from " + counter);
                     // calculate the new position
-                    counter = (counter + direction) % amount;
-                    counter = counter < 0 ? amount - 1 : counter;
+                    counter = (counter + direction) % $scope.amount;
+                    counter = counter < 0 ? $scope.amount - 1 : counter;
                     console.log("to counter " + counter);
                     // set new current element
                     // and add CSS class

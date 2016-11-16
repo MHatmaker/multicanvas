@@ -3,6 +3,7 @@ require([
   'routes',
   'config',
   'run',
+  'controllers/MapDirective',
   'controllers/CanvasHolderCtrl',
 ], function () {
   'use strict';

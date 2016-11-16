@@ -35,14 +35,16 @@
                     angular.element(mapDctv).injector().invoke(function($compile) {
                       var scope = angular.element(mapDctv).scope();
                       $compile(mapDctv)(scope);
-                      console.log("compiled mapDctv");
+                      console.log("compiled mapDctv with map id " + currIndex);
                       console.debug(scope);
-                      scope.startMap(currIndex);
+                      setTimeout(function () {
+                          scope.startMap(currIndex);
+                          MapInstanceService.incrementMapNumber();
+                      })
                     });
 
                     $scope.safeApply(function () {console.log("safeApply callback")});
                     $scope.$broadcast('addslide', {newMapLi : newCanvasItem});
-                    MapInstanceService.incrementMapNumber();
                 };
 
                 $scope.safeApply = function(fn) {

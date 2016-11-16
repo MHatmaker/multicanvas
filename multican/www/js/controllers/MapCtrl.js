@@ -22,7 +22,7 @@
 
                 function initialize(mapNo) {
                     mapNumber = mapNo;
-                    console.log("initialize controller");
+                    console.log("initialize MapCtrl with map id " + mapNo);
                     var myLatlng = new google.maps.LatLng(43.07493, -89.381388),
 
                         mapOptions = {

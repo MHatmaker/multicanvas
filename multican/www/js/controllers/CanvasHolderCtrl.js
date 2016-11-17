@@ -47,6 +47,13 @@
                     $scope.$broadcast('addslide', {newMapLi : newCanvasItem});
                 };
 
+                $scope.removeCanvas = function(clickedItem) {
+                    console.log("removeCanvas");
+                    console.debug(clickedItem);
+                    $scope.$broadcast('removeslide');
+                    //MapInstanceService.removeMap();
+                };
+
                 $scope.safeApply = function(fn) {
                     var phase = this.$root.$$phase;
                     if (phase === '$apply' || phase === '$digest') {

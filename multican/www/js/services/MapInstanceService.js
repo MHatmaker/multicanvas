@@ -13,16 +13,19 @@ define([
                 return mapInstance;
             };
             this.incrementMapNumber = function () {
-              mapInstance++;
+                mapInstance++;
             }
-          this.getNextMapNumber = function () {
-              if (isFirstInstance ) {
-                  isFirstInstance = false;
-                  return 0;
-              } else {
-                  return mapInstance;
-              }
-          }
+            this.getNextMapNumber = function () {
+                if (isFirstInstance ) {
+                    isFirstInstance = false;
+                    return 0;
+                } else {
+                    return mapInstance;
+                }
+            }
+            this.removeInstance = function () {
+                mapInstance--;
+            }
         }
     ]);
 });

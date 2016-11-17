@@ -8,8 +8,8 @@
         'app'
     ], function (app) {
         console.log("ready to create CarouselCtrl");
-        app.controller('CarouselCtrl', ['$scope',
-            function ($scope) {
+        app.controller('CarouselCtrl', ['$scope', 'MapInstanceService',
+            function ($scope, MapInstanceService) {
                     // Read necessary elements from the DOM once
                 // var box = document.querySelector('.carouselbox'),
                 // Define the global counter, the items and the
@@ -32,6 +32,18 @@
                     current.classList.add('current');
                     $scope.amount = items.length;
                 });
+                $scope.$on('removeslide', function () {
+                    var currentSlide = counter;
+                    console.log("remove slide " + counter + " from items with length" + items.length);
+                    if (currentSlide > -1) {
+                        items.splice(currentSlide, 1);
+                        MapInstanceService.removeInstance();
+                        $scope.amount = items.length;
+                        console.log("items length is now " + items.length);
+                        navigate(0);
+                    }
+
+                })
                 // navigate through the carousel
                 function navigate(direction) {
                 // hide the old current list item

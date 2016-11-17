@@ -44,7 +44,7 @@
                             title: 'Uluru (Ayers Rock)'
                         });
 
-
+                    google.maps.event.addListener(marker, 'click', function () {
                         infowindow.open(map, marker);
                     });
 

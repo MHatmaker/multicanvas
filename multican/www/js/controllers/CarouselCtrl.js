@@ -15,6 +15,7 @@
                     items = [],
                     current = items[0];
                 $scope.amount = items.length;
+                $scope.ActNoAct = 'active';
                 $scope.$on('addslide', function (event, data) {
                     if (items.length > 0) {
                         current.classList.remove('current');
@@ -51,7 +52,7 @@
                     current = items[counter];
                     $scope.MapNo = counter;
                     current.classList.add('current');
-
+                }
                 // add event handlers to buttons
                 $scope.onClickNext = function(clickedItem) {
                     console.log("next")

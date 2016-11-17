@@ -11,10 +11,6 @@ define([
     app.service('CanvasService', [
     function() {
         var canvases = [];
-        // canvases[0] = new MultiCanvas.Canvas(document.getElementById('one'));
-        // canvases[0].init();
-        // canvases[1] = new MultiCanvas.Canvas(document.getElementById('two'));
-        // canvases[1].init();
 
         console.log("CanvasService to return canvas");
 
@@ -24,15 +20,8 @@ define([
             return newCanvasItem;
         };
         this.loadCanvas = function(elem, ndx) {
-            // google, leaflet, arcgis create map
-            //    var doc = document.getElementById('div');
-            // div.innerhtml = "here is slide" + ndx;
             canvases.push(new MultiCanvas.Canvas(elem, ndx));
             canvases[canvases.length - 1].init();
-            // var mapDiv = document.createElement('div');
-            // mapDiv.id = 'map' + ndx;
-            // elem.appendChild(mapDiv);
-            // doc.appendChild(div);
         };
 
         this.getCanvas = function(ndx) {

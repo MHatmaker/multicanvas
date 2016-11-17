@@ -25,12 +25,11 @@
                 $scope.addCanvas = function(clickedItem) {
                     currIndex = MapInstanceService.getMapNumber();
 
-                    $scope.safeApply();
                     var newCanvasItem = CanvasService.makeCanvasItem(currIndex);
                     CanvasService.loadCanvas(newCanvasItem, currIndex);
 
                     var mapDctv = document.createElement('mapdirective'),
-                        parentDiv = newCanvasItem; //document.getElementById('MapContainer');
+                        parentDiv = newCanvasItem;
                     parentDiv.appendChild(mapDctv);
                     angular.element(mapDctv).injector().invoke(function($compile) {
                       var scope = angular.element(mapDctv).scope();
@@ -43,7 +42,6 @@
                       })
                     });
 
-                    $scope.safeApply(function () {console.log("safeApply callback")});
                     $scope.$broadcast('addslide', {newMapLi : newCanvasItem});
                 };
 

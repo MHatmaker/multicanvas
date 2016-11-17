@@ -10,18 +10,11 @@
         console.log("ready to create CarouselCtrl");
         app.controller('CarouselCtrl', ['$scope', 'MapInstanceService',
             function ($scope, MapInstanceService) {
-                    // Read necessary elements from the DOM once
-                // var box = document.querySelector('.carouselbox'),
-                // Define the global counter, the items and the
-                // current item
                 var
                     counter = 0,
-                    items = [], //box.getElementsByClassName('.content li'),
+                    items = [],
                     current = items[0];
                 $scope.amount = items.length;
-                // box.classList.add('active');
-                $scope.ActNoAct = 'active';
-
                 $scope.$on('addslide', function (event, data) {
                     if (items.length > 0) {
                         current.classList.remove('current');
@@ -37,7 +30,6 @@
                     console.log("remove slide " + counter + " from items with length" + items.length);
                     if (currentSlide > -1) {
                         items.splice(currentSlide, 1);
-                        MapInstanceService.removeInstance();
                         $scope.amount = items.length;
                         console.log("items length is now " + items.length);
                         navigate(0);
@@ -58,10 +50,8 @@
                     // and add CSS class
                     current = items[counter];
                     $scope.MapNo = counter;
-                    console.debug(current.classList);
                     current.classList.add('current');
-                    console.debug(current.classList);
-                }
+
                 // add event handlers to buttons
                 $scope.onClickNext = function(clickedItem) {
                     console.log("next")

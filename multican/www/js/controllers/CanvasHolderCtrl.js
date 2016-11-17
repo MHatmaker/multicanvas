@@ -30,7 +30,7 @@
                     CanvasService.loadCanvas(newCanvasItem, currIndex);
 
                     var mapDctv = document.createElement('mapdirective'),
-                      parentDiv = newCanvasItem; //document.getElementById('MapContainer');
+                        parentDiv = newCanvasItem; //document.getElementById('MapContainer');
                     parentDiv.appendChild(mapDctv);
                     angular.element(mapDctv).injector().invoke(function($compile) {
                       var scope = angular.element(mapDctv).scope();
@@ -51,7 +51,6 @@
                     console.log("removeCanvas");
                     console.debug(clickedItem);
                     $scope.$broadcast('removeslide');
-                    //MapInstanceService.removeMap();
                 };
 
                 $scope.safeApply = function(fn) {

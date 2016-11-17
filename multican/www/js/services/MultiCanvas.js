@@ -19,7 +19,7 @@
 
                 // this.el.innerHTML = "Map " + this.ndx;
                 this.el.style.backgroundColor = "#888";
-                this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
+                // this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
 
                 mapParent.appendChild(this.el);
             };

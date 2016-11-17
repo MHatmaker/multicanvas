@@ -11,14 +11,16 @@
         app.controller('CarouselCtrl', ['$scope',
             function ($scope) {
                     // Read necessary elements from the DOM once
-                var box = document.querySelector('.carouselbox'),
+                // var box = document.querySelector('.carouselbox'),
                 // Define the global counter, the items and the
                 // current item
+                var
                     counter = 0,
                     items = [], //box.getElementsByClassName('.content li'),
                     current = items[0];
                 $scope.amount = items.length;
-                box.classList.add('active');
+                // box.classList.add('active');
+                $scope.ActNoAct = 'active';
 
                 $scope.$on('addslide', function (event, data) {
                     if (items.length > 0) {

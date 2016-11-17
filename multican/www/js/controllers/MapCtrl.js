@@ -6,8 +6,6 @@
     console.log('MapCtrl setup');
     define([
         'app',
-        'services/CanvasService',
-        'services/SimpleSlides',
         'services/MapInstanceService'
     ], function (app) {
 
@@ -15,9 +13,8 @@
         app.controller('MapCtrl', [
             '$scope',
             '$compile',
-            'CanvasService',
             'MapInstanceService',
-            function ($scope, $compile, CanvasService,  MapInstanceService) {
+            function ($scope, $compile, MapInstanceService) {
                 var mapNumber = MapInstanceService.getMapNumber();
 
                 function initialize(mapNo) {

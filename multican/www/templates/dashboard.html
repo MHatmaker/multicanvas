@@ -2,7 +2,7 @@
   <ion-content>
     <div id='canvasholder' ng-controller='CanvasHolderCtrl'>
       <div style="height: 500px; width: 500px;">
-        <div class="carouselbox" ng-controller="CarouselCtrl">
+        <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl">
           <div class="buttons row " ng-class="{'mapsshowing' : amount > 1, 'mapshidden' : amount < 2}">
             <div class="col-md-1 col-xs-1">
               <button class="chevron-prev" ng-click="onClickPrev()">

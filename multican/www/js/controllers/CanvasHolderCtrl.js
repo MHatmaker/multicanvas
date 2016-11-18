@@ -25,8 +25,8 @@
                 $scope.addCanvas = function(clickedItem) {
                     currIndex = MapInstanceService.getMapNumber();
 
-                    var newCanvasItem = CanvasService.makeCanvasItem(currIndex);
-                    CanvasService.loadCanvas(newCanvasItem, currIndex);
+                    var newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
+                    CanvasService.loadCanvasSlideListItem(newCanvasItem, currIndex);
 
                     var mapDctv = document.createElement('mapdirective'),
                         parentDiv = newCanvasItem;

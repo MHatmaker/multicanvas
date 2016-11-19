@@ -2,8 +2,8 @@
     .carouselbox {
       font-family: helvetica,sans-serif;
       font-size: 14px;
-      width: 500px;
-      height: 500px;
+      width: 100%;
+      height: 100%;
       position: relative;
       margin: 1em;
       border: 1px solid #ccc;

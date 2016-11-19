@@ -15,8 +15,8 @@ define([
                 var mapInstance = "map" + mapInstanceService.getNextMapNumber();
                 console.log("new mapdirective for map with id " + mapInstance);
                 var mapDiv = angular.element(
-                        '<div ng-controller="MapCtrl" class="MapHolder" id=' + mapInstance + '>' +
-                            '<div data-tap-disabled="true" class="map"></div> ' +
+                        '<div ng-controller="MapCtrl" class="MapHolder" style="height: {{mapheight}}px; width: {{mapwidth}}px;" id=' + mapInstance + '>' +
+                            '<div data-tap-disabled="true"></div> ' +
                             '</div>'
                     );
                 $compile(mapDiv)(s);

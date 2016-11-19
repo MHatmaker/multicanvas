@@ -19,11 +19,18 @@
 
                 this.el.style.backgroundColor = "#888";
                 // this.el.addEventListener("mousedown", this.onMouseDown.bind(this));
+                // this.el.addEventListener("mousemove", this.onMouseMove.bind(this));
 
                 mapParent.appendChild(this.el);
             };
             Canvas.prototype.onMouseDown = function (event) {
                 console.log('onMouseDown: ', this.el);
+                // event.cancelBubble=true;
+                // event.stopPropagation();
+            };
+            Canvas.prototype.onMouseMove = function (event) {
+                //console.log('onMouseMove: ', this.el);
+                event.preventDefault();
                 // event.cancelBubble=true;
                 // event.stopPropagation();
             };

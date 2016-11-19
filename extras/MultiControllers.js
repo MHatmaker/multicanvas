@@ -46,7 +46,7 @@ app.directive('mapdirective', function ($compile) {
     controller : 'MapCtrl',
     link : function(s, e, a) {
       var mapDiv = angular.element(
-                '<div ng-controller="MapCtrl" id="map' + mapInstance + '" style="width:400px;height:400px">' +
+                '<div ng-controller="MapCtrl" id="map' + mapInstance + '" style="width:100%;height:100%">' +
                   '<div data-tap-disabled="true" class="map"></div> ' +
                 '</div>');
       $compile(mapDiv)(s);
@@ -115,49 +115,3 @@ app.controller('MapCtrl', function($scope, $compile) {
       // initialize();
 
     });
-
-/*
-<!DOCTYPE html>
-<html ng-app="myApp">
-
-  <head>
-    <script data-require="angular.js@*" data-semver="1.2.14" src="http://code.angularjs.org/1.2.14/angular.js"></script>
-    <link rel="stylesheet" href="style.css" />
-    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyB16sGmIekuGIvYOfNoW9T44377IU2d2Es&sensor=true"></script>
-    <script src="script.js"></script>
-  </head>
-
-  <body ng-controller="appCtrl">
-    <h1>Hello Plunker!</h1>
-    <div id="MapContainer">
-      <button id="addcanbtn" ng-click="addCanvas()" value="Add Canvas" class="btn">Add Canvas</button>
-    </div>
-  </body>
-
-</html>
-*/
-/*
-<!DOCTYPE html>
-<html ng-app="myApp">
-
-  <head>
-    <script data-require="angular.js@*" data-semver="1.2.14" src="http://code.angularjs.org/1.2.14/angular.js"></script>
-    <link rel="stylesheet" href="style.css" />
-    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyB16sGmIekuGIvYOfNoW9T44377IU2d2Es&sensor=true"></script>
-    <script src="script.js"></script>
-  </head>
-
-  <body ng-controller="appCtrl">
-    <h1>Hello Plunker!</h1>
-    <div ng-controller="MapCtrl" style="width:400px;height:400px">
-      <div id="map0" data-tap-disabled="true" class="map"></div>
-    </div>
-    <div ng-controller="MapCtrl" style="width:400px;height:400px">
-      <div id="map1" data-tap-disabled="true" class="map"></div>
-    </div>
-    <button id="addcanbtn" ng-click="addCanvas()" value="Add Canvas" class="btn">Add Canvas</button>
-  </body>
-
-</html>
-
-*/

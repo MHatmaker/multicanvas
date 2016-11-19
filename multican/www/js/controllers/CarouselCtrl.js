@@ -14,6 +14,8 @@
                     counter = 0,
                     items = [],
                     current = items[0];
+                $scope.mapcolheight = 480;
+                $scope.mapcolWidth = 380;
                 $scope.amount = items.length;
                 $scope.ActNoAct = 'active';
                 $scope.$on('addslide', function (event, data) {

@@ -16,6 +16,8 @@
             'MapInstanceService',
             function ($scope, $compile, MapInstanceService) {
                 var mapNumber = MapInstanceService.getMapNumber();
+                $scope.mapheight = 450;
+                $scope.mapwidth = 380;
 
                 function initialize(mapNo) {
                     mapNumber = mapNo;
@@ -43,6 +45,10 @@
                             map: map,
                             title: 'Uluru (Ayers Rock)'
                         });
+                    google.maps.event.addListener(map, 'center_changed', function (event) {
+                        // event.cancelBubble=true;
+                        //event.stopPropagation();
+                    })
 
                     google.maps.event.addListener(marker, 'click', function () {
                         infowindow.open(map, marker);

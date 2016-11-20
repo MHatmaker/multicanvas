@@ -1,28 +1,28 @@
 <ion-view view-title="Dashboard">
-  <ion-content style="height: 550px; width: 380px;">
-    <div id='canvasholder' ng-controller='CanvasHolderCtrl' onmousedown="return false">
-      <div style="height: 500px; width: 380px;">
-        <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl">
-          <div class="buttons row " ng-class="{'mapsshowing' : amount > 1, 'mapshidden' : amount < 2}">
-            <div class="col-md-1 col-xs-1">
-              <button class="chevron-prev" ng-click="onClickPrev()">
-                <span class="offscreen">Previous</span>
-              </button>
-            </div>
-            <div class="col-md-3 col-xs-3" ng-class="{'mapsshowingtext' : amount > 0, 'mapshiddentext' : amount < 1}">Map # {{MapNo}}</div>
-            <div class="col-md-1 col-xs-1">
-              <button class="chevron-next" ng-click="onClickNext()">
-                <span class="offscreen">Next</span>
-              </button>
-            </div>
-          </div>
+    <ion-content style="height: 550px; width: 380px;">
+        <div id='canvasholder' ng-controller='CanvasHolderCtrl' onmousedown="return false">
+            <div style="height: 500px; width: 380px;">
+                <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl">
+                    <div class="buttons row " ng-class="{'mapsshowing' : amount > 1, 'mapshidden' : amount < 2}">
+                        <div class="col-md-1 col-xs-1">
+                            <button class="chevron-prev" ng-click="onClickPrev()">
+                                <span class="offscreen">Previous</span>
+                            </button>
+                        </div>
+                        <div class="col-md-3 col-xs-3" ng-class="{'mapsshowingtext' : amount > 0, 'mapshiddentext' : amount < 1}">Map #
+                            {{MapNo}}</div>
+                        <div class="col-md-1 col-xs-1">
+                            <button class="chevron-next" ng-click="onClickNext()">
+                                <span class="offscreen">Next</span>
+                            </button>
+                        </div>
+                    </div>
 
-          <ol class="MapContainer" style="height: {{mapcolheight}}px; width: {{mapcolWidth}}px;">
-          </ol>
+                    <ol class="MapContainer" style="height: {{mapcolheight}}px; width: {{mapcolWidth}}px;"></ol>
+                </div>
+            </div class="row">
+            <button id="addcanbtn" ng-click="addCanvas()" value="Add Map" class="btn col-md-3 col-xs-5">Add Map</button>
+            <button id="removecanbtn" ng-click="removeCanvas()" value="Drop Map" class="btn col-md-3 col-xs-5">Drop Map</button>
         </div>
-      </div class="row">
-        <button id="addcanbtn" ng-click="addCanvas()" value="Add Map" class="btn col-md-3 col-xs-5">Add Map</button>
-        <button id="removecanbtn" ng-click="removeCanvas()" value="Drop Map" class="btn col-md-3 col-xs-5">Drop Map</button>
-    </div>
-  </ion-content>
+    </ion-content>
 </ion-view>

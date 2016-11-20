@@ -1,4 +1,4 @@
-/*global define, console */
+/*global define, console, document, angular, setTimeout*/
 // require(['services/MapInstanceService']);
 
 (function () {
@@ -9,49 +9,51 @@
         'app',
         'services/CanvasService',
         'services/MapInstanceService',
-        'controllers/CarouselCtrl',
         'controllers/MapCtrl',
-    ], function(app, CanvasService, MapInstanceService) {
+        'controllers/CarouselCtrl'
+    ], function (app, CanvasService, MapInstanceService) {
 
         console.log("ready to create CanvasHolderCtrl");
         app.controller('CanvasHolderCtrl', [
             '$scope',
             'CanvasService',
             'MapInstanceService',
-            function($scope, CanvasService, MapInstanceService) {
+            function ($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
                 var currIndex = MapInstanceService.getMapNumber();
 
-                $scope.addCanvas = function(clickedItem) {
+                $scope.addCanvas = function () {
                     currIndex = MapInstanceService.getMapNumber();
 
-                    var newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
+                    var newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex),
+                        mapDctv = document.createElement('mapdirective'),
+                        parentDiv = newCanvasItem;
                     CanvasService.loadCanvasSlideListItem(newCanvasItem, currIndex);
 
-                    var mapDctv = document.createElement('mapdirective'),
-                        parentDiv = newCanvasItem;
                     parentDiv.appendChild(mapDctv);
-                    angular.element(mapDctv).injector().invoke(function($compile) {
-                      var scope = angular.element(mapDctv).scope();
-                      $compile(mapDctv)(scope);
-                      console.log("compiled mapDctv with map id " + currIndex);
-                      console.debug(scope);
-                      setTimeout(function () {
-                          scope.startMap(currIndex);
-                          MapInstanceService.incrementMapNumber();
-                      })
+                    angular.element(mapDctv).injector().invoke(function ($compile) {
+                        var scope = angular.element(mapDctv).scope();
+                        $compile(mapDctv)(scope);
+                        console.log("compiled mapDctv with map id " + currIndex);
+                        console.debug(scope);
+                        setTimeout(function () {
+                            scope.startMap(currIndex);
+                            MapInstanceService.incrementMapNumber();
+                        });
                     });
 
-                    $scope.$broadcast('addslide', {newMapLi : newCanvasItem});
+                    $scope.$broadcast('addslide', {
+                        newMapLi: newCanvasItem
+                    });
                 };
 
-                $scope.removeCanvas = function(clickedItem) {
+                $scope.removeCanvas = function (clickedItem) {
                     console.log("removeCanvas");
                     console.debug(clickedItem);
                     $scope.$broadcast('removeslide');
                 };
 
-                $scope.safeApply = function(fn) {
+                $scope.safeApply = function (fn) {
                     var phase = this.$root.$$phase;
                     if (phase === '$apply' || phase === '$digest') {
                         if (fn && (typeof fn === 'function')) {

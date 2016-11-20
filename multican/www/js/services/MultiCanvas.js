@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    define ([],
+    define([],
         function () {
             console.log("entering MultiCanvas");
             /*
@@ -12,8 +12,7 @@
             var Canvas = function (el, ndx) {
                 this.el = el;
                 this.ndx = ndx;
-            },
-            canvases = [];
+            };
             Canvas.prototype.init = function () {
                 var mapParent = document.getElementsByClassName('MapContainer')[0];
 
@@ -23,7 +22,7 @@
 
                 mapParent.appendChild(this.el);
             };
-            Canvas.prototype.onMouseDown = function (event) {
+            Canvas.prototype.onMouseDown = function () {
                 console.log('onMouseDown: ', this.el);
                 // event.cancelBubble=true;
                 // event.stopPropagation();
@@ -35,7 +34,9 @@
                 // event.stopPropagation();
             };
 
-            return {Canvas : Canvas};
+            return {
+                Canvas: Canvas
+            };
         });
 
-}).call(this);
+}());

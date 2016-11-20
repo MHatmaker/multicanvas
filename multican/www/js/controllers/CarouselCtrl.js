@@ -8,8 +8,8 @@
         'app'
     ], function (app) {
         console.log("ready to create CarouselCtrl");
-        app.controller('CarouselCtrl', ['$scope', 'MapInstanceService',
-            function ($scope, MapInstanceService) {
+        app.controller('CarouselCtrl', ['$scope',
+            function ($scope) {
                 var
                     counter = 0,
                     items = [],
@@ -18,6 +18,23 @@
                 $scope.mapcolWidth = 380;
                 $scope.amount = items.length;
                 $scope.ActNoAct = 'active';
+                // navigate through the carousel
+                function navigate(direction) {
+                    // hide the old current list item
+                    current.classList.remove('current');
+
+                    console.log("change counter from " + counter);
+                    // calculate the new position
+                    counter = (counter + direction) % $scope.amount;
+                    counter = counter < 0 ? $scope.amount - 1 : counter;
+                    console.log("to counter " + counter);
+                    // set new current element
+                    // and add CSS class
+                    current = items[counter];
+                    $scope.MapNo = counter;
+                    current.classList.add('current');
+                }
+
                 $scope.$on('addslide', function (event, data) {
                     if (items.length > 0) {
                         current.classList.remove('current');
@@ -38,39 +55,23 @@
                         navigate(0);
                     }
 
-                })
-                // navigate through the carousel
-                function navigate(direction) {
-                // hide the old current list item
-                    current.classList.remove('current');
-
-                    console.log("change counter from " + counter);
-                    // calculate the new position
-                    counter = (counter + direction) % $scope.amount;
-                    counter = counter < 0 ? $scope.amount - 1 : counter;
-                    console.log("to counter " + counter);
-                    // set new current element
-                    // and add CSS class
-                    current = items[counter];
-                    $scope.MapNo = counter;
-                    current.classList.add('current');
-                }
+                });
                 // add event handlers to buttons
-                $scope.onClickNext = function(clickedItem) {
-                    console.log("next")
+                $scope.onClickNext = function () {
+                    console.log("next");
                     navigate(1);
                 };
-                $scope.onClickPrev = function(clickedItem) {
+                $scope.onClickPrev = function () {
                     console.log("prev");
                     navigate(-1);
                 };
-                    // show the first element
-                    // (when direction is 0 counter doesn't change)
+                // show the first element
+                // (when direction is 0 counter doesn't change)
                 if (items.length > 0) {
                     navigate(0);
                 }
             }
-          ]);
+        ]);
     });
 
 }());

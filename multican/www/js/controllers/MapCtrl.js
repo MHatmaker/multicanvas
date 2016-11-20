@@ -1,4 +1,4 @@
-/*global define, console, google, document, window*/
+/*global define, console, google, document, window, navigator, alert*/
 
 (function () {
     "use strict";
@@ -45,10 +45,6 @@
                             map: map,
                             title: 'Uluru (Ayers Rock)'
                         });
-                    google.maps.event.addListener(map, 'center_changed', function (event) {
-                        // event.cancelBubble=true;
-                        //event.stopPropagation();
-                    })
 
                     google.maps.event.addListener(marker, 'click', function () {
                         infowindow.open(map, marker);
@@ -59,28 +55,28 @@
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber) {
                     initialize(mapNumber);
-                }
+                };
 
                 $scope.centerOnMe = function () {
-                    if(!$scope.map) {
+                    if (!$scope.map) {
                         return;
                     }
 
-                    navigator.geolocation.getCurrentPosition(function(pos) {
+                    navigator.geolocation.getCurrentPosition(function (pos) {
                         $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
                         $scope.loading.hide();
-                      }, function(error) {
-                          alert('Unable to get location: ' + error.message);
+                    }, function (error) {
+                        alert('Unable to get location: ' + error.message);
                     });
                 };
 
-                $scope.clickTest = function() {
+                $scope.clickTest = function () {
                     alert('infowindow with ng-click on map ' + mapNumber);
                 };
                 // initialize();
 
 
-          }
+            }
         ]);
     });
 }());

@@ -1,26 +1,28 @@
+/*global define, angular, console, require*/
 
-  define('angular', function () {
-      if (angular) {
-          return angular;
-      }
-      return {};
-  });
+define('angular', function () {
+    "use strict";
+    if (angular) {
+        return angular;
+    }
+    return {};
+});
 
 define([
-  'ionic',
-  'services/MultiCanvas',
-  'angularBootstrap'
-], function () {
-  'use strict';
-
-  // the app with its used plugins
-  console.log("create module");
-  var app = angular.module('app', [
     'ionic',
-    'ui.bootstrap'
-  ]);
-  console.log("ready to create MapDirective");
-  require(['services/MapInstanceService']);
-  // return the app so you can require it in other components
-  return app;
+    'services/MultiCanvas',
+    'angularBootstrap'
+], function () {
+    'use strict';
+
+    // the app with its used plugins
+    console.log("create module");
+    var app = angular.module('app', [
+        'ionic',
+        'ui.bootstrap'
+    ]);
+    console.log("ready to create MapDirective");
+    require(['services/MapInstanceService']);
+    // return the app so you can require it in other components
+    return app;
 });

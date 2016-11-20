@@ -1,5 +1,9 @@
 /*global console, define, document */
 
+/*jslint es5: true */
+/*jslint unparam: true*/
+/*jslint browser: true*/
+
 (function () {
     "use strict";
 

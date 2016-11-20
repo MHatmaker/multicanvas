@@ -1,5 +1,9 @@
 /*global define, console, angular*/
 
+/*jslint es5: true */
+/*jslint unparam: true*/
+/*jslint browser: true*/
+
 define([
     'app',
     'services/MapInstanceService'

@@ -1,10 +1,15 @@
+/*global define, console*/
+
+/*jslint es5: true */
+/*jslint unparam: true*/
 define([
-  'app'
+    'app'
 ], function (app) {
-  'use strict';
-  // additional config-blocks
-  // app.config([
-  //   function () {
-  //   }
-  // ]);
+    'use strict';
+    console.log("Note: unused empty block in config.js");
+    // additional config-blocks
+    // app.config([
+    //   function () {
+    //   }
+    // ]);
 });

@@ -6,7 +6,8 @@
     console.log('MapCtrl setup');
     define([
         'app',
-        'services/MapInstanceService'
+        'services/MapInstanceService',
+        'libs/MLConfig'
     ], function (app) {
 
         console.log("ready to create MapCtrl");
@@ -14,8 +15,11 @@
             '$scope',
             '$compile',
             'MapInstanceService',
-            function ($scope, $compile, MapInstanceService) {
-                var mapNumber = MapInstanceService.getMapNumber();
+            'MLConfig',
+            function ($scope, $compile, MapInstanceService, MLConfig) {
+                var mapNumber = MapInstanceService.getMapNumber(),
+                    configMapNumber = MLConfig.getMapId();
+                console.log("MLConfig id is " + configMapNumber);
                 $scope.mapheight = 450;
                 $scope.mapwidth = 380;
 

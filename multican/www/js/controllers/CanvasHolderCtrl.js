@@ -8,27 +8,27 @@
     require(['libs/MLConfig']);
     define([
         'app',
+        'libs/MLConfig',
         'services/CanvasService',
         'services/MapInstanceService',
         'controllers/MapCtrl',
-        'controllers/CarouselCtrl',
-        'libs/MLConfig'
-    ], function (app) {
+        'controllers/CarouselCtrl'
+    ], function (app, MLConfig) {
 
         console.log("ready to create CanvasHolderCtrl");
         app.controller('CanvasHolderCtrl', [
             '$scope',
             'CanvasService',
             'MapInstanceService',
-            'MLConfig',
-            function ($scope, CanvasService, MapInstanceService, MLConfig) {
+            // 'libs/MLConfig',
+            function ($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
                 var currIndex = MapInstanceService.getMapNumber(),
-                    mlConfig = new MLConfig.ctor();
+                    mlConfig = new MLConfig.MLConfig();
 
                 $scope.addCanvas = function () {
                     currIndex = MapInstanceService.getMapNumber();
-                    mlConfig.setId(currIndex);
+                    mlConfig.setMapId(currIndex);
 
                     var newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex),
                         mapDctv = document.createElement('mapdirective'),

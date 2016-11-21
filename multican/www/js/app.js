@@ -23,6 +23,7 @@ define([
     ]);
     console.log("ready to create MapDirective");
     require(['services/MapInstanceService']);
+    // require(['libs/MLConfig']);
     // return the app so you can require it in other components
     return app;
 });

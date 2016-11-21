@@ -2,6 +2,7 @@
 
 (function () {
     "use strict";
+    console.log("MultiCanvas setup");
 
     define([],
         function () {

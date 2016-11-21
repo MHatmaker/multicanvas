@@ -3,23 +3,28 @@
 (function () {
     "use strict";
 
+    console.log("MLConfig setup");
     define([],
         function () {
             console.log("entering MLConfig");
-            var mapId;
+            var mapId,
+                MLConfig = function () {
+                    console.log("empty MLConfig ctor");
+                };
+
+            MLConfig.prototype.setMapId = function (id) {
+                console.log("MLConfig setMapId to " + id)
+                mapId = id;
+                console.log("MapId is now " + mapId);
+            };
+            MLConfig.prototype.getMapId = function () {
+                return mapId;
+            };
 
             return {
-                MLConfig : {
-                    setMapId: function (id) {
-                        mapId = id;
-                    },
-                    getMapId: function () {
-                        return mapId;
-                    },
-                    ctor: function () {
-                        console.log("MLConfig ctor");
-                    }
-                }
+                MLConfig : MLConfig
             };
+
         });
+// }).call(this);
 }());

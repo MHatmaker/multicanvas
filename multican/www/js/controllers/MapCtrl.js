@@ -6,17 +6,16 @@
     console.log('MapCtrl setup');
     define([
         'app',
-        'services/MapInstanceService',
-        'libs/MLConfig'
-    ], function (app) {
+        'libs/MLConfig',
+        'services/MapInstanceService'
+    ], function (app, MLConfig) {
 
         console.log("ready to create MapCtrl");
         app.controller('MapCtrl', [
             '$scope',
             '$compile',
             'MapInstanceService',
-            'MLConfig',
-            function ($scope, $compile, MapInstanceService, MLConfig) {
+            function ($scope, $compile, MapInstanceService) {
                 var mapNumber = MapInstanceService.getMapNumber(),
                     configMapNumber = MLConfig.getMapId();
                 console.log("MLConfig id is " + configMapNumber);

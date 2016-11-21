@@ -5,7 +5,8 @@ define([
 
     console.log("ready to create MapIntanceService");
     var mapInstance = 0,
-        isFirstInstance = true;
+        isFirstInstance = true,
+        configInstances = {};
     app.service('MapInstanceService', [
         function() {
             console.log("service to return MapInstance");
@@ -25,6 +26,12 @@ define([
             }
             this.removeInstance = function () {
                 mapInstance--;
+            }
+            this.addConfigInstanceForMap = function (ndx, cfg) {
+                configInstances[ndx] = cfg;
+            }
+            this.getConfigInstanceForMap = function (ndx) {
+                return configInstances[ndx];
             }
         }
     ]);

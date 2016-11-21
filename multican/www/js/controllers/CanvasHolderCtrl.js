@@ -29,6 +29,7 @@
                 $scope.addCanvas = function () {
                     currIndex = MapInstanceService.getMapNumber();
                     mlConfig.setMapId(currIndex);
+                    MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
 
                     var newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex),
                         mapDctv = document.createElement('mapdirective'),

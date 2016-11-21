@@ -17,7 +17,8 @@
             'MapInstanceService',
             function ($scope, $compile, MapInstanceService) {
                 var mapNumber = MapInstanceService.getMapNumber(),
-                    configMapNumber = MLConfig.getMapId();
+                    mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
+                    configMapNumber = mapConfig.getMapId();
                 console.log("MLConfig id is " + configMapNumber);
                 $scope.mapheight = 450;
                 $scope.mapwidth = 380;

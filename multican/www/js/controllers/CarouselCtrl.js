@@ -9,11 +9,11 @@
 
     console.log('CarouselCtrl setup');
     define([
-        'app'
+        'app',
     ], function (app) {
         console.log("ready to create CarouselCtrl");
-        app.controller('CarouselCtrl', ['$scope',
-            function ($scope) {
+        app.controller('CarouselCtrl', ['$scope', 'MapInstanceService',
+            function ($scope, MapInstanceService) {
                 var
                     counter = 0,
                     items = [],
@@ -37,6 +37,7 @@
                     current = items[counter];
                     $scope.MapNo = counter;
                     current.classList.add('current');
+                    MapInstanceService.setCurrentSlide(counter);
                 }
 
                 $scope.$on('addslide', function (event, data) {

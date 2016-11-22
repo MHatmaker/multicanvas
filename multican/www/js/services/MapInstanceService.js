@@ -1,37 +1,52 @@
+/*global define, console*/
+
 define([
     'app'
-], function(app) {
+], function (app) {
     'use strict';
 
     console.log("ready to create MapIntanceService");
     var mapInstance = 0,
         isFirstInstance = true,
-        configInstances = {};
+        configInstances = {},
+        currentSlide = 0;
     app.service('MapInstanceService', [
-        function() {
+        function () {
             console.log("service to return MapInstance");
-            this.getMapNumber = function() {
+            this.getMapNumber = function () {
                 return mapInstance;
             };
             this.incrementMapNumber = function () {
-                mapInstance++;
-            }
+                mapInstance += 1;
+            };
             this.getNextMapNumber = function () {
-                if (isFirstInstance ) {
+                if (isFirstInstance) {
                     isFirstInstance = false;
-                    return 0;
-                } else {
-                    return mapInstance;
                 }
-            }
+                return mapInstance;
+            };
             this.removeInstance = function () {
-                mapInstance--;
-            }
+                mapInstance -= 1;
+            };
             this.addConfigInstanceForMap = function (ndx, cfg) {
-                configInstances[ndx] = cfg;
-            }
+                configInstances[ndx] = {
+                    config: cfg
+                };
+            };
+            this.addMapInstance = function (ndx, inst) {
+                configInstances[ndx].mapInstance = inst;
+            };
             this.getConfigInstanceForMap = function (ndx) {
-                return configInstances[ndx];
+                return configInstances[ndx].config;
+            };
+            this.setCurrentSlide = function (ndx) {
+                currentSlide = ndx;
+            };
+            this.getCurrentSlide = function () {
+                return currentSlide;
+            };
+            this.getMapInstance = function (ndx) {
+                return configInstances[ndx].mapInstance;
             }
         }
     ]);

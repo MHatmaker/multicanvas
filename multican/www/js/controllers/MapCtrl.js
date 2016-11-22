@@ -6,12 +6,11 @@
     console.log('MapCtrl setup');
     define([
         'app',
-        'libs/MLConfig',
-        'services/MapInstanceService'
+        'libs/MLConfig'
     ], function (app, MLConfig) {
 
         console.log("ready to create MapCtrl");
-        app.controller('MapCtrl', [
+        var mpctrl = app.controller('MapCtrl', [
             '$scope',
             '$compile',
             'MapInstanceService',
@@ -82,5 +81,7 @@
 
             }
         ]);
+
+        MapInstanceService.addMapInstance(mapNumber, mpctrl);
     });
 }());

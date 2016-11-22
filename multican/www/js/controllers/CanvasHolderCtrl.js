@@ -51,6 +51,12 @@
                     $scope.$broadcast('addslide', {
                         newMapLi: newCanvasItem
                     });
+                    $scope.centerOnMe = function () {
+                        console.log("centerOnMe");
+                        var currentMapNumber = MapInstanceService.getCurrentSlide(),
+                            currentMapInstance = MapInstanceService.getMapInstance(currentMapNumber);
+                        currentMapInstance.centerOnMe();
+                    };
                 };
 
                 $scope.removeCanvas = function (clickedItem) {

@@ -6,18 +6,20 @@
     console.log('MapCtrl setup');
     define([
         'app',
-        'libs/MLConfig'
-    ], function (app, MLConfig) {
+        'libs/MLConfig',
+        'libs/StartupGoogle'
+    ], function (app, MLConfig, StartupGoogle) {
 
         console.log("ready to create MapCtrl");
-        var mpctrl = app.controller('MapCtrl', [
+        app.controller('MapCtrl', [
             '$scope',
             '$compile',
             'MapInstanceService',
             function ($scope, $compile, MapInstanceService) {
                 var mapNumber = MapInstanceService.getMapNumber(),
                     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
-                    configMapNumber = mapConfig.getMapId();
+                    configMapNumber = mapConfig.getMapId(),
+                    mapStartup;
                 console.log("MLConfig id is " + configMapNumber);
                 $scope.mapheight = 450;
                 $scope.mapwidth = 380;
@@ -32,28 +34,9 @@
                             zoom: 16,
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         },
-                        map = new google.maps.Map(document.getElementById("map" + mapNumber),
-                            mapOptions),
-
-                        //Marker + infowindow + angularjs compiled ng-click
-                        contentString = "<div><a ng-click='clickTest()'>Click me from map " + mapNumber + "!</a></div>",
-                        compiled = $compile(contentString)($scope),
-
-                        infowindow = new google.maps.InfoWindow({
-                            content: compiled[0]
-                        }),
-
-                        marker = new google.maps.Marker({
-                            position: myLatlng,
-                            map: map,
-                            title: 'Uluru (Ayers Rock)'
-                        });
-
-                    google.maps.event.addListener(marker, 'click', function () {
-                        infowindow.open(map, marker);
-                    });
-
-                    $scope.map = map;
+                        mapStartup = new StartupGoogle();
+                        mapStartup.config(mapNumber, configMapNumber, mapOptions);
+                    $scope.map = mapStartup.getMap();
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber) {
@@ -82,6 +65,5 @@
             }
         ]);
 
-        MapInstanceService.addMapInstance(mapNumber, mpctrl);
     });
 }());

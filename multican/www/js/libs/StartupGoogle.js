@@ -13,15 +13,8 @@
         console.log('StartupGoogle define');
         var
             gMap = null,
-            mapHoster = null,
-            StartupGoogle = function () {
-                console.log("empty StartupGoogle ctor");
-                return {
-                    start: init,
-                    config : configure,
-                    getMap : getMap
-                }
-            };
+            StartupGoogle,
+            mapHoster = null;
 
         function getMap() {
             return gMap;
@@ -54,22 +47,31 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
 
-            gMap = new google.maps.Map(document.getElementById("map" + mapNumber),
-                            mapOptions),
+            gMap = new google.maps.Map(document.getElementById("map" + mapNumber), mapOptions);
             // gMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
             mapHoster = new MapHosterGoogle();
             mapHoster.start();
-            mapHoster.config(gMap, mapOptions, google, google.maps.places);
+            mapHoster.config(gMap, mapNumber, mapOptions, google, google.maps.places);
         }
 
-        function StartupGoogle() {
-            console.log('StartupGoogle unused block');
+        function getMapHoster() {
+            return mapHoster;
         }
 
         function init() {
             console.log('StartupGoogle init');
             return StartupGoogle;
         }
+
+        StartupGoogle = function () {
+            console.log("StartupGoogle ctor");
+            return {
+                start: init,
+                config : configure,
+                getMap : getMap,
+                getMapHoster : getMapHoster
+            }
+        };
 
         return StartupGoogle;
 

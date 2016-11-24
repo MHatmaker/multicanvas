@@ -33,27 +33,15 @@
                             center: myLatlng,
                             zoom: 16,
                             mapTypeId: google.maps.MapTypeId.ROADMAP
-                        },
-                        mapStartup = new StartupGoogle();
-                        mapStartup.config(mapNumber, configMapNumber, mapOptions);
+                        };
+                    mapStartup = new StartupGoogle();
+                    mapStartup.config(mapNumber, configMapNumber, mapOptions);
                     $scope.map = mapStartup.getMap();
+                    MapInstanceService.setMapHosterInstance(mapNumber, mapStartup.getMapHoster());
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber) {
                     initialize(mapNumber);
-                };
-
-                $scope.centerOnMe = function () {
-                    if (!$scope.map) {
-                        return;
-                    }
-
-                    navigator.geolocation.getCurrentPosition(function (pos) {
-                        $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-                        $scope.loading.hide();
-                    }, function (error) {
-                        alert('Unable to get location: ' + error.message);
-                    });
                 };
 
                 $scope.clickTest = function () {

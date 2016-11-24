@@ -37,7 +37,7 @@
                     current = items[counter];
                     $scope.MapNo = counter;
                     current.classList.add('current');
-                    MapInstanceService.setCurrentSlide(counter);
+                    MapInstanceService.setCurrentSlide(current.slideNumber);
                 }
 
                 $scope.$on('addslide', function (event, data) {
@@ -48,6 +48,7 @@
                     current = items[items.length - 1];
                     $scope.MapNo = items.length - 1;
                     current.classList.add('current');
+                    current.slideNumber = $scope.MapNo;
                     $scope.amount = items.length;
                 });
                 $scope.$on('removeslide', function () {

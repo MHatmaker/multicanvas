@@ -1,4 +1,4 @@
-/*global define, console, document, angular, setTimeout*/
+/*global define, console, document, angular, setTimeout, require*/
 // require(['services/MapInstanceService']);
 
 (function () {
@@ -49,12 +49,13 @@
                     });
 
                     $scope.$broadcast('addslide', {
-                        newMapLi: newCanvasItem
+                        newMapLi: newCanvasItem,
+                        slideNumber: currIndex
                     });
                     $scope.centerOnMe = function () {
                         console.log("centerOnMe");
                         var currentMapNumber = MapInstanceService.getCurrentSlide(),
-                            currentMapInstance = MapInstanceService.getMapInstance(currentMapNumber);
+                            currentMapInstance = MapInstanceService.getMapHosterInstance(currentMapNumber);
                         currentMapInstance.centerOnMe();
                     };
                 };

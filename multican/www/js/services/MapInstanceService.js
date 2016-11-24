@@ -47,7 +47,13 @@ define([
             };
             this.getMapInstance = function (ndx) {
                 return configInstances[ndx].mapInstance;
-            }
+            };
+            this.setMapHosterInstance = function (ndx, inst) {
+                configInstances[ndx].mapHosterInstance = inst;
+            };
+            this.getMapHosterInstance = function (ndx) {
+                return configInstances[ndx].mapHosterInstance;
+            };
         }
     ]);
 });

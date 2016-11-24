@@ -12,6 +12,7 @@
         var
             hostName = "MapHosterGoogle",
             mphmap,
+            mapNumber,
             google,
             gMap;
 
@@ -19,15 +20,26 @@
             return MapHosterGoogle;
         }
 
-        function configureMap(gMap, mapOptions, goooogle, googPlaces) {
+        function configureMap(gMap, mapno, mapOptions, goooogle, googPlaces) {
             mphmap = gMap;
+            mapNumber = mapno;
             google = goooogle;
         }
+        function centerOnMe() {
+            console.log("centerOnMe for map " + mapNumber);
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                mphmap.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+                //$scope.loading.hide();
+            }, function (error) {
+                alert('Unable to get location: ' + error.message);
+            });
+        };
 
         function MapHosterGoogle() {
             return {
                 start: init,
-                config: configureMap
+                config: configureMap,
+                centerOnMe : centerOnMe
             }
         };
         return MapHosterGoogle;

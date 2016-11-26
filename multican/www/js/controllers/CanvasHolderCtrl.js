@@ -25,12 +25,13 @@
                 console.log("CanvasHolderCtrl calling into CanvasService");
                 var currIndex = MapInstanceService.getMapNumber();
                 $scope.addCanvas = function () {
-                    var mlConfig = new MLConfig.MLConfig(),
+                    var ndx = MapInstanceService.getMapNumber(),
+                        mlConfig = new MLConfig.MLConfig(ndx),
                         newCanvasItem,
                         mapDctv,
                         parentDiv;
                     currIndex = MapInstanceService.getMapNumber();
-                    mlConfig.setMapId(currIndex);
+                    //mlConfig.setMapId(currIndex);
                     MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
 
                     newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);

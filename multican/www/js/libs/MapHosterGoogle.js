@@ -1,4 +1,4 @@
-/*global require, define, console, google*/
+/*global require, define, console, google, navigator, alert*/
 /*jslint unparam: true*/
 
 (function () {
@@ -13,23 +13,22 @@
             hostName = "MapHosterGoogle",
             mphmap,
             mapNumber,
-            google,
-            gMap;
+            google;
 
         function init() {
-            return MapHosterGoogle;
+            console.log("empty init method in MapHosterGoogle");
         }
 
         function getMapNumber() {
             return mapNumber;
         }
 
-        function configureMap(gMap, mapno, mapOptions, goooogle, googPlaces) {
-            mphmap = gMap;
-            mapNumber = mapno;
-            google = goooogle;
-            console.log("MapHosterGoogle setting mapNumber to " + mapNumber);
-        }
+        // function configureMap() {
+        //     mphmap = gMap;
+        //     mapNumber = mapno;
+        //     google = goooogle;
+        //     console.log("MapHosterGoogle setting mapNumber to " + mapNumber);
+        // }
         function centerOnMe() {
             console.log("centerOnMe for map " + mapNumber);
             navigator.geolocation.getCurrentPosition(function (pos) {
@@ -38,17 +37,21 @@
             }, function (error) {
                 alert('Unable to get location: ' + error.message);
             });
-        };
+        }
 
-        function MapHosterGoogle() {
+        function MapHosterGoogle(gMap, mapno, mapOptions, goooogle, googPlaces) {
+            mphmap = gMap;
+            mapNumber = mapno;
+            google = goooogle;
+            console.log("MapHosterGoogle ctor setting mapNumber to " + mapNumber);
             return {
                 start: init,
-                config: configureMap,
+                // config: configureMap,
                 centerOnMe: centerOnMe,
                 mapNumber: mapNumber,
                 getMapNumber: getMapNumber
-            }
-        };
+            };
+        }
         return MapHosterGoogle;
 
     });

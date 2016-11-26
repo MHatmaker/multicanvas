@@ -13,7 +13,7 @@
                 };
 
             MLConfig.prototype.setMapId = function (id) {
-                console.log("MLConfig setMapId to " + id)
+                console.log("MLConfig setMapId to " + id);
                 mapId = id;
                 console.log("MapId is now " + mapId);
             };

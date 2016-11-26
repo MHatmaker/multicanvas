@@ -6,33 +6,39 @@ define([
     'use strict';
 
     console.log("ready to create MapInstanceService");
-    var currentSlideNumberCount = 0,
+    var slideCount = 0,
         isFirstInstance = true,
         configInstances = {},
         currentSlideNumber = 0;
     app.service('MapInstanceService', [
         function () {
-            console.log("service to return currentSlideNumberCount");
+            console.log("service to return slideCount");
             this.getMapNumber = function () {
-                return currentSlideNumberCount;
+                return slideCount;
             };
             this.incrementMapNumber = function () {
-                currentSlideNumberCount += 1;
+                slideCount += 1;
             };
             this.getNextMapNumber = function () {
                 if (isFirstInstance) {
                     isFirstInstance = false;
                 }
-                return currentSlideNumberCount;
+                return slideCount;
             };
             this.removeInstance = function () {
-                currentSlideNumberCount -= 1;
+                slideCount -= 1;
             };
             this.addConfigInstanceForMap = function (ndx, cfg) {
                 configInstances[ndx] = {
                     config: cfg,
                     currentSlideNumber: ndx,
-                    mapHosterInstance: null
+                    mapHosterInstance: null,
+                    setMapHosterInstance: function (inst) {
+                        this.mapHosterInstance = inst;
+                    },
+                    getMapHosterInstance : function () {
+                        return this.mapHosterInstance;
+                    }
                 };
             };
             this.getConfigInstanceForMap = function (ndx) {
@@ -48,10 +54,10 @@ define([
                 return configInstances[ndx].currentSlideNumber;
             };
             this.setMapHosterInstance = function (ndx, inst) {
-                configInstances[ndx].mapHosterInstance = inst;
+                configInstances[ndx].setMapHosterInstance(inst);
             };
             this.getMapHosterInstance = function (ndx) {
-                return configInstances[ndx].mapHosterInstance;
+                return configInstances[ndx].getMapHosterInstance();
             };
         }
     ]);

@@ -15,7 +15,6 @@
             gMap = null,
             StartupGoogle,
             mapHosters = [],
-            mapHoster = null,
             mapNumber;
 
         function getMap() {
@@ -28,6 +27,7 @@
 
         function configure(newMapId, mapOpts) {
             var $inj,
+                mapHoster = null,
                 evtSvc,
                 centerLatLng,
                 initZoom,
@@ -56,17 +56,18 @@
 
             gMap = new google.maps.Map(document.getElementById("map" + mapNumber), mapOptions);
             // gMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-            mapHoster = new MapHosterGoogle();
+            console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + mapNumber);
+            mapHoster = new MapHosterGoogle(gMap, mapNumber, mapOptions, google, google.maps.places);
             mapHosters.push(mapHoster);
-            mapHoster.start();
-            console.log('StartupGoogle ready to configure Map Hoster with map no. ' + mapNumber);
-            mapHoster.config(gMap, mapNumber, mapOptions, google, google.maps.places);
-        }
-
-        function getMapHoster() {
-            console.log('StartupGoogle return mapHoster with map no. ' + mapHoster.getMapNumber());
+            // mapHoster.start();
+            // mapHoster.config();
             return mapHoster;
         }
+
+        // function getMapHoster() {
+        //     console.log('StartupGoogle return mapHoster with map no. ' + mapHoster.getMapNumber());
+        //     return mapHoster;
+        // }
 
         function init() {
             console.log('StartupGoogle init');
@@ -81,10 +82,10 @@
                 start: init,
                 config : configure,
                 getMap : getMap,
-                getMapHoster : getMapHoster,
+                // getMapHoster : getMapHoster,
                 mapNumber : mapNumber,
                 getMapNumber : getMapNumber
-            }
+            };
         };
 
         return StartupGoogle;

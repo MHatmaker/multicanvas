@@ -34,18 +34,18 @@
                     console.log("to counter " + counter);
                     // set new current element
                     // and add CSS class
-                    current = items[counter];
+                    current = items[counter].newMapLi;
                     $scope.MapNo = counter;
                     current.classList.add('current');
-                    MapInstanceService.setCurrentSlide(current.slideNumber);
+                    MapInstanceService.setCurrentSlide(items[counter].slideNumber);
                 }
 
                 $scope.$on('addslide', function (event, data) {
                     if (items.length > 0) {
                         current.classList.remove('current');
                     }
-                    items.push(data.newMapLi);
-                    current = items[items.length - 1];
+                    items.push(data);
+                    current = items[items.length - 1].newMapLi;
                     $scope.MapNo = items.length - 1;
                     current.classList.add('current');
                     current.slideNumber = $scope.MapNo;

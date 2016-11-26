@@ -5,48 +5,47 @@ define([
 ], function (app) {
     'use strict';
 
-    console.log("ready to create MapIntanceService");
-    var mapInstance = 0,
+    console.log("ready to create MapInstanceService");
+    var currentSlideNumberCount = 0,
         isFirstInstance = true,
         configInstances = {},
-        currentSlide = 0;
+        currentSlideNumber = 0;
     app.service('MapInstanceService', [
         function () {
-            console.log("service to return MapInstance");
+            console.log("service to return currentSlideNumberCount");
             this.getMapNumber = function () {
-                return mapInstance;
+                return currentSlideNumberCount;
             };
             this.incrementMapNumber = function () {
-                mapInstance += 1;
+                currentSlideNumberCount += 1;
             };
             this.getNextMapNumber = function () {
                 if (isFirstInstance) {
                     isFirstInstance = false;
                 }
-                return mapInstance;
+                return currentSlideNumberCount;
             };
             this.removeInstance = function () {
-                mapInstance -= 1;
+                currentSlideNumberCount -= 1;
             };
             this.addConfigInstanceForMap = function (ndx, cfg) {
                 configInstances[ndx] = {
-                    config: cfg
+                    config: cfg,
+                    currentSlideNumber: ndx,
+                    mapHosterInstance: null
                 };
-            };
-            this.addMapInstance = function (ndx, inst) {
-                configInstances[ndx].mapInstance = inst;
             };
             this.getConfigInstanceForMap = function (ndx) {
                 return configInstances[ndx].config;
             };
             this.setCurrentSlide = function (ndx) {
-                currentSlide = ndx;
+                currentSlideNumber = ndx;
             };
             this.getCurrentSlide = function () {
-                return currentSlide;
+                return currentSlideNumber;
             };
-            this.getMapInstance = function (ndx) {
-                return configInstances[ndx].mapInstance;
+            this.getConfigCurrentSlideNumber = function (ndx) {
+                return configInstances[ndx].currentSlideNumber;
             };
             this.setMapHosterInstance = function (ndx, inst) {
                 configInstances[ndx].mapHosterInstance = inst;

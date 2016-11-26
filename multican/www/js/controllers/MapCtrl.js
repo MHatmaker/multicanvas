@@ -19,12 +19,16 @@
                 var mapNumber = MapInstanceService.getMapNumber(),
                     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                     configMapNumber = mapConfig.getMapId(),
-                    mapStartup;
-                console.log("MLConfig id is " + configMapNumber);
+                    mapStartups = [],
+                    mapStartup,
+                    mapNumber;
+                console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
                 $scope.mapheight = 450;
                 $scope.mapwidth = 380;
 
                 function initialize(mapNo) {
+                    var mapHoster;
+
                     mapNumber = mapNo;
                     console.log("initialize MapCtrl with map id " + mapNo);
                     var myLatlng = new google.maps.LatLng(43.07493, -89.381388),
@@ -34,10 +38,15 @@
                             zoom: 16,
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         };
-                    mapStartup = new StartupGoogle();
-                    mapStartup.config(mapNumber, configMapNumber, mapOptions);
+                    mapStartup = new StartupGoogle(mapNumber);
+                    mapStartups.push(mapStartup);
+                    mapStartup.config(configMapNumber, mapOptions);
+                    console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.mapNumber);
+                    console.log("Try accessor " + mapStartup.getMapNumber());
                     $scope.map = mapStartup.getMap();
-                    MapInstanceService.setMapHosterInstance(mapNumber, mapStartup.getMapHoster());
+                    mapHoster = mapStartup.getMapHoster();
+                    console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
+                    MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber) {

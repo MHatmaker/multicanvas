@@ -23,17 +23,19 @@
             // 'libs/MLConfig',
             function ($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
-                var currIndex = MapInstanceService.getMapNumber(),
-                    mlConfig = new MLConfig.MLConfig();
-
+                var currIndex = MapInstanceService.getMapNumber();
                 $scope.addCanvas = function () {
+                    var mlConfig = new MLConfig.MLConfig(),
+                        newCanvasItem,
+                        mapDctv,
+                        parentDiv;
                     currIndex = MapInstanceService.getMapNumber();
                     mlConfig.setMapId(currIndex);
                     MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
 
-                    var newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex),
-                        mapDctv = document.createElement('mapdirective'),
-                        parentDiv = newCanvasItem;
+                    newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
+                    mapDctv = document.createElement('mapdirective');
+                    parentDiv = newCanvasItem;
                     CanvasService.loadCanvasSlideListItem(newCanvasItem, currIndex);
 
                     parentDiv.appendChild(mapDctv);
@@ -43,6 +45,7 @@
                         console.log("compiled mapDctv with map id " + currIndex);
                         console.debug(scope);
                         setTimeout(function () {
+                            console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
                             scope.startMap(currIndex);
                             MapInstanceService.incrementMapNumber();
                         });
@@ -56,6 +59,8 @@
                         console.log("centerOnMe");
                         var currentMapNumber = MapInstanceService.getCurrentSlide(),
                             currentMapInstance = MapInstanceService.getMapHosterInstance(currentMapNumber);
+                        console.log("getCurrentSlide() returned " + currentMapNumber);
+                        console.log("CanvasHolderCtrl.centerOnMe for map " + currentMapInstance.getMapNumber());
                         currentMapInstance.centerOnMe();
                     };
                 };

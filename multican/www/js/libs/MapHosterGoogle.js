@@ -20,10 +20,15 @@
             return MapHosterGoogle;
         }
 
+        function getMapNumber() {
+            return mapNumber;
+        }
+
         function configureMap(gMap, mapno, mapOptions, goooogle, googPlaces) {
             mphmap = gMap;
             mapNumber = mapno;
             google = goooogle;
+            console.log("MapHosterGoogle setting mapNumber to " + mapNumber);
         }
         function centerOnMe() {
             console.log("centerOnMe for map " + mapNumber);
@@ -39,7 +44,9 @@
             return {
                 start: init,
                 config: configureMap,
-                centerOnMe : centerOnMe
+                centerOnMe: centerOnMe,
+                mapNumber: mapNumber,
+                getMapNumber: getMapNumber
             }
         };
         return MapHosterGoogle;

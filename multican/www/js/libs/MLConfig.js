@@ -8,8 +8,11 @@
         function () {
             console.log("entering MLConfig");
             var mapId,
-                MLConfig = function () {
-                    console.log("empty MLConfig ctor");
+                mapHosterInstance,
+                MLConfig = function (ndx) {
+                    console.log("MLConfig ctor");
+                    mapId = ndx;
+                    console.log("mapId is set to " + mapId);
                 };
 
             MLConfig.prototype.setMapId = function (id) {
@@ -19,6 +22,14 @@
             };
             MLConfig.prototype.getMapId = function () {
                 return mapId;
+            };
+            MLConfig.prototype.setMapHosterInstance = function (inst) {
+                mapHosterInstance = inst;
+                console.log("MLConfig.mapHosterInstance is set to " + mapHosterInstance);
+            };
+            MLConfig.prototype.getMapHosterInstance = function () {
+                console.log("MLConfig.mapHosterInstance is returning " + mapHosterInstance);
+                return mapHosterInstance;
             };
 
             return {

@@ -29,20 +29,21 @@ define([
                 slideCount -= 1;
             };
             this.addConfigInstanceForMap = function (ndx, cfg) {
-                configInstances[ndx] = {
-                    config: cfg,
-                    currentSlideNumber: ndx,
-                    mapHosterInstance: null,
-                    setMapHosterInstance: function (inst) {
-                        this.mapHosterInstance = inst;
-                    },
-                    getMapHosterInstance : function () {
-                        return this.mapHosterInstance;
-                    }
-                };
+                configInstances[ndx] = cfg;
+                // {
+                //     config: cfg,
+                //     currentSlideNumber: ndx,
+                //     mapHosterInstance: null,
+                //     setMapHosterInstance: function (inst) {
+                //         this.mapHosterInstance = inst;
+                //     },
+                //     getMapHosterInstance : function () {
+                //         return this.mapHosterInstance;
+                //     }
+                // };
             };
             this.getConfigInstanceForMap = function (ndx) {
-                return configInstances[ndx].config;
+                return configInstances[ndx];
             };
             this.setCurrentSlide = function (ndx) {
                 currentSlideNumber = ndx;

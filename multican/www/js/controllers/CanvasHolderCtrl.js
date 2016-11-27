@@ -59,6 +59,7 @@
                     $scope.centerOnMe = function () {
                         console.log("centerOnMe");
                         var currentMapNumber = MapInstanceService.getCurrentSlide(),
+                            // currentMapInstance = MapInstanceService.getConfigInstanceForMap(currentMapNumber).getMapHosterInstance();
                             currentMapInstance = MapInstanceService.getMapHosterInstance(currentMapNumber);
                         console.log("getCurrentSlide() returned " + currentMapNumber);
                         console.log("CanvasHolderCtrl.centerOnMe for map " + currentMapInstance.getMapNumber());

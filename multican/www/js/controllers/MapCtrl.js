@@ -16,8 +16,8 @@
             function ($scope, MapInstanceService) {
                 var mapNumber = MapInstanceService.getMapNumber(),
                     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
-                    configMapNumber = mapConfig.getMapId(),
-                    mapStartups = [];
+                    configMapNumber = mapConfig.getMapId();
+                    // mapStartups = [];
                 console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
                 $scope.mapheight = 450;
                 $scope.mapwidth = 380;
@@ -38,11 +38,11 @@
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     };
                     mapStartup = new StartupGoogle(mapNumber);
-                    mapStartups.push(mapStartup);
+                    // mapStartups.push(mapStartup);
                     mapHoster = mapStartup.config(configMapNumber, mapOptions);
                     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.mapNumber);
                     console.log("Try accessor " + mapStartup.getMapNumber());
-                    $scope.map = mapStartup.getMap();
+                    // $scope.map = mapStartup.getMap();
                     // mapHoster = mapStartup.getMapHoster();
                     console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
                     MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);

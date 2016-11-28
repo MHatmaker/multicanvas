@@ -8,12 +8,13 @@ define([
     console.log("ready to create MapInstanceService");
     var slideCount = 0,
         isFirstInstance = true,
-        configInstances = {},
+        // configInstances = {},
         currentSlideNumber = 0;
     app.service('MapInstanceService', [
         function () {
+            var configInstances = {};
             console.log("service to return slideCount");
-            this.getMapNumber = function () {
+            this.getSlideCount = function () {
                 return slideCount;
             };
             this.incrementMapNumber = function () {
@@ -29,7 +30,7 @@ define([
                 slideCount -= 1;
             };
             this.addConfigInstanceForMap = function (ndx, cfg) {
-                configInstances[ndx] = cfg;
+                configInstances["" + ndx] = cfg;
                 // {
                 //     config: cfg,
                 //     currentSlideNumber: ndx,
@@ -43,7 +44,7 @@ define([
                 // };
             };
             this.getConfigInstanceForMap = function (ndx) {
-                return configInstances[ndx];
+                return configInstances["" + ndx];
             };
             this.setCurrentSlide = function (ndx) {
                 currentSlideNumber = ndx;
@@ -52,13 +53,13 @@ define([
                 return currentSlideNumber;
             };
             this.getConfigCurrentSlideNumber = function (ndx) {
-                return configInstances[ndx].currentSlideNumber;
+                return configInstances["" + ndx].currentSlideNumber;
             };
             this.setMapHosterInstance = function (ndx, inst) {
-                configInstances[ndx].setMapHosterInstance(inst);
+                configInstances["" + ndx].setMapHosterInstance(inst);
             };
             this.getMapHosterInstance = function (ndx) {
-                return configInstances[ndx].getMapHosterInstance();
+                return configInstances["" + ndx].getMapHosterInstance();
             };
         }
     ]);

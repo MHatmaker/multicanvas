@@ -13,19 +13,26 @@
         console.log('StartupGoogle define');
         var
             gMap = null,
-            StartupGoogle,
             mapHosters = [],
-            mapNumber;
+            mapNumber,
+            StartupGoogle = function (mapNo) {
+                console.log("StartupGoogle ctor");
+                mapNumber = mapNo;
+                console.log("Setting mapNumber to " + mapNumber);
+            };
 
-        function getMap() {
+        StartupGoogle.prototype.getMap = function () {
             return gMap;
-        }
+        };
 
-        function getMapNumber() {
+        StartupGoogle.prototype.getMapNumber = function () {
             return mapNumber;
-        }
+        };
+        StartupGoogle.prototype.getMapHosterInstance = function (ndx) {
+            return mapHosters[ndx];
+        };
 
-        function configure(newMapId, mapOpts) {
+        StartupGoogle.prototype.configure = function (newMapId, mapOpts) {
             var $inj,
                 mapHoster = null,
                 evtSvc,
@@ -57,38 +64,25 @@
             gMap = new google.maps.Map(document.getElementById("map" + mapNumber), mapOptions);
             // gMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
             console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + mapNumber);
-            mapHoster = new MapHosterGoogle(gMap, mapNumber, mapOptions, google, google.maps.places);
+            mapHoster = new MapHosterGoogle.MapHosterGoogle(gMap, mapNumber, mapOptions, google, google.maps.places);
             mapHosters.push(mapHoster);
             // mapHoster.start();
             // mapHoster.config();
-            return mapHoster;
-        }
+            // return mapHoster;
+        };
 
         // function getMapHoster() {
         //     console.log('StartupGoogle return mapHoster with map no. ' + mapHoster.getMapNumber());
         //     return mapHoster;
         // }
 
-        function init() {
+        StartupGoogle.prototype.init = function () {
             console.log('StartupGoogle init');
             return StartupGoogle;
-        }
-
-        StartupGoogle = function (mapNo) {
-            console.log("StartupGoogle ctor");
-            mapNumber = mapNo;
-            console.log("Setting mapNumber to " + mapNumber);
-            return {
-                start: init,
-                config : configure,
-                getMap : getMap,
-                // getMapHoster : getMapHoster,
-                mapNumber : mapNumber,
-                getMapNumber : getMapNumber
-            };
         };
 
-        return StartupGoogle;
-
+        return {
+            StartupGoogle: StartupGoogle
+        };
     });
 }());

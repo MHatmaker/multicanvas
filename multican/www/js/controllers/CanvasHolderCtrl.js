@@ -23,16 +23,16 @@
             // 'libs/MLConfig',
             function ($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
-                var currIndex = MapInstanceService.getMapNumber();
+                // var currIndex = MapInstanceService.getSlideCount();
                 $scope.addCanvas = function () {
-                    var ndx = MapInstanceService.getMapNumber(),
-                        mlConfig = new MLConfig.MLConfig(ndx),
+                    var currIndex = MapInstanceService.getSlideCount(),
+                        // mlConfig = new MLConfig.MLConfig(currIndex),
                         newCanvasItem,
                         mapDctv,
                         parentDiv;
-                    currIndex = MapInstanceService.getMapNumber();
+                    // currIndex = MapInstanceService.getSlideCount();
                     //mlConfig.setMapId(currIndex);
-                    MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
+                    // MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
 
                     newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
                     mapDctv = document.createElement('mapdirective');
@@ -46,18 +46,33 @@
                         console.log("compiled mapDctv with map id " + currIndex);
                         console.debug(scope);
                         setTimeout(function () {
+                            var currIndex = MapInstanceService.getSlideCount(),
+                                mlConfig = new MLConfig.MLConfig(currIndex);
+                            MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
                             console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
                             scope.startMap(currIndex);
+                            //mlConfig.setMapHosterInstance(MapInstanceService.getMapHosterInstance(currIndex));
+                            testMapNumbers();
                             MapInstanceService.incrementMapNumber();
-                        });
+                        }, 10);
                     });
 
                     $scope.$broadcast('addslide', {
                         newMapLi: newCanvasItem,
                         slideNumber: currIndex
                     });
+                    function testMapNumbers() {
+                        var i,
+                            currentMapInstance;
+                        for(i= 0; i < MapInstanceService.getSlideCount(); i++) {
+                            console.log("testMapNumbers for " + i);
+                            currentMapInstance = MapInstanceService.getMapHosterInstance(i);
+                            console.log("map number is " + currentMapInstance.getMapNumber());
+                        }
+                    }
                     $scope.centerOnMe = function () {
                         console.log("centerOnMe");
+                        testMapNumbers();
                         var currentMapNumber = MapInstanceService.getCurrentSlide(),
                             // currentMapInstance = MapInstanceService.getConfigInstanceForMap(currentMapNumber).getMapHosterInstance();
                             currentMapInstance = MapInstanceService.getMapHosterInstance(currentMapNumber);

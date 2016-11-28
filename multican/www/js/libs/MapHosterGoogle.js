@@ -13,15 +13,20 @@
             hostName = "MapHosterGoogle",
             mphmap,
             mapNumber,
-            google;
+            google,
+            MapHosterGoogle = function (gMap, mapno, mapOptions, goooogle, googPlaces) {
+                mphmap = gMap;
+                mapNumber = mapno;
+                google = goooogle;
+            };
 
-        function init() {
+        MapHosterGoogle.prototype.init = function () {
             console.log("empty init method in MapHosterGoogle");
-        }
+        };
 
-        function getMapNumber() {
+        MapHosterGoogle.prototype.getMapNumber = function () {
             return mapNumber;
-        }
+        };
 
         // function configureMap() {
         //     mphmap = gMap;
@@ -29,7 +34,7 @@
         //     google = goooogle;
         //     console.log("MapHosterGoogle setting mapNumber to " + mapNumber);
         // }
-        function centerOnMe() {
+        MapHosterGoogle.prototype.centerOnMe = function () {
             console.log("centerOnMe for map " + mapNumber);
             navigator.geolocation.getCurrentPosition(function (pos) {
                 mphmap.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
@@ -37,22 +42,11 @@
             }, function (error) {
                 alert('Unable to get location: ' + error.message);
             });
-        }
+        };
 
-        function MapHosterGoogle(gMap, mapno, mapOptions, goooogle, googPlaces) {
-            mphmap = gMap;
-            mapNumber = mapno;
-            google = goooogle;
-            console.log("MapHosterGoogle ctor setting mapNumber to " + mapNumber);
-            return {
-                start: init,
-                // config: configureMap,
-                centerOnMe: centerOnMe,
-                mapNumber: mapNumber,
-                getMapNumber: getMapNumber
-            };
-        }
-        return MapHosterGoogle;
+        return {
+            MapHosterGoogle: MapHosterGoogle
+        };
 
     });
 

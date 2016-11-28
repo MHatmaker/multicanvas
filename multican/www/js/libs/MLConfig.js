@@ -25,10 +25,12 @@
             };
             MLConfig.prototype.setMapHosterInstance = function (inst) {
                 mapHosterInstance = inst;
-                console.log("MLConfig.mapHosterInstance is set to " + mapHosterInstance);
+                console.log("MLConfig.mapHosterInstance is set to " + mapHosterInstance.getMapNumber());
+                console.debug(mapHosterInstance);
             };
             MLConfig.prototype.getMapHosterInstance = function () {
-                console.log("MLConfig.mapHosterInstance is returning " + mapHosterInstance);
+                console.log("MLConfig.mapHosterInstance is returning instance " + mapId);
+                console.debug(mapHosterInstance);
                 return mapHosterInstance;
             };
 

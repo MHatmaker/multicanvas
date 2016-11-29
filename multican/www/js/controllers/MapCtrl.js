@@ -14,6 +14,7 @@
             '$scope',
             'MapInstanceService',
             function ($scope, MapInstanceService) {
+                var outerMapNumber = MapInstanceService.getSlideCount();
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 //     configMapNumber = mapConfig.getMapId();
@@ -26,14 +27,12 @@
                 function initialize(mapNo) {
                     var mapStartup,
                         mapHoster,
-                        mapHosterDup = null,
                         myLatlng,
                         mapOptions = null,
                         mapNumber = mapNo,
                         mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                         configMapNumber = mapConfig.getMapId();
 
-                    // mapNumber = mapNo;
                     console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
                     console.log("initialize MapCtrl with map id " + mapNo);
                     myLatlng = new google.maps.LatLng(43.07493, -89.381388);
@@ -50,10 +49,8 @@
                     $scope.mapHosterInstance = mapHoster;
                     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.mapNumber);
                     console.log("Try accessor " + mapStartup.getMapNumber());
-                    // $scope.map = mapStartup.getMap();
-                    // mapHoster = mapStartup.getMapHoster();
                     console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
-                    MapInstanceService.setMapHosterInstance(mapNumber, mapHoster); // angular.copy(mapHoster));
+                    MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber) {
@@ -61,7 +58,7 @@
                 };
 
                 $scope.clickTest = function () {
-                    alert('infowindow with ng-click on map ' + mapNumber);
+                    alert('infowindow with ng-click on map ' + outerMapNumber);
                 };
                 // initialize();
 

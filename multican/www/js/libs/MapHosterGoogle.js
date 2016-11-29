@@ -26,12 +26,6 @@
             return this.mapNumber;
         };
 
-        // function configureMap() {
-        //     mphmap = gMap;
-        //     mapNumber = mapno;
-        //     google = goooogle;
-        //     console.log("MapHosterGoogle setting mapNumber to " + mapNumber);
-        // }
         MapHosterGoogle.prototype.centerOnMe = function () {
             var self = this;
             console.log("centerOnMe for map " + this.mapNumber);

@@ -23,16 +23,12 @@
             // 'libs/MLConfig',
             function ($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
-                // var currIndex = MapInstanceService.getSlideCount();
                 $scope.addCanvas = function () {
                     var currIndex = MapInstanceService.getSlideCount(),
                         // mlConfig = new MLConfig.MLConfig(currIndex),
                         newCanvasItem,
                         mapDctv,
                         parentDiv;
-                    // currIndex = MapInstanceService.getSlideCount();
-                    //mlConfig.setMapId(currIndex);
-                    // MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
 
                     newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
                     mapDctv = document.createElement('mapdirective');
@@ -51,8 +47,6 @@
                             MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                             console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
                             scope.startMap(currIndex);
-                            //mlConfig.setMapHosterInstance(MapInstanceService.getMapHosterInstance(currIndex));
-                            testMapNumbers();
                             MapInstanceService.incrementMapNumber();
                         }, 10);
                     });
@@ -61,20 +55,9 @@
                         newMapLi: newCanvasItem,
                         slideNumber: currIndex
                     });
-                    function testMapNumbers() {
-                        var i,
-                            currentMapInstance;
-                        for(i= 0; i < MapInstanceService.getSlideCount(); i++) {
-                            console.log("testMapNumbers for " + i);
-                            currentMapInstance = MapInstanceService.getMapHosterInstance(i);
-                            console.log("map number is " + currentMapInstance.getMapNumber());
-                        }
-                    }
                     $scope.centerOnMe = function () {
                         console.log("centerOnMe");
-                        testMapNumbers();
                         var currentMapNumber = MapInstanceService.getCurrentSlide(),
-                            // currentMapInstance = MapInstanceService.getConfigInstanceForMap(currentMapNumber).getMapHosterInstance();
                             currentMapInstance = MapInstanceService.getMapHosterInstance(currentMapNumber);
                         console.log("getCurrentSlide() returned " + currentMapNumber);
                         console.log("CanvasHolderCtrl.centerOnMe for map " + currentMapInstance.getMapNumber());

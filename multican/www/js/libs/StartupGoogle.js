@@ -3,7 +3,6 @@
 
 (function () {
     "use strict";
-    // require(['libs/MapHosterGoogle', 'libs/MLConfig']);
 
     console.log('StartupGoogle setup');
     define([
@@ -60,12 +59,9 @@
             };
 
             this.gMap = new google.maps.Map(document.getElementById("map" + this.mapNumber), mapOptions);
-            // gMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
             console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + this.mapNumber);
             this.mapHoster = new MapHosterGoogle.MapHosterGoogle(this.gMap, this.mapNumber, mapOptions, google, google.maps.places);
-            // mapHoster.start();
-            // mapHoster.config();
-            // return mapHoster;
+            // return this.mapHoster;
         };
 
         // function getMapHoster() {

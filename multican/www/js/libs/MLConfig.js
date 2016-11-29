@@ -7,31 +7,31 @@
     define([],
         function () {
             console.log("entering MLConfig");
-            var mapId,
-                mapHosterInstance,
+            var
                 MLConfig = function (ndx) {
                     console.log("MLConfig ctor");
-                    mapId = ndx;
-                    console.log("mapId is set to " + mapId);
+                    this.mapId = ndx;
+                    this.mapHosterInstance = null;
+                    console.log("mapId is set to " + this.mapId);
                 };
 
             MLConfig.prototype.setMapId = function (id) {
                 console.log("MLConfig setMapId to " + id);
-                mapId = id;
-                console.log("MapId is now " + mapId);
+                this.mapId = id;
+                console.log("MapId is now " + this.mapId);
             };
             MLConfig.prototype.getMapId = function () {
-                return mapId;
+                return this.mapId;
             };
             MLConfig.prototype.setMapHosterInstance = function (inst) {
-                mapHosterInstance = inst;
-                console.log("MLConfig.mapHosterInstance is set to " + mapHosterInstance.getMapNumber());
-                console.debug(mapHosterInstance);
+                this.mapHosterInstance = inst;
+                console.log("MLConfig.mapHosterInstance is set to " + this.mapHosterInstance.getMapNumber());
+                console.debug(this.mapHosterInstance);
             };
             MLConfig.prototype.getMapHosterInstance = function () {
-                console.log("MLConfig.mapHosterInstance is returning instance " + mapId);
-                console.debug(mapHosterInstance);
-                return mapHosterInstance;
+                console.log("MLConfig.mapHosterInstance is returning instance " + this.mapId);
+                console.debug(this.mapHosterInstance);
+                return this.mapHosterInstance;
             };
 
             return {

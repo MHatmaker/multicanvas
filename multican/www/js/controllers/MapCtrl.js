@@ -53,8 +53,7 @@
                     // $scope.map = mapStartup.getMap();
                     // mapHoster = mapStartup.getMapHoster();
                     console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
-                    mapHosterDup = angular.copy(mapHoster);
-                    MapInstanceService.setMapHosterInstance(mapNumber, mapHosterDup);
+                    MapInstanceService.setMapHosterInstance(mapNumber, mapHoster); // angular.copy(mapHoster));
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber) {

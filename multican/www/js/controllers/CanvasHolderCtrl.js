@@ -48,7 +48,7 @@
                         setTimeout(function () {
                             var currIndex = MapInstanceService.getSlideCount(),
                                 mlConfig = new MLConfig.MLConfig(currIndex);
-                            MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig);
+                            MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                             console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
                             scope.startMap(currIndex);
                             //mlConfig.setMapHosterInstance(MapInstanceService.getMapHosterInstance(currIndex));

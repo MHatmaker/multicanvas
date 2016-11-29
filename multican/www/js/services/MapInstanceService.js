@@ -30,7 +30,7 @@ define([
                 slideCount -= 1;
             };
             this.addConfigInstanceForMap = function (ndx, cfg) {
-                configInstances["" + ndx] = cfg;
+                configInstances["cfg" + ndx] = cfg;
                 // {
                 //     config: cfg,
                 //     currentSlideNumber: ndx,
@@ -44,7 +44,7 @@ define([
                 // };
             };
             this.getConfigInstanceForMap = function (ndx) {
-                return configInstances["" + ndx];
+                return configInstances["cfg" + ndx];
             };
             this.setCurrentSlide = function (ndx) {
                 currentSlideNumber = ndx;
@@ -53,13 +53,13 @@ define([
                 return currentSlideNumber;
             };
             this.getConfigCurrentSlideNumber = function (ndx) {
-                return configInstances["" + ndx].currentSlideNumber;
+                return configInstances["cfg" + ndx].currentSlideNumber;
             };
             this.setMapHosterInstance = function (ndx, inst) {
-                configInstances["" + ndx].setMapHosterInstance(inst);
+                configInstances["cfg" + ndx].setMapHosterInstance(inst);
             };
             this.getMapHosterInstance = function (ndx) {
-                return configInstances["" + ndx].getMapHosterInstance();
+                return configInstances["cfg" + ndx].getMapHosterInstance();
             };
         }
     ]);

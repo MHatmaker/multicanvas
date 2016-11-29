@@ -12,29 +12,27 @@
     ], function (MapHosterGoogle, MLConfig) {
         console.log('StartupGoogle define');
         var
-            gMap = null,
-            mapHosters = [],
-            mapNumber,
             StartupGoogle = function (mapNo) {
                 console.log("StartupGoogle ctor");
-                mapNumber = mapNo;
-                console.log("Setting mapNumber to " + mapNumber);
+                this.mapNumber = mapNo;
+                this.mapHoster = null;
+                this.gMap = null;
+                console.log("Setting mapNumber to " + this.mapNumber);
             };
 
         StartupGoogle.prototype.getMap = function () {
-            return gMap;
+            return this.gMap;
         };
 
         StartupGoogle.prototype.getMapNumber = function () {
-            return mapNumber;
+            return this.mapNumber;
         };
         StartupGoogle.prototype.getMapHosterInstance = function (ndx) {
-            return mapHosters[ndx];
+            return this.mapHoster;
         };
 
         StartupGoogle.prototype.configure = function (newMapId, mapOpts) {
             var $inj,
-                mapHoster = null,
                 evtSvc,
                 centerLatLng,
                 initZoom,
@@ -44,7 +42,7 @@
                 bnds,
                 zoomStr;
 
-            console.log("StartupGoogle configure with map no. " + mapNumber);
+            console.log("StartupGoogle configure with map no. " + this.mapNumber);
             // var centerLatLng = new google.maps.LatLng(41.8, -87.7);
             centerLatLng = new google.maps.LatLng(41.888996, -87.623294);
             initZoom = 15;
@@ -61,11 +59,10 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
 
-            gMap = new google.maps.Map(document.getElementById("map" + mapNumber), mapOptions);
+            this.gMap = new google.maps.Map(document.getElementById("map" + this.mapNumber), mapOptions);
             // gMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-            console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + mapNumber);
-            mapHoster = new MapHosterGoogle.MapHosterGoogle(gMap, mapNumber, mapOptions, google, google.maps.places);
-            mapHosters.push(mapHoster);
+            console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + this.mapNumber);
+            this.mapHoster = new MapHosterGoogle.MapHosterGoogle(this.gMap, this.mapNumber, mapOptions, google, google.maps.places);
             // mapHoster.start();
             // mapHoster.config();
             // return mapHoster;

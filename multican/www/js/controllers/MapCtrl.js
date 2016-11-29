@@ -12,8 +12,9 @@
         console.log("ready to create MapCtrl");
         app.controller('MapCtrl', [
             '$scope',
+            '$compile',
             'MapInstanceService',
-            function ($scope, MapInstanceService) {
+            function ($scope, $compile, MapInstanceService) {
                 var outerMapNumber = MapInstanceService.getSlideCount();
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
@@ -27,18 +28,21 @@
                 function initialize(mapNo) {
                     var mapStartup,
                         mapHoster,
-                        myLatlng,
+                        centerCoord,
                         mapOptions = null,
                         mapNumber = mapNo,
                         mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
-                        configMapNumber = mapConfig.getMapId();
+                        configMapNumber = mapConfig.getMapId(),
+                        popmapString = "click me for map " + configMapNumber,
+                        contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>",
+                        compiledMsg = $compile(contentString)($scope);
 
                     console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
                     console.log("initialize MapCtrl with map id " + mapNo);
-                    myLatlng = new google.maps.LatLng(43.07493, -89.381388);
+                    centerCoord = { lat: 43.07493, lng: -89.381388};
 
                     mapOptions = {
-                        center: myLatlng,
+                        center: centerCoord,
                         zoom: 16,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     };
@@ -51,6 +55,7 @@
                     console.log("Try accessor " + mapStartup.getMapNumber());
                     console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
                     MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
+                    mapHoster.addPopup(compiledMsg[0], centerCoord);
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber) {

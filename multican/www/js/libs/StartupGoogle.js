@@ -43,7 +43,7 @@
 
             console.log("StartupGoogle configure with map no. " + this.mapNumber);
             // var centerLatLng = new google.maps.LatLng(41.8, -87.7);
-            centerLatLng = new google.maps.LatLng(41.888996, -87.623294);
+            centerLatLng = new google.maps.LatLng(mapOpts.center.lat, mapOpts.center.lng);
             initZoom = 15;
 
             if (mapOpts) {

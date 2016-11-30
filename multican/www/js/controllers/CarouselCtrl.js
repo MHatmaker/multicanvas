@@ -17,46 +17,46 @@
                 var
                     counter = 0,
                     items = [],
-                    current = items[0];
+                    currentSlide = items[0];
                 $scope.mapcolheight = 480;
                 $scope.mapcolWidth = 380;
-                $scope.amount = items.length;
+                $scope.slidesCount = items.length;
                 $scope.ActNoAct = 'active';
                 // navigate through the carousel
                 function navigate(direction) {
-                    // hide the old current list item
-                    current.classList.remove('current');
+                    // hide the old currentSlide list item
+                    currentSlide.classList.remove('current');
 
                     console.log("change counter from " + counter);
                     // calculate the new position
-                    counter = (counter + direction) % $scope.amount;
-                    counter = counter < 0 ? $scope.amount - 1 : counter;
+                    counter = (counter + direction) % $scope.slidesCount;
+                    counter = counter < 0 ? $scope.slidesCount - 1 : counter;
                     console.log("to counter " + counter);
-                    // set new current element
+                    // set new currentSlide element
                     // and add CSS class
-                    current = items[counter].newMapLi;
+                    currentSlide = items[counter].mapListItem;
                     $scope.MapNo = counter;
-                    current.classList.add('current');
+                    currentSlide.classList.add('current');
                     MapInstanceService.setCurrentSlide(items[counter].slideNumber);
                 }
 
-                $scope.$on('addslide', function (event, data) {
+                $scope.$on('addslide', function (event, slideData) {
                     if (items.length > 0) {
-                        current.classList.remove('current');
+                        currentSlide.classList.remove('current');
                     }
-                    items.push(data);
-                    current = items[items.length - 1].newMapLi;
-                    $scope.MapNo = items.length - 1;
-                    current.classList.add('current');
-                    current.slideNumber = $scope.MapNo;
-                    $scope.amount = items.length;
+                    items.push(slideData);
+                    currentSlide = items[items.length - 1].mapListItem;
+                    counter = $scope.MapNo = items.length - 1;
+                    currentSlide.classList.add('current');
+                    currentSlide.slideNumber = $scope.MapNo;
+                    $scope.slidesCount = items.length;
                 });
                 $scope.$on('removeslide', function () {
-                    var currentSlide = counter;
-                    console.log("remove slide " + counter + " from items with length" + items.length);
-                    if (currentSlide > -1) {
-                        items.splice(currentSlide, 1);
-                        $scope.amount = items.length;
+                    var slideToRemove = counter;
+                    console.log("remove slide " + counter + " from items array with length" + items.length);
+                    if (slideToRemove > -1) {
+                        items.splice(slideToRemove, 1);
+                        $scope.slidesCount = items.length;
                         console.log("items length is now " + items.length);
                         navigate(0);
                     }

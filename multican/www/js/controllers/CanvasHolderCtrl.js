@@ -52,7 +52,7 @@
                     });
 
                     $scope.$broadcast('addslide', {
-                        newMapLi: newCanvasItem,
+                        mapListItem: newCanvasItem,
                         slideNumber: currIndex
                     });
                     $scope.centerOnMe = function () {

@@ -53,7 +53,8 @@
 
                     $scope.$broadcast('addslide', {
                         mapListItem: newCanvasItem,
-                        slideNumber: currIndex
+                        slideNumber: currIndex,
+                        mapName: "Map " + currIndex
                     });
                     $scope.centerOnMe = function () {
                         console.log("centerOnMe");

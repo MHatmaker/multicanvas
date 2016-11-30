@@ -36,7 +36,7 @@
                     // and add CSS class
                     currentSlide = items[counter].mapListItem;
                     $scope.MapNo = counter;
-                    currentSlide.classList.add('current');
+                    $scope.MapName = items[counter].mapName;                    currentSlide.classList.add('current');
                     MapInstanceService.setCurrentSlide(items[counter].slideNumber);
                 }
 
@@ -47,8 +47,8 @@
                     items.push(slideData);
                     currentSlide = items[items.length - 1].mapListItem;
                     counter = $scope.MapNo = items.length - 1;
+                    $scope.MapName = slideData.mapName;
                     currentSlide.classList.add('current');
-                    currentSlide.slideNumber = $scope.MapNo;
                     $scope.slidesCount = items.length;
                 });
                 $scope.$on('removeslide', function () {

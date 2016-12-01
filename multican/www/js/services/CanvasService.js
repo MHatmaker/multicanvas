@@ -1,10 +1,10 @@
 /*global require, define, console, document*/
 
-require(['services/MultiCanvas']);
+require(['libs/MultiCanvas']);
 
 define([
     'app',
-    'services/MultiCanvas'
+    'libs/MultiCanvas'
 ], function(app, MultiCanvas) {
     'use strict';
 

@@ -13,26 +13,33 @@
                     this.mapId = ndx;
                     this.mapHosterInstance = null;
                     console.log("mapId is set to " + this.mapId);
-                };
+                    var self = this,
 
-            MLConfig.prototype.setMapId = function (id) {
-                console.log("MLConfig setMapId to " + id);
-                this.mapId = id;
-                console.log("MapId is now " + this.mapId);
-            };
-            MLConfig.prototype.getMapId = function () {
-                return this.mapId;
-            };
-            MLConfig.prototype.setMapHosterInstance = function (inst) {
-                this.mapHosterInstance = inst;
-                console.log("MLConfig.mapHosterInstance is set to " + this.mapHosterInstance.getMapNumber());
-                console.debug(this.mapHosterInstance);
-            };
-            MLConfig.prototype.getMapHosterInstance = function () {
-                console.log("MLConfig.mapHosterInstance is returning instance " + this.mapId);
-                console.debug(this.mapHosterInstance);
-                return this.mapHosterInstance;
-            };
+                        setMapId = function (id) {
+                            console.log("MLConfig setMapId to " + id);
+                            self.mapId = id;
+                            console.log("MapId is now " + self.mapId);
+                        },
+                        getMapId = function () {
+                            return self.mapId;
+                        },
+                        setMapHosterInstance = function (inst) {
+                            self.mapHosterInstance = inst;
+                            console.log("MLConfig.mapHosterInstance is set to " + self.mapHosterInstance.getMapNumber());
+                            console.debug(self.mapHosterInstance);
+                        },
+                        getMapHosterInstance = function () {
+                            console.log("MLConfig.mapHosterInstance is returning instance " + self.mapId);
+                            console.debug(self.mapHosterInstance);
+                            return self.mapHosterInstance;
+                        };
+                    return {
+                        setMapId: setMapId,
+                        getMapId: getMapId,
+                        setMapHosterInstance: setMapHosterInstance,
+                        getMapHosterInstance: getMapHosterInstance
+                    };
+                };
 
             return {
                 MLConfig : MLConfig

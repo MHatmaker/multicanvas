@@ -10,7 +10,7 @@ define('angular', function () {
 
 define([
     'ionic',
-    'services/MultiCanvas',
+    'libs/MultiCanvas',
     'angularBootstrap'
 ], function () {
     'use strict';

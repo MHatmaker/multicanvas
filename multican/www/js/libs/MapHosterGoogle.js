@@ -11,54 +11,56 @@
 
         var
             // hostName = "MapHosterGoogle",
-            google,
+            // google,
             MapHosterGoogle = function (gMap, mapno, mapOptions, goooogle, googPlaces) {
                 this.mphmap = gMap;
                 this.mapNumber = mapno;
-                google = goooogle;
+                this.google = goooogle;
+                var self = this,
+                    init = function () {
+                        console.log("init method in MapHosterGoogle");
+                    },
+                    getMapNumber = function () {
+                        return self.mapNumber;
+                    },
+                    centerOnMe = function () {
+                        console.log("centerOnMe for map " + self.mapNumber);
+                        navigator.geolocation.getCurrentPosition(function (pos) {
+                            self.mphmap.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+                            //$scope.loading.hide();
+                        }, function (error) {
+                            alert('Unable to get location: ' + error.message);
+                        });
+                    },
+                    addPopup = function (msg, centerCoord) {
+                        var infowindow = new google.maps.InfoWindow({
+                            content: msg
+                        }),
+                            //  self = this,
+                            centerLatLng = new google.maps.LatLng(centerCoord.lat, centerCoord.lng),
+
+                            marker = new google.maps.Marker({
+                                position: centerLatLng,
+                                map: self.mphmap,
+                                title: 'Uluru (Ayers Rock)'
+                            });
+
+                        google.maps.event.addListener(marker, 'click', function () {
+                            infowindow.open(self.map, marker);
+                        });
+                    };
+
+                return {
+                    init: init,
+                    getMapNumber: getMapNumber,
+                    centerOnMe: centerOnMe,
+                    addPopup: addPopup
+                };
             };
-
-        MapHosterGoogle.prototype.init = function () {
-            console.log("init method in MapHosterGoogle");
-        };
-
-        MapHosterGoogle.prototype.getMapNumber = function () {
-            return this.mapNumber;
-        };
-
-        MapHosterGoogle.prototype.centerOnMe = function () {
-            var self = this;
-            console.log("centerOnMe for map " + this.mapNumber);
-            navigator.geolocation.getCurrentPosition(function (pos) {
-                self.mphmap.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-                //$scope.loading.hide();
-            }, function (error) {
-                alert('Unable to get location: ' + error.message);
-            });
-        };
-
-        MapHosterGoogle.prototype.addPopup = function (msg, centerCoord) {
-            var infowindow = new google.maps.InfoWindow({
-                content: msg
-            }),
-                self = this,
-                centerLatLng = new google.maps.LatLng(centerCoord.lat, centerCoord.lng),
-
-                marker = new google.maps.Marker({
-                    position: centerLatLng,
-                    map: self.mphmap,
-                    title: 'Uluru (Ayers Rock)'
-                });
-
-            google.maps.event.addListener(marker, 'click', function () {
-                infowindow.open(self.map, marker);
-            });
-        };
 
         return {
             MapHosterGoogle: MapHosterGoogle
         };
-
     });
 
 }());

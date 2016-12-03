@@ -33,11 +33,19 @@
                             console.debug(self.mapHosterInstance);
                             return self.mapHosterInstance;
                         };
+                        setInjector = function (inj) {
+                            self.nginj = inj;
+                        },
+                        getInjector = function () {
+                            return self.nginj;
+                        },
                     return {
                         setMapId: setMapId,
                         getMapId: getMapId,
                         setMapHosterInstance: setMapHosterInstance,
-                        getMapHosterInstance: getMapHosterInstance
+                        getMapHosterInstance: getMapHosterInstance,
+                        setInjector: setInjector,
+                        getInjector: getInjector
                     };
                 };
 

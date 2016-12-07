@@ -7,6 +7,14 @@
     define([],
         function () {
             console.log("entering MLConfig");
+
+            function getParameterByName(name) {
+                // console.log("get paramater " + name + " from " + details.search);
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(details.search);
+                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
             var
                 MLConfig = function (ndx) {
                     console.log("MLConfig ctor");
@@ -39,13 +47,21 @@
                         getInjector = function () {
                             return self.nginj;
                         },
+                        webmapId = function (newWindow) {
+                            return newWindow ? getParameterByName('id') : self.webmapId;
+                        },
+                        setWebmapId = function (id) {
+                            self.webmapId = id;
+                        },
                     return {
                         setMapId: setMapId,
                         getMapId: getMapId,
                         setMapHosterInstance: setMapHosterInstance,
                         getMapHosterInstance: getMapHosterInstance,
                         setInjector: setInjector,
-                        getInjector: getInjector
+                        getInjector: getInjector,
+                        webmapid: webmapid,
+                        setWebmapId: setWebmapId
                     };
                 };
 

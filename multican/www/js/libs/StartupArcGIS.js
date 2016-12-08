@@ -54,6 +54,7 @@
                 previousSelectedWebMapId = selectedWebMapId,
                 zoomWebMap = null,
                 pointWebMap = [null, null],
+                channel = null,
                 pusher,
                 pusherChannel,
 
@@ -84,7 +85,6 @@
                             var curmph = null,
                                 $inj,
                                 mapTypeSvc,
-                                channel,
                                 currentPusher,
                                 currentChannel;
 
@@ -153,11 +153,7 @@
                         initializePostProc = function (newMapId) {
                             var
                                 $inj,
-                                evtSvc,
                                 mapOptions = {},
-                                qlat,
-                                qlon,
-                                bnds,
                                 mapDeferred;
 
                             console.log("StartupArcGIS configure with map no. " + self.mapNumber);

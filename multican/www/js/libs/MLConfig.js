@@ -12,7 +12,7 @@
                 // console.log("get paramater " + name + " from " + details.search);
                 name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
                 var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                    results = regex.exec(details.search);
+                    results = regex.exec(this.search);
                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             }
             var
@@ -40,7 +40,7 @@
                             console.log("MLConfig.mapHosterInstance is returning instance " + self.mapId);
                             console.debug(self.mapHosterInstance);
                             return self.mapHosterInstance;
-                        };
+                        },
                         setInjector = function (inj) {
                             self.nginj = inj;
                         },
@@ -52,7 +52,7 @@
                         },
                         setWebmapId = function (id) {
                             self.webmapId = id;
-                        },
+                        };
                     return {
                         setMapId: setMapId,
                         getMapId: getMapId,
@@ -60,7 +60,7 @@
                         getMapHosterInstance: getMapHosterInstance,
                         setInjector: setInjector,
                         getInjector: getInjector,
-                        webmapid: webmapid,
+                        webmapId: webmapId,
                         setWebmapId: setWebmapId
                     };
                 };

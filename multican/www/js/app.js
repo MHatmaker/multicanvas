@@ -1,12 +1,12 @@
 /*global define, angular, console, require*/
 
-define('angular', function () {
-    "use strict";
-    if (angular) {
-        return angular;
-    }
-    return {};
-});
+// define('angular', function () {
+//     "use strict";
+//     if (angular) {
+//         return angular;
+//     }
+//     return {};
+// });
 
 define([
     'ionic',

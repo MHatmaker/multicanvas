@@ -1,16 +1,15 @@
-/*global console, document, google*/
+/*global console, define, document, google,getComputedStyle, angular, esri */
 
 
 if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) {
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
+    String.prototype.format = function () {
+        "use strict";
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function (match, number) {
+            return args[number] !== 'undefined' ?
+                    args[number] : match;
+        });
+    };
 }
 
 
@@ -22,13 +21,12 @@ if (!String.prototype.format) {
 
             function stringFormat() {
                 var args = arguments;
-                return this.replace(/{(\d+)}/g, function(match, number) {
-                    return typeof args[number] != 'undefined'
-                        ? args[number]
-                        : match
-                    ;
+                return this.replace(/{(\d+)}/g, function (match, number) {
+                    return args[number] !== 'undefined' ?
+                            args[number] : match;
                 });
             }
+
             function toFixedOne(val, prec) {
                 var precision = prec || 0,
                     neg = val < 0,
@@ -64,11 +62,11 @@ if (!String.prototype.format) {
             }
 
             function getDocHeight() {
-            // return Math.max(
+                // return Math.max(
                 // document.body.scrollHeight, document.documentElement.scrollHeight,
                 // document.body.offsetHeight, document.documentElement.offsetHeight,
                 // document.body.clientHeight, document.documentElement.clientHeight
-            // );
+                // );
                 return document.documentElement.offsetHeight; //window.innerHeight;
             }
 
@@ -152,16 +150,21 @@ if (!String.prototype.format) {
             }
 
             function geoLocate(pos, mlmap, msg) {
-                var infoWindow = new google.maps.InfoWindow({map: mlmap});
+                var infoWindow = new google.maps.InfoWindow({
+                    map: mlmap
+                });
                 infoWindow.setPosition(pos);
                 infoWindow.setContent(formatCoords(pos));
                 console.log(msg);
-                console.log('geoLocate just happened at ' + pos.lng + ", " +  pos.lat);
+                console.log('geoLocate just happened at ' + pos.lng + ", " + pos.lat);
             }
 
             function showMap(mpopt) {
                 // pos = {'lat' : cntr.lat, 'lng' : cntr.lng};
-                var pos = {'lat' : mpopt.center.lat(), 'lng' : mpopt.center.lng()},
+                var pos = {
+                        'lat': mpopt.center.lat(),
+                        'lng': mpopt.center.lng()
+                    },
                     fixed = fixCoords(pos),
                     mapdiv = document.getElementById('mapdiv'),
                     mlmap = new google.maps.Map(mapdiv, mpopt);
@@ -184,25 +187,25 @@ if (!String.prototype.format) {
             }
 
             return {
-                stringFormat : stringFormat,
-                formatCoords : formatCoords,
-                toFixedOne : toFixedOne,
-                toFixed : toFixedTwo,
-                getDocHeight : getDocHeight,
-                getButtonHeight : getButtonHeight,
-                getElemHeight : getElemHeight,
-                setElementHeight : setElementHeight,
-                setElementWidth : setElementWidth,
-                setElementDimension : setElementDimension,
-                getElementDimension : getElementDimension,
-                getElemById : getElemById,
-                setVisible : setVisible,
-                showMap : showMap,
-                geoLocate : geoLocate,
-                showLoading : showLoading,
-                hideLoading : hideLoading
+                stringFormat: stringFormat,
+                formatCoords: formatCoords,
+                toFixedOne: toFixedOne,
+                toFixed: toFixedTwo,
+                getDocHeight: getDocHeight,
+                getButtonHeight: getButtonHeight,
+                getElemHeight: getElemHeight,
+                setElementHeight: setElementHeight,
+                setElementWidth: setElementWidth,
+                setElementDimension: setElementDimension,
+                getElementDimension: getElementDimension,
+                getElemById: getElemById,
+                setVisible: setVisible,
+                showMap: showMap,
+                geoLocate: geoLocate,
+                showLoading: showLoading,
+                hideLoading: hideLoading
             };
         })
-        );
-// }());
+    );
+    // }());
 }).call(this);

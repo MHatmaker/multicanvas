@@ -6,8 +6,9 @@
     console.log('MapCtrl setup');
     define([
         'app',
-        'libs/StartupGoogle'
-    ], function (app, StartupGoogle) {
+        'libs/StartupGoogle',
+        'libs/StartupArcGIS'
+    ], function (app, StartupGoogle, StartupArcGIS) {
 
         console.log("ready to create MapCtrl");
         app.controller('MapCtrl', [
@@ -25,7 +26,7 @@
                 $scope.mapwidth = 380;
                 $scope.mapHosterInstance = null;
 
-                function initialize(mapNo) {
+                function initialize(mapNo, mapType) {
                     var mapStartup,
                         mapHoster,
                         centerCoord,
@@ -46,7 +47,11 @@
                         zoom: 16,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     };
-                    mapStartup = new StartupGoogle.StartupGoogle(mapNumber);
+                    if (mapType === 'google') {
+                        mapStartup = new StartupGoogle.StartupGoogle(mapNumber);
+                    } else {
+                        mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber);
+                    }
                     // mapStartups.push(mapStartup);
                     mapStartup.configure(configMapNumber, mapOptions);
                     mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
@@ -58,8 +63,8 @@
                     mapHoster.addPopup(compiledMsg[0], centerCoord);
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
-                $scope.startMap = function (mapNumber) {
-                    initialize(mapNumber);
+                $scope.startMap = function (mapNumber, mapType) {
+                    initialize(mapNumber, mapType);
                 };
 
                 $scope.clickTest = function () {

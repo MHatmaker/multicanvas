@@ -23,7 +23,7 @@
             // 'libs/MLConfig',
             function ($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
-                $scope.addCanvas = function () {
+                $scope.addCanvas = function (mapType) {
                     var currIndex = MapInstanceService.getSlideCount(),
                         // mlConfig = new MLConfig.MLConfig(currIndex),
                         newCanvasItem,
@@ -46,7 +46,7 @@
                                 mlConfig = new MLConfig.MLConfig(currIndex);
                             MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                             console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
-                            scope.startMap(currIndex);
+                            scope.startMap(currIndex, mapType);
                             MapInstanceService.incrementMapNumber();
                         }, 10);
                     });

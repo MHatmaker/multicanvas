@@ -53,6 +53,7 @@
                         setWebmapId = function (id) {
                             self.webmapId = id;
                         };
+                    setInjector(angular.element(document.body).injector());
                     return {
                         setMapId: setMapId,
                         getMapId: getMapId,

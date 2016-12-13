@@ -14,8 +14,8 @@ require([
     console.log('wait for onload to bootstrap');
     angular.element(document).ready(function () {
         angular.bootstrap(document, ['app']);
-        var $inj = angular.element(document.body).injector();
-        MLConfig.setInjector($inj);
+        // var $inj = angular.element(document.body).injector();
+        // MLConfig.setInjector($inj);
     });
     // window.onload = function () {
     //   console.log('ready to bootstrap');

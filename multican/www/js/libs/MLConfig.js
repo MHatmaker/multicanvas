@@ -1,4 +1,4 @@
-/*global console, define, document, MLConfig */
+/*global angular, console, define, document, MLConfig */
 
 (function () {
     "use strict";
@@ -12,7 +12,7 @@
                 // console.log("get paramater " + name + " from " + details.search);
                 name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
                 var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                    results = regex.exec(this.search);
+                    results = regex.exec(self.search);
                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             }
             var
@@ -21,6 +21,7 @@
                     this.mapId = ndx;
                     this.mapHosterInstance = null;
                     console.log("mapId is set to " + this.mapId);
+                    this.webmapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 ";
                     var self = this,
 
                         setMapId = function (id) {

@@ -16,7 +16,8 @@
             '$compile',
             'MapInstanceService',
             function ($scope, $compile, MapInstanceService) {
-                var outerMapNumber = MapInstanceService.getSlideCount();
+                var outerMapNumber = MapInstanceService.getSlideCount(),
+                    curMapTypeInitialized = false;
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 //     configMapNumber = mapConfig.getMapId();
@@ -26,6 +27,9 @@
                 $scope.mapwidth = 380;
                 $scope.mapHosterInstance = null;
 
+                function invalidateCurrentMapTypeConfigured() {
+                    curMapTypeInitialized = false;
+                }
                 function initialize(mapNo, mapType) {
                     var mapStartup,
                         mapHoster,
@@ -40,6 +44,7 @@
 
                     console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
                     console.log("initialize MapCtrl with map id " + mapNo);
+                    curMapTypeInitialized = true;
                     centerCoord = { lat: 43.07493, lng: -89.381388};
 
                     mapOptions = {
@@ -50,7 +55,7 @@
                     if (mapType === 'google') {
                         mapStartup = new StartupGoogle.StartupGoogle(mapNumber);
                     } else {
-                        mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber);
+                        mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber, mapConfig);
                     }
                     // mapStartups.push(mapStartup);
                     mapStartup.configure(configMapNumber, mapOptions);

@@ -4,9 +4,8 @@
 (function () {
     "use strict";
     console.log('StartupArcGIS setup');
-    var aMap = null;
 
-    require(['libs/MapHosterArcGIS', 'libs/utils']);
+    require(['libs/MapHosterArcGIS', 'libs/utils', 'esri.arcgis.utils']);
 
     // dojo.require("esri.map");
     // dojo.require("esri.tasks.geometry");
@@ -35,29 +34,29 @@
                 console.log("StartupArcGIS ctor");
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
-                this.gMap = null;
+                this.aMap = null;
                 this.mlconfig = mlconfig;
                 console.log("Setting mapNumber to " + this.mapNumber);
                 function showLoading() {
                     utils.showLoading();
-                    aMap.disableMapNavigation();
-                    aMap.hideZoomSlider();
+                    self.aMap.disableMapNavigation();
+                    self.aMap.hideZoomSlider();
                 }
 
                 function hideLoading(error) {
                     utils.hideLoading(error);
-                    aMap.enableMapNavigation();
-                    aMap.showZoomSlider();
+                    self.aMap.enableMapNavigation();
+                    self.aMap.showZoomSlider();
                 }
                 function placeCustomControls() {
-                    var $inj = mlconfig.getInjector(),
+                    var $inj = self.mlconfig.getInjector(),
                         ctrlSvc = $inj.get('MapControllerService'),
                         mapCtrl = ctrlSvc.getController();
                     mapCtrl.placeCustomControls();
                 }
 
                 function setupQueryListener() {
-                    var $inj = mlconfig.getInjector(),
+                    var $inj = self.mlconfig.getInjector(),
                         ctrlSvc = $inj.get('MapControllerService'),
                         mapCtrl = ctrlSvc.getController();
                     mapCtrl.setupQueryListener();
@@ -76,7 +75,7 @@
                     configOptions,
 
                     getMap = function () {
-                        return self.gMap;
+                        return self.aMap;
                     },
 
                     getMapNumber = function () {
@@ -89,7 +88,7 @@
                     initUI = function () {
                       //add scalebar or other components like a legend, overview map etc
                         // dojo.parser.parse();
-                        console.debug(aMap);
+                        console.debug(self.aMap);
                         var curmph = null,
                             $inj,
                             mapTypeSvc,
@@ -106,14 +105,12 @@
 
                         console.log("start MapHoster with center " + pointWebMap[0] + ", " + pointWebMap[1] + ' zoom ' + zoomWebMap);
                         console.log("selfDetails.mph : " + self.mph);
-                        if (self.mph === null) {
+                        if (self.mapHoster === null) {
                             console.log("self.Details.mph is null");
                             // alert("StartupArcGIS.initUI : selfDetails.mph == null");
-
-                            self.mph = MapHosterArcGIS.start();
                             // placeCustomControls();
 
-                            MapHosterArcGIS.config(aMap, zoomWebMap, pointWebMap);
+                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap);
                             placeCustomControls();
                             setupQueryListener();
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
@@ -122,7 +119,7 @@
                             console.debug(pusherChannel);
                             curmph = null;
 
-                            $inj = mlconfig.getInjector();
+                            $inj = self.mlconfig.getInjector();
                             mapTypeSvc = $inj.get('CurrentMapTypeService');
                             curmph = mapTypeSvc.getSelectedMapType();
     /*
@@ -133,26 +130,25 @@
                                     'client-NewMapPosition' : curmph.retrievedNewPosition
                                 },
                                 pusherChannel,
-                                MLConfig.getUserName(),
+                                self.mlconfig.getUserName(),
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
                                     console.log("It was a side effect of the createPusherClient:PusherClient process");
-                                    MLConfig.setUserName(userName);
+                                    self.mlconfig.setUserName(userName);
                                     // MapHosterArcGIS.prototype.setPusherClient(pusher, callbackChannel);
                                 },
                                 {'destination' : "destPlaceHolder", 'currentMapHolder' : curmph, 'newWindowId' : "windowIdPlaceholder"}
                             );
     */
                         } else {
-                            console.log("self.mph is something or other");
+                            console.log("self.mapHoster is something or other");
                             currentPusher = pusher;
                             currentChannel = channel;
-                            self.mph = MapHosterArcGIS.start();
-                            MapHosterArcGIS.config(aMap, zoomWebMap, pointWebMap);
+                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap);
 
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
                             console.log("use current pusher - now setPusherClient");
-                            MapHosterArcGIS.setPusherClient(currentPusher, currentChannel);
+                            self.mapHoster.setPusherClient(currentPusher, currentChannel);
                             placeCustomControls();  // MOVED TEMPORARILY on 3/15
                             setupQueryListener();
                         }
@@ -178,9 +174,7 @@
                             bingMapsKey: "/*Please enter your own Bing Map key*/"
                         };
 
-                        console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + self.mapNumber);
-                        self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.gMap, self.mapNumber, mapOptions, google, google.maps.places);
-                        // return self.mapHoster;
+                        console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + self.mapNumber);                        // return self.mapHoster;
                         esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
                         esri.config.defaults.io.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
 
@@ -214,29 +208,29 @@
                         try {
                             mapDeferred.then(function (response) {
                                 console.log("mapDeferred.then");
-                                self.mapHoster = mapDeferred;
                                 if (previousSelectedWebMapId !== selectedWebMapId) {
                                     previousSelectedWebMapId = selectedWebMapId;
                                     //dojo.destroy(map.container);
                                 }
-                                if (aMap) {
-                                    aMap.destroy();
+                                if (self.aMap) {
+                                    self.aMap.destroy();
                                 }
-                                aMap = response.map;
+                                self.aMap = response.map;
+                                self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
                                 console.log("in mapDeferred anonymous method");
                                 console.log("configOptions title " + configOptions.title);
                                 console.debug("ItemInfo object " + response.itemInfo);
                                 console.log("ItemInfo.item object " + response.itemInfo.item);
                                 console.log("response title " + response.itemInfo.item.title);
-                                dojo.connect(aMap, "onUpdateStart", showLoading);
-                                dojo.connect(aMap, "onUpdateEnd", hideLoading);
-                                dojo.connect(aMap, "onLoad", initUI);
+                                dojo.connect(self.aMap, "onUpdateStart", showLoading);
+                                dojo.connect(self.aMap, "onUpdateEnd", hideLoading);
+                                dojo.connect(self.aMap, "onLoad", initUI);
 
                                 setTimeout(function () {
-                                    if (aMap.loaded) {
+                                    if (self.aMap.loaded) {
                                         initUI();
                                     } else {
-                                        dojo.connect(aMap, "onLoad", initUI);
+                                        dojo.connect(self.aMap, "onLoad", initUI);
                                     }
                                 }, 300);
                             }, function (error) {
@@ -269,7 +263,7 @@
                             baseUrl,
                             openNewDisplay;
 
-                        $inj = mlconfig.getInjector();
+                        $inj = self.mlconfig.getInjector();
                         mapTypeSvc = $inj.get('CurrentMapTypeService');
                         curmph = mapTypeSvc.getSelectedMapType();
 
@@ -280,33 +274,33 @@
                         openNewDisplay = function (channel, userName) {
                             url = "?id=" + newSelectedWebMapId + curmph.getGlobalsForUrl() +
                                 "&channel=" + channel + "&userName=" + userName +
-                                "&maphost=ArcGIS" + "&referrerId=" + mlconfig.getUserId();
+                                "&maphost=ArcGIS" + "&referrerId=" + self.mlconfig.getUserId();
                             if (referringMph) {
                                 url = "?id=" + newSelectedWebMapId + referringMph.getGlobalsForUrl() +
                                     "&channel=" + channel + "&userName=" + userName +
-                                    "&maphost=ArcGIS" + "&referrerId=" + mlconfig.getUserId();
+                                    "&maphost=ArcGIS" + "&referrerId=" + self.mlconfig.getUserId();
                             }
 
                             console.log("open new ArcGIS window with URI " + url);
                             console.log("using channel " + channel + "with userName " + userName);
-                            mlconfig.setUrl(url);
-                            mlconfig.setUserName(userName);
+                            self.mlconfig.setUrl(url);
+                            self.mlconfig.setUserName(userName);
                             if (displayDestination === 'New Pop-up Window') {
-                                baseUrl = mlconfig.getbaseurl();
-                                window.open(baseUrl + "/arcgis/" + url, newSelectedWebMapId, mlconfig.getSmallFormDimensions());
+                                baseUrl = self.mlconfig.getbaseurl();
+                                window.open(baseUrl + "/arcgis/" + url, newSelectedWebMapId, self.mlconfig.getSmallFormDimensions());
                             } else {
-                                baseUrl = mlconfig.getbaseurl();
+                                baseUrl = self.mlconfig.getbaseurl();
                                 window.open(baseUrl + "arcgis/" + url, '_blank');
                                 window.focus();
                             }
                         };
 
-                        if (mlconfig.isNameChannelAccepted() === false) {
+                        if (self.mlconfig.isNameChannelAccepted() === false) {
                             PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
-                                mlconfig.getUserName(), openNewDisplay,
+                                self.mlconfig.getUserName(), openNewDisplay,
                                     {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId});
                         } else {
-                            openNewDisplay(mlconfig.masherChannel(false), mlconfig.getUserName());
+                            openNewDisplay(self.mlconfig.masherChannel(false), self.mlconfig.getUserName());
                         }
                     },
 
@@ -327,7 +321,7 @@
                             This branch handles a new ArcGIS Online webmap presentation from either selecting the ArcGIS tab in the master
                             site or opening the webmap from a url sent through a publish event.
                              */
-                            $inj = mlconfig.getInjector();
+                            $inj = self.mlconfig.getInjector();
                             evtSvc = $inj.get('PusherEventHandlerService');
                             CurrentMapTypeService = $inj.get('CurrentMapTypeService');
                             CurrentMapTypeService.setCurrentMapType('arcgis');
@@ -343,7 +337,7 @@
                         // var urlparams=dojo.queryToObject(window.location.search);
                         // console.debug(urlparams);
                         // var idWebMap=urlparams['?id'];
-                        var idWebMap = mlconfig.webmapId(true),
+                        var idWebMap = self.mlconfig.webmapId(true),
                             llon,
                             llat;
 
@@ -352,7 +346,7 @@
                         if (!idWebMap) {
                             console.log("no idWebMap");
                             selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 "; //"e68ab88371e145198215a792c2d3c794";
-                            mlconfig.setWebmapId(selectedWebMapId);
+                            self.mlconfig.setWebmapId(selectedWebMapId);
                             console.log("use " + selectedWebMapId);
                             // pointWebMap = [-87.7, lat=41.8];
                             pointWebMap = [-87.620692, 41.888941];
@@ -362,9 +356,9 @@
                         } else {
                             console.log("found idWebMap");
                             console.log("use " + idWebMap);
-                            zoomWebMap = mlconfig.zoom();
-                            llon = mlconfig.lon();
-                            llat = mlconfig.lat();
+                            zoomWebMap = self.mlconfig.zoom();
+                            llon = self.mlconfig.lon();
+                            llat = self.mlconfig.lat();
                             pointWebMap = [llon, llat];
                             initialize(idWebMap, {dstSel : 'no destination selection probably Same Window'});
                         }

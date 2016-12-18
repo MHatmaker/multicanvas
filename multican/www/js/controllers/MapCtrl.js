@@ -9,6 +9,8 @@
         'libs/StartupGoogle',
         'libs/StartupArcGIS'
     ], function (app, StartupGoogle, StartupArcGIS) {
+        var selfMethods = {},
+            curMapTypeInitialized = false;
 
         console.log("ready to create MapCtrl");
         app.controller('MapCtrl', [
@@ -16,8 +18,7 @@
             '$compile',
             'MapInstanceService',
             function ($scope, $compile, MapInstanceService) {
-                var outerMapNumber = MapInstanceService.getSlideCount(),
-                    curMapTypeInitialized = false;
+                var outerMapNumber = MapInstanceService.getSlideCount();
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 //     configMapNumber = mapConfig.getMapId();
@@ -30,6 +31,8 @@
                 function invalidateCurrentMapTypeConfigured() {
                     curMapTypeInitialized = false;
                 }
+                selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
+
                 function initialize(mapNo, mapType) {
                     var mapStartup,
                         mapHoster,
@@ -81,5 +84,15 @@
             }
         ]);
 
+        function invalidateCurrentMapTypeConfigured() {
+            console.log("invalidateCurrentMapTypeConfigured");
+            if (selfMethods.invalidateCurrentMapTypeConfigured) {
+                selfMethods.invalidateCurrentMapTypeConfigured();
+            }
+        }
+
+        return {
+            invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfigured
+        };
     });
 }());

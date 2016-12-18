@@ -6,8 +6,15 @@ require([
     'js/config',
     'js/run',
     'js/controllers/MapDirective',
-    'js/controllers/CanvasHolderCtrl',
-    'js/libs/MLConfig'
+    'js/controllers/CanvasHolderCtrl'
+    // 'js/libs/MLConfig',
+    // 'esri.map',
+    // 'esri.tasks.geometry',
+    // 'esri.tasks.locator',
+    // 'esri/geometry/webMercatorUtils',
+    // 'esri.IdentityManager',
+    // 'esri.dijit.Scalebar',
+    // 'esri.arcgis.utils'
 ], function (routes, config, run, MapDirective, CanvasHolderCtrl, MLConfig) {
     'use strict';
     // Here you have to set your app name to bootstrap it manually

@@ -10,7 +10,8 @@ require({
         'libs' : 'libs',
         'services' : 'services',
         'dojox' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
-        'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact'
+        'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
+        'esri.arcgis.utils' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact'
         // jquery: '../lib/jquery/jquery.min.js'
     }
   // shim: {

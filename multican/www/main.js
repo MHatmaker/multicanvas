@@ -9,9 +9,16 @@ require({
         'controllers' : 'controllers',
         'libs' : 'libs',
         'services' : 'services',
-        'dojox' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
-        'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
-        'esri.arcgis.utils' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact'
+        //  'dojox' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
+        // 'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
+        'esri' : 'https://js.arcgis.com/4.1',
+        // 'WebMap' : 'https://js.arcgis.com/4.1/esri/WebMap',
+        // 'MapView' : 'esri/views/MapView',
+        'dojo' : 'https://js.arcgis.com/4.1/dojo',
+        // 'domReady' : 'dojo/domReady',
+        // 'all' : 'dojo/promise/all'
+
+        // 'utils' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact/arcgis/utils'
         // jquery: '../lib/jquery/jquery.min.js'
     }
   // shim: {
@@ -36,10 +43,10 @@ var dojoConfig = {
         {
             name: 'app',
             location: 'js/app'
-        },
-        {
-            name: 'dojox',
-            location: 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact'
         }]
+        // {
+        //     name: 'dojox',
+        //     location: 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact'
+        // }]
 
 };

@@ -2,11 +2,11 @@
 
 // requires routes, config, run they implicit requiring the app
 require([
-    'js/routes',
-    'js/config',
-    'js/run',
-    'js/controllers/MapDirective',
-    'js/controllers/CanvasHolderCtrl'
+    'routes',
+    'config',
+    'run',
+    'controllers/MapDirective',
+    'controllers/CanvasHolderCtrl'
     // 'js/libs/MLConfig',
     // 'esri.map',
     // 'esri.tasks.geometry',

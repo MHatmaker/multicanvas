@@ -1,33 +1,24 @@
-/*global require, define, google, console, document, dojo, esri, alert, setTimeout, window */
+/*global require, define, google, console, document, dojo, esri, alert, setTimeout, window, WebMap, all */
 /*jslint unparam: true*/
 
 (function () {
     "use strict";
     console.log('StartupArcGIS setup');
 
-    require(['libs/MapHosterArcGIS', 'libs/utils', 'esri.arcgis.utils']);
-
-    // dojo.require("esri.map");
-    // dojo.require("esri.tasks.geometry");
-    // dojo.require("esri.tasks.locator");
-    // dojo.require("esri/geometry/webMercatorUtils");
-    // dojo.require("esri.IdentityManager");
-    // dojo.require("esri.dijit.Scalebar");
-    // dojo.requi   re("esri.arcgis.utils");
-    //dojo.require("dojo.parser");
-    // require("esri.map");
-    // require("esri.tasks.geometry");
-    // require("esri.tasks.locator");
-    // require("esri/geometry/webMercatorUtils");
-    // require("esri.IdentityManager");
-    // require("esri.dijit.Scalebar");
-    // require("esri.arcgis.utils");
+    require(['libs/MapHosterArcGIS', 'libs/utils',
+    // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
+    'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!']);
 
     define([
         'libs/MapHosterArcGIS',
         'libs/MLConfig',
         'libs/utils'
-    ], function (MapHosterArcGIS, MLConfig, utils) {
+        // 'esri',
+        // 'esri/WebMap',
+        // 'esri/views/MapView',
+        // 'dojo/domReady',
+        // 'dojo/promise/all'
+    ], function (MapHosterArcGIS, MLConfig, utils) { // , esri, WebMap, MapView, domReady, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {
@@ -183,67 +174,36 @@
 
                         // dijit.byId("map_canvas").addChild(cpn).placeAt("map_canvas").startup();
 
-                        try {
-                            mapDeferred = esri.arcgis.utils.createMap(configOptions.webmap, "map_canvas", {
-                                mapOptions: {
-                                    slider: true,
-                                    nav: false,
-                                    wrapAround180: true
+                        self.aMap = new WebMap({portalItem : {id: configOptions.webmap}});
+                        self.aMap.load()
+                            .then(function () {
+                              // load the basemap to get its layers created
+                                return self.aMap.basemap.load();
+                            })
+                            .then(function () {
 
-                                },
-                                ignorePopups: false,
-                                bingMapsKey: configOptions.bingMapsKey,
-                                geometryServiceURL: "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
-
-                            });
-                        } catch (err) {
-                            console.log(err.message);
-                            alert(err.message);
-                        } finally {
-                            console.log("finally???????????????");
-                            //alert("why are we in finally?");
-                        }
-
-                        console.log("set up mapDeferred anonymous method");
-                        try {
-                            mapDeferred.then(function (response) {
-                                console.log("mapDeferred.then");
                                 if (previousSelectedWebMapId !== selectedWebMapId) {
                                     previousSelectedWebMapId = selectedWebMapId;
                                     //dojo.destroy(map.container);
                                 }
-                                if (self.aMap) {
-                                    self.aMap.destroy();
-                                }
-                                self.aMap = response.map;
                                 self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
-                                console.log("in mapDeferred anonymous method");
-                                console.log("configOptions title " + configOptions.title);
-                                console.debug("ItemInfo object " + response.itemInfo);
-                                console.log("ItemInfo.item object " + response.itemInfo.item);
-                                console.log("response title " + response.itemInfo.item.title);
-                                dojo.connect(self.aMap, "onUpdateStart", showLoading);
-                                dojo.connect(self.aMap, "onUpdateEnd", hideLoading);
-                                dojo.connect(self.aMap, "onLoad", initUI);
+                                initUI();
 
-                                setTimeout(function () {
-                                    if (self.aMap.loaded) {
-                                        initUI();
-                                    } else {
-                                        dojo.connect(self.aMap, "onLoad", initUI);
-                                    }
-                                }, 300);
-                            }, function (error) {
-                                // alert("Create Map Failed ");
-                                console.log('Create Map Failed: ' + dojo.toJson(error));
-                                console.log("Error: ", error.code, " Message: ", error.message);
-                                mapDeferred.cancel();
+                                // grab all the layers and load them
+                                var allLayers = self.aMap.allLayers,
+                                    promises = allLayers.map(function (layer) {
+                                        return layer.load();
+                                    });
+                                return all(promises.toArray());
+                            })
+                            .then(function (layers) {
+                                // each layer load promise resolves with the layer
+                                console.log("all " + layers.length + " layers loaded");
+                            })
+                            .otherwise(function (error) {
+                                console.error(error);
                             });
-                        } catch (err) {
-                            console.log("deferred failed with err " + err.message);
-                        }
                     },
-
                     // function getMapHoster() {
                     //     console.log('StartupArcGIS return mapHoster with map no. ' + mapHoster.getMapNumber());
                     //     return mapHoster;

@@ -5,20 +5,21 @@
     "use strict";
     console.log('StartupArcGIS setup');
 
-    require(['libs/MapHosterArcGIS', 'libs/utils',
-    // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
-    'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!']);
+    // require(['libs/MapHosterArcGIS', 'libs/utils', 'esri',
+    // // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
+    // 'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!'], //);
 
     define([
         'libs/MapHosterArcGIS',
         'libs/MLConfig',
-        'libs/utils'
-        // 'esri',
-        // 'esri/WebMap',
-        // 'esri/views/MapView',
-        // 'dojo/domReady',
-        // 'dojo/promise/all'
-    ], function (MapHosterArcGIS, MLConfig, utils) { // , esri, WebMap, MapView, domReady, all) {
+        'libs/utils',
+        'esri',
+        'esri/WebMap',
+        'esri/views/MapView',
+        'dojo/domReady',
+        'dojo/promise/all'
+    ],
+    function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, domReady, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {

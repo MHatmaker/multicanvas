@@ -11,7 +11,7 @@ require({
         'services' : 'services',
         //  'dojox' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
         // 'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
-        'esri' : 'https://js.arcgis.com/4.1',
+        'esri' : 'https://js.arcgis.com/4.1/esri',
         // 'WebMap' : 'https://js.arcgis.com/4.1/esri/WebMap',
         // 'MapView' : 'esri/views/MapView',
         'dojo' : 'https://js.arcgis.com/4.1/dojo',

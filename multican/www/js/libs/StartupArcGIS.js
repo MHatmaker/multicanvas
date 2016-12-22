@@ -9,7 +9,7 @@
     // // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
     // 'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!'], //);
 
-    define([
+    require([
         'libs/MapHosterArcGIS',
         'libs/MLConfig',
         'libs/utils',

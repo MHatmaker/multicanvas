@@ -1,10 +1,10 @@
-/*global define, console, google, document, window, navigator, alert*/
+/*global define, require, console, google, document, window, navigator, alert*/
 
 (function () {
     "use strict";
 
     console.log('MapCtrl setup');
-    define([
+    require([
         'app',
         'libs/StartupGoogle',
         'libs/StartupArcGIS'

@@ -8,6 +8,7 @@
     // require(['libs/MapHosterArcGIS', 'libs/utils', 'esri',
     // // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
     // 'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!'], //);
+    // require(['esri/views/MapView', 'esri/WebMap', 'dojo/domReady!']);
 
     require([
         'libs/MapHosterArcGIS',
@@ -16,7 +17,7 @@
         'esri',
         'esri/WebMap',
         'esri/views/MapView',
-        'dojo/domReady',
+        'dojo/domReady!',
         'dojo/promise/all'
     ],
     function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, domReady, all) {
@@ -335,8 +336,8 @@
                 };
             };
 
-        return {
-            StartupArcGIS: StartupArcGIS
-        };
+        // return {
+        //     StartupArcGIS: StartupArcGIS
+        // };
     });
 }());

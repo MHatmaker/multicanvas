@@ -10,17 +10,16 @@
     // 'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!'], //);
     // require(['esri/views/MapView', 'esri/WebMap', 'dojo/domReady!']);
 
-    require([
+    define([
         'libs/MapHosterArcGIS',
         'libs/MLConfig',
         'libs/utils',
         'esri',
         'esri/WebMap',
         'esri/views/MapView',
-        'dojo/domReady!',
-        'dojo/promise/all'
-    ],
-    function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, domReady, all) {
+        'dojo/promise/all',
+        'dojo/domReady!'
+    ], function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {
@@ -336,8 +335,8 @@
                 };
             };
 
-        // return {
-        //     StartupArcGIS: StartupArcGIS
-        // };
+        return {
+            StartupArcGIS: StartupArcGIS
+        };
     });
 }());

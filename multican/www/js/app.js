@@ -1,16 +1,16 @@
 /*global define, angular, console, require*/
 
-// define('angular', function () {
-//     "use strict";
-//     if (angular) {
-//         return angular;
-//     }
-//     return {};
-// });
+define('angular', function () {
+    "use strict";
+    if (angular) {
+        return angular;
+    }
+    return {};
+});
 
 define([
     'ionic',
-    'libs/MultiCanvas',
+    // libs/MultiCanvas',
     'angularBootstrap'
 ], function () {
     'use strict';
@@ -21,7 +21,7 @@ define([
         'ionic',
         'ui.bootstrap'
     ]);
-    console.log("ready to create MapDirective");
+    console.log("ready to require some services");
     require(['services/MapInstanceService', 'services/PusherEventHandlerService', 'services/CurrentMapTypeService']);
     // require(['libs/MLConfig']);
     // return the app so you can require it in other components

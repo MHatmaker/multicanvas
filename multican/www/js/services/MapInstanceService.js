@@ -1,5 +1,6 @@
 /*global define, console*/
 
+console.log("ready to define MapInstanceService");
 define([
     'app'
 ], function (app) {

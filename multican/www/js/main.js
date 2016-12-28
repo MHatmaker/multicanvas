@@ -39,15 +39,19 @@ require({
 });
 
 var dojoConfig = {
-    baseUrl: 'js' //,
-    // packages: [
-    //     {
-    //         name: 'app',
-    //         location: 'js/app'
-    //     }]
-        // {
-        //     name: 'dojox',
-        //     location: 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact'
-        // }]
+    baseUrl: 'js', //,
+    packages: [
+        {
+            name: 'app',
+            location: 'js/app'
+        },
+        {
+            name: 'esri',
+            location: 'https://js.arcgis.com/4.2/esri'
+        },
+        {
+            name: 'dojo',
+            location: 'https://js.arcgis.com/4.2/dojo'
+        }]
 
 };

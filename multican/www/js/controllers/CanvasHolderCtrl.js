@@ -5,15 +5,16 @@
     "use strict";
 
     console.log('CanvasHolderCtrl setup');
-    require(['libs/MLConfig']);
+    // require(['libs/MLConfig', 'controllers/MapCtrl']);
     define([
         'app',
         'libs/MLConfig',
         'services/CanvasService',
         'services/MapInstanceService',
         'controllers/MapCtrl',
-        'controllers/CarouselCtrl'
-    ], function (app, MLConfig) {
+        'controllers/CarouselCtrl',
+        'dojo/domReady'
+    ], function (app, MLConfig) { //}, CanvasService, MapInstanceService, MapCtrl, CarouselCtrl) {
 
         console.log("ready to create CanvasHolderCtrl");
         app.controller('CanvasHolderCtrl', [
@@ -42,8 +43,8 @@
                         console.log("compiled mapDctv with map id " + currIndex);
                         console.debug(scope);
                         setTimeout(function () {
-                            var currIndex = MapInstanceService.getSlideCount(),
-                                mlConfig = new MLConfig.MLConfig(currIndex);
+                            currIndex = MapInstanceService.getSlideCount();
+                            var mlConfig = new MLConfig.MLConfig(currIndex);
                             MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                             console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
                             scope.startMap(currIndex, mapType);

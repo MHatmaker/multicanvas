@@ -2,32 +2,33 @@
 
 require(['libs/MultiCanvas']);
 
+console.log("ready to define CanvasService");
 define([
     'app',
     'libs/MultiCanvas'
-], function(app, MultiCanvas) {
+], function (app, MultiCanvas) {
     'use strict';
 
     app.service('CanvasService', [
-    function() {
-        var canvases = [];
+        function () {
+            var canvases = [];
 
-        console.log("CanvasService to return canvas");
+            console.log("CanvasService to return canvas");
 
-        this.makeCanvasSlideListItem = function(ndx) {
-            var newCanvasItem = document.createElement('li');
-            newCanvasItem.id = "slide" + ndx;
-            return newCanvasItem;
-        };
-        this.loadCanvasSlideListItem = function(elem, ndx) {
-            canvases.push(new MultiCanvas.Canvas(elem, ndx));
-            canvases[canvases.length - 1].init();
-        };
+            this.makeCanvasSlideListItem = function (ndx) {
+                var newCanvasItem = document.createElement('li');
+                newCanvasItem.id = "slide" + ndx;
+                return newCanvasItem;
+            };
+            this.loadCanvasSlideListItem = function (elem, ndx) {
+                canvases.push(new MultiCanvas.Canvas(elem, ndx));
+                canvases[canvases.length - 1].init();
+            };
 
-        this.getCanvasSlideListItem = function(ndx) {
-            return canvases[ndx];
-        };
+            this.getCanvasSlideListItem = function (ndx) {
+                return canvases[ndx];
+            };
 
-    }
+        }
     ]);
 });

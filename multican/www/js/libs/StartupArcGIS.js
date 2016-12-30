@@ -10,7 +10,7 @@
     // 'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!'], //);
     // require(['esri/views/MapView', 'esri/WebMap', 'dojo/domReady!']);
 
-    require([
+    define([
         'libs/MapHosterArcGIS',
         'libs/MLConfig',
         'libs/utils',
@@ -19,8 +19,7 @@
         'esri/views/MapView',
         'dojo/domReady!',
         'dojo/promise/all'
-    ],
-    function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, domReady, all) {
+    ], function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, domReady, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {

@@ -5,7 +5,7 @@
     "use strict";
 
     console.log('CanvasHolderCtrl setup');
-    require(['libs/MLConfig']);
+    // require(['libs/MLConfig']);
     define([
         'app',
         'libs/MLConfig',
@@ -42,7 +42,8 @@
                         console.log("compiled mapDctv with map id " + currIndex);
                         console.debug(scope);
                         setTimeout(function () {
-                            var currIndex = MapInstanceService.getSlideCount(),
+                            currIndex = MapInstanceService.getSlideCount();
+                            var
                                 mlConfig = new MLConfig.MLConfig(currIndex);
                             MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                             console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);

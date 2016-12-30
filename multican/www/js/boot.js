@@ -5,7 +5,6 @@ require([
     'routes',
     'config',
     'run',
-    'controllers/MapDirective',
     'controllers/CanvasHolderCtrl'
     // 'js/libs/MLConfig',
     // 'esri.map',
@@ -15,7 +14,7 @@ require([
     // 'esri.IdentityManager',
     // 'esri.dijit.Scalebar',
     // 'esri.arcgis.utils'
-], function (routes, config, run, MapDirective, CanvasHolderCtrl, MLConfig) {
+], function (routes, config, run, CanvasHolderCtrl) {
     'use strict';
     // Here you have to set your app name to bootstrap it manually
     console.log('wait for onload to bootstrap');

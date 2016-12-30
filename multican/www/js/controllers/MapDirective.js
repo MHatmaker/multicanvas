@@ -6,7 +6,8 @@
 
 define([
     'app',
-    'services/MapInstanceService'
+    'services/MapInstanceService',
+    'libs/MapCtrl'
 ], function (app) {
     'use strict';
 

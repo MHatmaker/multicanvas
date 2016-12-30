@@ -6,13 +6,13 @@
 
     console.log('CanvasHolderCtrl setup');
     // require(['libs/MLConfig']);
-    define([
+    require([
         'app',
         'libs/MLConfig',
         'services/CanvasService',
-        'services/MapInstanceService',
-        'controllers/MapCtrl',
-        'controllers/CarouselCtrl'
+        'services/MapInstanceService'
+        // 'controllers/MapCtrl',
+        // 'controllers/CarouselCtrl'
     ], function (app, MLConfig) {
 
         console.log("ready to create CanvasHolderCtrl");

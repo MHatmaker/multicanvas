@@ -17,9 +17,9 @@
         'esri',
         'esri/WebMap',
         'esri/views/MapView',
-        'dojo/domReady!',
-        'dojo/promise/all'
-    ], function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, domReady, all) {
+        'dojo/promise/all',
+        'dojo/domReady!'
+    ], function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {

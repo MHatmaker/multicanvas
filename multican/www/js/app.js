@@ -22,7 +22,7 @@ define([
         'ui.bootstrap'
     ]);
     console.log("ready to create MapDirective");
-    require(['services/MapInstanceService', 'services/PusherEventHandlerService', 'services/CurrentMapTypeService']);
+    require(['services/MapInstanceService', 'services/PusherEventHandlerService', 'services/CurrentMapTypeService', 'services/CanvasService']);
     // require(['libs/MLConfig']);
     // return the app so you can require it in other components
     return app;

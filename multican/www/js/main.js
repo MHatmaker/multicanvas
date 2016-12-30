@@ -4,7 +4,6 @@ require({
     baseUrl: 'js',
     paths: {
         'ionic': '../lib/ionic/js/ionic.bundle.min',
-        'angularBootstrap' : "//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.2.0",
         'app' : 'app',
         'controllers' : 'controllers',
         'libs' : 'libs',
@@ -16,7 +15,8 @@ require({
         // 'WebMap' : 'https://js.arcgis.com/4.1/esri/WebMap',
         // 'MapView' : 'esri/views/MapView',
         'dojo' : 'https://js.arcgis.com/4.2/dojo',
-        'dijit' : 'https://js.arcgis.com/4.2/dijit'
+        'dijit' : 'https://js.arcgis.com/4.2/dijit',
+        'angularBootstrap' : "//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.2.0"
         // 'all' : 'dojo/promise/all'
 
         // 'utils' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact/arcgis/utils'

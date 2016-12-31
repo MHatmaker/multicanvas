@@ -335,8 +335,8 @@
                 };
             };
 
-        // return {
-        //     StartupArcGIS: StartupArcGIS
-        // };
+        return {
+            StartupArcGIS: StartupArcGIS
+        };
     });
 }());

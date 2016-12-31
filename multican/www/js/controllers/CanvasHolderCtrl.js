@@ -6,7 +6,7 @@
 
     console.log('CanvasHolderCtrl setup');
     // require(['libs/MLConfig']);
-    require([
+    define([
         'app',
         'libs/MLConfig',
         'services/CanvasService',

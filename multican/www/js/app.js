@@ -9,9 +9,9 @@
 // });
 
 define([
-    'ionic',
-    'libs/MultiCanvas',
-    'angularBootstrap'
+    // 'ionic',
+    'angularBootstrap',
+    'dojo/domReady!'
 ], function () {
     'use strict';
 

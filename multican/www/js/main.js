@@ -3,7 +3,7 @@
 require({
     baseUrl: 'js',
     paths: {
-        'ionic': '../lib/ionic/js/ionic.bundle.min',
+        //'ionic': '../lib/ionic/js/ionic.bundle.min',
         'app' : 'app',
         'controllers' : 'controllers',
         'libs' : 'libs',
@@ -39,7 +39,10 @@ require({
 });
 
 var dojoConfig = {
-    baseUrl: 'js' //,
+    baseUrl: 'js',
+    async: true,
+    cacheBust: new Date(),
+    waitSeconds: 5
     // packages: [
     //     {
     //         name: 'app',

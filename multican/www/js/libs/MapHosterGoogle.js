@@ -3,12 +3,12 @@
 
 (function () {
     "use strict";
-    console.log("ready to require stuff in MapHosterGoogle");
+    console.log("MapHosterGoogle setup, ready to require stuff in MapHosterGoogle");
 
     define([
         'libs/MLConfig'
     ], function (MLConfig) {
-
+        console.log('MapHosterGoogle define');
         var
             // hostName = "MapHosterGoogle",
             // google,

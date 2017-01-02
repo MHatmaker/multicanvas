@@ -10,7 +10,7 @@
     // 'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!'], //);
     // require(['esri/views/MapView', 'esri/WebMap', 'dojo/domReady!']);
 
-    define([
+    require([
         'libs/MapHosterArcGIS',
         'libs/MLConfig',
         'libs/utils',

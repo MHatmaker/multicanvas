@@ -5,8 +5,10 @@ require([
     'routes',
     'config',
     'run',
+    'controllers/MapCtrl',
     'controllers/CarouselCtrl',
-    'controllers/CanvasHolderCtrl'
+    'controllers/CanvasHolderCtrl',
+    'controllers/MapDirective'
     // 'js/libs/MLConfig',
     // 'esri.map',
     // 'esri.tasks.geometry',

@@ -4,7 +4,7 @@
     "use strict";
 
     console.log('MapCtrl setup');
-    require([
+    define([
         'app',
         'libs/StartupGoogle',
         'libs/StartupArcGIS'

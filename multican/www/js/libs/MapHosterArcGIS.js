@@ -30,15 +30,15 @@
                     },
 
                     configure = function (newMapId, mapOpts) {
-                        var $inj,
-                            evtSvc,
-                            centerLatLng,
-                            initZoom,
-                            mapOptions = {},
-                            qlat,
-                            qlon,
-                            bnds,
-                            zoomStr;
+                        // var $inj,
+                        //     evtSvc,
+                        //     centerLatLng,
+                        //     initZoom,
+                        //     mapOptions = {},
+                        //     qlat,
+                        //     qlon,
+                        //     bnds,
+                        //     zoomStr;
 
                         console.log("MapHosterArcGIS configure with map no. " + self.mapNumber);
                     },

@@ -1,17 +1,15 @@
+/*global define, console*/
+
 define([
-  'app',
-  'services/service'
-], function(app) {
-  'use strict';
+    'app'
+], function (app) {
+    'use strict';
 
-  console.log("ready to create DashboardCtrl");
-  app.controller('DashboardCtrl', [
-    '$scope',
-    'myService',
-    function($scope, myService) {
-      console.log("DashboardCtrl calling into myService");
-
-      $scope.name = myService.getName();
-    }
-  ]);
+    console.log("ready to create DashboardCtrl");
+    app.controller('DashboardCtrl', [
+        '$scope',
+        function ($scope) {
+            console.log("DashboardCtrl no longer calling into myService");
+        }
+    ]);
 });

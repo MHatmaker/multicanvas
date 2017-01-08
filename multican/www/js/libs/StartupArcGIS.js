@@ -4,14 +4,16 @@
 (function () {
     "use strict";
     console.log('StartupArcGIS setup');
+    var self = null;
 
     // require(['libs/MapHosterArcGIS', 'libs/utils', 'esri',
     // // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
     // 'esri/WebMap', 'esri/views/MapView', 'dojo/domReady!'], //);
     // require(['esri/views/MapView', 'esri/WebMap', 'dojo/domReady!']);
 
-    require([
+    define([
         'libs/MapHosterArcGIS',
+        'controllers/PusherSetupCtrl',
         'libs/MLConfig',
         'libs/utils',
         'esri',
@@ -19,11 +21,11 @@
         'esri/views/MapView',
         'dojo/promise/all',
         'dojo/domReady!'
-    ], function (MapHosterArcGIS, MLConfig, utils, esri, WebMap, MapView, all) {
+    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {
-                console.log("StartupArcGIS ctor");
+
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
                 this.aMap = null;
@@ -60,9 +62,9 @@
                     zoomWebMap = null,
                     pointWebMap = [null, null],
                     channel = null,
-                    pusher,
-                    pusherChannel,
-                    self = this,
+                    pusher = null,
+                    pusherChannel = null,
+                    // self = this,
 
                     configOptions,
 
@@ -81,7 +83,8 @@
                       //add scalebar or other components like a legend, overview map etc
                         // dojo.parser.parse();
                         console.debug(self.aMap);
-                        var curmph = null,
+                        var
+                            curmph = null,
                             $inj,
                             mapTypeSvc,
                             currentPusher,
@@ -112,8 +115,11 @@
                             curmph = null;
 
                             $inj = self.mlconfig.getInjector();
+                            console.log("$inj");
+                            console.debug($inj);
                             mapTypeSvc = $inj.get('CurrentMapTypeService');
                             curmph = mapTypeSvc.getSelectedMapType();
+                            console.log('selected map type is ' + curmph);
     /*
                             pusher = PusherSetupCtrl.createPusherClient(
                                 {
@@ -147,10 +153,10 @@
                     },
 
                     initializePostProc = function (newMapId) {
-                        var
-                            $inj,
-                            mapOptions = {},
-                            mapDeferred;
+                        // var
+                        //     $inj,
+                        //     mapOptions = {},
+                        //     mapDeferred;
 
                         console.log("StartupArcGIS configure with map no. " + self.mapNumber);
                         //specify any default settings for your map
@@ -339,4 +345,5 @@
             StartupArcGIS: StartupArcGIS
         };
     });
+// }).call(this);
 }());

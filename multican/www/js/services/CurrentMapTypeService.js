@@ -21,7 +21,7 @@ define([
         }
     });
 
-    console.log("ready to create MapInstanceService");
+    console.log("ready to create CurrentMapTypeService");
     app.service('CurrentMapTypeService', ['mapsvcScopes', function (mapsvcScopes) {
         var mapTypes = {
             // 'leaflet': MapHosterLeaflet,

@@ -22,7 +22,7 @@ define([
     });
 
     console.log("ready to create CurrentMapTypeService");
-    app.service('CurrentMapTypeService', ['mapsvcScopes', function (mapsvcScopes) {
+    app.service('CurrentMapTypeService', ['mapsvcScopes', '$rootScope', function (mapsvcScopes, $rootScope) {
         var mapTypes = {
             // 'leaflet': MapHosterLeaflet,
             'google' : MapHosterGoogle,
@@ -142,7 +142,8 @@ define([
             selectedMapType = mpt;
             currentMapType = mpt;
             console.log("selectedMapType set to " + selectedMapType);
-            MapCtrl.invalidateCurrentMapTypeConfigured();
+            // MapCtrl.invalidateCurrentMapTypeConfigured();
+            $rootScope.$broadcast('invalidateCurrentMapTypeConfigured');
             if (scp) {
                 scp.$broadcast('SwitchedMapSystemEvent', data);
             }

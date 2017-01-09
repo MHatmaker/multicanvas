@@ -80,6 +80,9 @@
                     alert('infowindow with ng-click on map ' + outerMapNumber);
                 };
                 // initialize();
+                $scope.$on('invalidateCurrentMapTypeConfigured', function () {
+                    invalidateCurrentMapTypeConfigured();
+                });
 
 
             }
@@ -96,4 +99,5 @@
             invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfigured
         };
     });
-}());
+// }());
+}).call(this);

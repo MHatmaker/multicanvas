@@ -4,7 +4,7 @@
 (function () {
     "use strict";
     console.log('StartupArcGIS setup');
-    var self = null;
+    var self;
 
     // require(['libs/MapHosterArcGIS', 'libs/utils', 'esri',
     // // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
@@ -16,12 +16,14 @@
         'controllers/PusherSetupCtrl',
         'libs/MLConfig',
         'libs/utils',
-        'esri',
+        'services/PusherEventHandlerService',
+        'services/CurrentMapTypeService',
+        //'esri'
         'esri/WebMap',
-        'esri/views/MapView',
-        'dojo/promise/all',
-        'dojo/domReady!'
-    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
+        'esri/views/MapView'
+        // 'dojo/promise/all',
+        // 'dojo/domReady!'
+    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, utils, PusherEventHandlerService, CurrentMapTypeService, WebMap, MapView) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {
@@ -56,6 +58,7 @@
                     mapCtrl.setupQueryListener();
                 }
 
+                self = this;
                 var
                     selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 ", // Requires a space after map ID
                     previousSelectedWebMapId = selectedWebMapId,
@@ -64,7 +67,6 @@
                     channel = null,
                     pusher = null,
                     pusherChannel = null,
-                    // self = this,
 
                     configOptions,
 
@@ -173,8 +175,8 @@
                         };
 
                         console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + self.mapNumber);                        // return self.mapHoster;
-                        esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
-                        esri.config.defaults.io.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
+                        // esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
+                        // esri.config.defaults.io.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
 
                         //create the map using the web map id specified using configOptions or via the url parameter
                         // var cpn = new dijit.layout.ContentPane({}, "map_canvas").startup();

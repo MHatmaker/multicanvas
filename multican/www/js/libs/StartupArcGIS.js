@@ -20,10 +20,10 @@
         'services/CurrentMapTypeService',
         //'esri'
         'esri/WebMap',
-        'esri/views/MapView'
-        // 'dojo/promise/all',
+        'esri/views/MapView',
+        'dojo/promise/all'
         // 'dojo/domReady!'
-    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, utils, PusherEventHandlerService, CurrentMapTypeService, WebMap, MapView) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
+    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, utils, PusherEventHandlerService, CurrentMapTypeService, WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {
@@ -60,7 +60,7 @@
 
                 self = this;
                 var
-                    selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 ", // Requires a space after map ID
+                    selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0", // Requires a space after map ID
                     previousSelectedWebMapId = selectedWebMapId,
                     zoomWebMap = null,
                     pointWebMap = [null, null],
@@ -161,6 +161,7 @@
                         //     mapDeferred;
 
                         console.log("StartupArcGIS configure with map no. " + self.mapNumber);
+                        console.log("configOptions.webmap will be " + selectedWebMapId);
                         //specify any default settings for your map
                         //for example a bing maps key or a default web map id
                         configOptions = {
@@ -182,11 +183,14 @@
                         // var cpn = new dijit.layout.ContentPane({}, "map_canvas").startup();
 
                         // dijit.byId("map_canvas").addChild(cpn).placeAt("map_canvas").startup();
+                        console.log("call for new WebMap with webmap id " + configOptions.webmap);
 
-                        self.aMap = new WebMap({portalItem : {id: configOptions.webmap}});
+                        // self.aMap = new WebMap({portalItem : {id: configOptions.webmap}});
+                        self.aMap = new WebMap({portalItem : {id: 'e691172598f04ea8881cd2a4adaa45ba'}});
                         self.aMap.load()
                             .then(function () {
                               // load the basemap to get its layers created
+                              console.log('map.then callback function');
                                 return self.aMap.basemap.load();
                             })
                             .then(function () {
@@ -210,6 +214,7 @@
                                 console.log("all " + layers.length + " layers loaded");
                             })
                             .otherwise(function (error) {
+                                console.log("otherwise error");
                                 console.error(error);
                             });
                     },
@@ -314,7 +319,8 @@
                         // initUI();
                         if (!idWebMap) {
                             console.log("no idWebMap");
-                            selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 "; //"e68ab88371e145198215a792c2d3c794";
+                            // selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 "; //"e68ab88371e145198215a792c2d3c794";
+                            selectedWebMapId = 'a4bb8a91ecfb4131aa544eddfbc2f1d0'; //'f2e9b762544945f390ca4ac3671cfa72'/
                             self.mlconfig.setWebmapId(selectedWebMapId);
                             console.log("use " + selectedWebMapId);
                             // pointWebMap = [-87.7, lat=41.8];

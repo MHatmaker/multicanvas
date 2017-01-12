@@ -67,7 +67,7 @@
                     $scope.mapHosterInstance = mapHoster;
                     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.mapNumber);
                     console.log("Try accessor " + mapStartup.getMapNumber());
-                    console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
+                    // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
                     MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
                     mapHoster.addPopup(compiledMsg[0], centerCoord);
                 }

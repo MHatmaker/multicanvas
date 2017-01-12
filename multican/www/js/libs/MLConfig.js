@@ -21,7 +21,7 @@
                     this.mapId = ndx;
                     this.mapHosterInstance = null;
                     console.log("mapId is set to " + this.mapId);
-                    this.webmapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 ";
+                    this.webmapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0";
                     var self = this,
 
                         setMapId = function (id) {
@@ -52,6 +52,7 @@
                             return newWindow ? getParameterByName('id') : self.webmapId;
                         },
                         setWebmapId = function (id) {
+                            console.log("Setting webmapId to " + id);
                             self.webmapId = id;
                         };
                     setInjector(angular.element(document.body).injector());

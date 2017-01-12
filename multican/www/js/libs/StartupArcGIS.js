@@ -186,6 +186,8 @@
                         console.log("call for new WebMap with webmap id " + configOptions.webmap);
 
                         // self.aMap = new WebMap({portalItem : {id: configOptions.webmap}});
+                        // self.aMap = new WebMap({portalItem : {id: 'e691172598f04ea8881cd2a4adaa45ba'}});
+
                         self.aMap = new WebMap({portalItem : {id: 'e691172598f04ea8881cd2a4adaa45ba'}});
                         self.aMap.load()
                             .then(function () {

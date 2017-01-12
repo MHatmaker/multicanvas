@@ -50,7 +50,7 @@
                     getMap: getMap,
                     getMapNumber: getMapNumber,
                     getMapHosterInstance: getMapHosterInstance,
-                    configure: configure,
+                    config: configure,
                     init: init
                 };
             };

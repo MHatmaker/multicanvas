@@ -23,6 +23,11 @@
                     console.log("mapId is set to " + this.mapId);
                     this.webmapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0";
                     var self = this,
+                        details = {
+                            masherChannel : "private-channel-mashchannel",
+                            masherChannelInitialized : false,
+                            nging : null
+                        },
 
                         setMapId = function (id) {
                             console.log("MLConfig setMapId to " + id);
@@ -54,6 +59,18 @@
                         setWebmapId = function (id) {
                             console.log("Setting webmapId to " + id);
                             self.webmapId = id;
+                        },
+                        setChannel = function (chnl) {
+                            if (details.masherChannelInitialized === false) {
+                                details.masherChannelInitialized = true;
+                            }
+                            details.masherChannel = chnl;
+                        },
+                        setInjector = function (inj) {
+                            details.nginj = inj;
+                        },
+                        getInjector = function () {
+                            return details.nginj;
                         };
                     setInjector(angular.element(document.body).injector());
                     return {
@@ -64,7 +81,8 @@
                         setInjector: setInjector,
                         getInjector: getInjector,
                         webmapId: webmapId,
-                        setWebmapId: setWebmapId
+                        setWebmapId: setWebmapId,
+                        setChannel: setChannel
                     };
                 };
 

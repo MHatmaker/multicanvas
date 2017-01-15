@@ -347,6 +347,10 @@
             return selfMethods.isInstantiated;
         }
 
+        function createPusherClient(eventDct, pusherChannel, initName, cbfn, nfo) {
+            return selfMethods.createPusherClient(eventDct, pusherChannel, initName, cbfn, nfo);
+        }
+
         function init(App) {
             console.log('PusherSetup init');
             // alert("areWeInitialized ?");

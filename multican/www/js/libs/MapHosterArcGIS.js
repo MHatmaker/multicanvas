@@ -93,4 +93,5 @@
             MapHosterArcGIS: MapHosterArcGIS
         };
     });
-}());
+// }());
+}).call(this);

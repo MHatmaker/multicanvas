@@ -23,11 +23,11 @@ define([
     ]);
     console.log("ready to create MapDirective");
     require(['services/MapInstanceService', 'services/PusherEventHandlerService',
-
+        'services/CurrentMapTypeService', 
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
         'libs/MapHosterGoogle',
-        'libs/MapHosterArcGIS', 'services/CurrentMapTypeService', 'services/CanvasService']);
+        'libs/MapHosterArcGIS', 'services/CanvasService']);
         // require(['libs/MLConfig']);
         // return the app so you can require it in other components
     return app;

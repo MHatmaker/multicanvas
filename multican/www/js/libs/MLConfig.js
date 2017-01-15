@@ -66,6 +66,21 @@
                             }
                             details.masherChannel = chnl;
                         },
+                        getUserName = function () {
+                            return details.userName;
+                        },
+                        getUserNameFromUrl = function () {
+                            details.userName = getParameterByName('userName');
+                            return details.userName;
+                        },
+                        setUserName = function (name) {
+                            details.userName = name;
+                        },
+                        masherChannel = function (newWindow) {
+                            // alert(getParameterByName('channel'));
+                            // alert(details.masherChannel);
+                            return newWindow ? getParameterByName('channel') : details.masherChannel;
+                        },
                         setInjector = function (inj) {
                             details.nginj = inj;
                         },
@@ -78,11 +93,14 @@
                         getMapId: getMapId,
                         setMapHosterInstance: setMapHosterInstance,
                         getMapHosterInstance: getMapHosterInstance,
+                        setUserName: setUserName,
+                        getUserName: getUserName,
                         setInjector: setInjector,
                         getInjector: getInjector,
                         webmapId: webmapId,
                         setWebmapId: setWebmapId,
-                        setChannel: setChannel
+                        setChannel: setChannel,
+                        masherChannel: masherChannel
                     };
                 };
 

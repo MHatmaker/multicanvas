@@ -122,7 +122,7 @@
                             mapTypeSvc = $inj.get('CurrentMapTypeService');
                             curmph = mapTypeSvc.getSelectedMapType();
                             console.log('selected map type is ' + curmph);
-    /*
+
                             pusher = PusherSetupCtrl.createPusherClient(
                                 {
                                     'client-MapXtntEvent' : MapHosterArcGIS.retrievedBounds,
@@ -139,9 +139,29 @@
                                 },
                                 {'destination' : "destPlaceHolder", 'currentMapHolder' : curmph, 'newWindowId' : "windowIdPlaceholder"}
                             );
-    */
+
                         } else {
                             console.log("self.mapHoster is something or other");
+                            $inj = self.mlconfig.getInjector();
+                            mapTypeSvc = $inj.get('CurrentMapTypeService');
+                            curmph = mapTypeSvc.getSelectedMapType();
+                            console.log('selected map type is ' + curmph);
+                            pusher = PusherSetupCtrl.createPusherClient(
+                                {
+                                    'client-MapXtntEvent' : MapHosterArcGIS.retrievedBounds,
+                                    'client-MapClickEvent' : MapHosterArcGIS.retrievedClick,
+                                    'client-NewMapPosition' : curmph.retrievedNewPosition
+                                },
+                                pusherChannel,
+                                self.mlconfig.getUserName(),
+                                function (callbackChannel, userName) {
+                                    console.log("callback - don't need to setPusherClient");
+                                    console.log("It was a side effect of the createPusherClient:PusherClient process");
+                                    self.mlconfig.setUserName(userName);
+                                    // MapHosterArcGIS.prototype.setPusherClient(pusher, callbackChannel);
+                                },
+                                {'destination' : "destPlaceHolder", 'currentMapHolder' : curmph, 'newWindowId' : "windowIdPlaceholder"}
+                            );
                             currentPusher = pusher;
                             currentChannel = channel;
                             self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap);

@@ -10,8 +10,9 @@
         // areWeInstantiated = false;
     define([
         'libs/MLConfig',
+        'libs/PusherConfig',
         'controllers/PusherCtrl'
-    ], function (MLConfig) { //}, pusherCtrl) {
+    ], function (MLConfig, PusherConfig) { //}, pusherCtrl) {
         console.log('PusherSetupCtrl define');
 
         var selfdict = {
@@ -40,7 +41,7 @@
             console.log("in PusherSetupCtrl");
             selfdict.isInstantiated = areWeInitialized = false;
             console.log("areWeInitialized is " + areWeInitialized);
-            $scope.privateChannelMashover = MLConfig.masherChannel();
+            $scope.privateChannelMashover = PusherConfig.PusherConfig().masherChannel();
             selfdict.scope = $scope;
             selfdict.scope.userName = selfdict.userName;
             selfdict.pusher = null;
@@ -49,7 +50,7 @@
 
             $scope.showDialog = selfdict.scope.showDialog = false;
             $scope.data = {
-                privateChannelMashover : MLConfig.masherChannel(),
+                privateChannelMashover : PusherConfig.PusherConfig().masherChannel(),
                 prevChannel : 'mashchannel',
                 userName : selfdict.userName,
                 prevUserName : selfdict.userName,
@@ -198,8 +199,8 @@
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
                 selfdict.CHANNEL = $scope.data.privateChannelMashover;
-                MLConfig.setChannel($scope.data.privateChannelMashover);
-                MLConfig.setNameChannelAccepted(true);
+                PusherConfig.PusherConfig().setChannel($scope.data.privateChannelMashover);
+                PusherConfig.PusherConfig().setNameChannelAccepted(true);
                 selfdict.pusher = new PusherClient(selfdict.eventDct,
                     $scope.data.privateChannelMashover,
                     $scope.data.userName,

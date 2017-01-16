@@ -7,8 +7,9 @@
 
     define([
         'libs/utils',
-        'libs/MLConfig'
-    ], function (utils, MLConfig) {
+        'libs/MLConfig',
+        'libs/PusherConfig'
+    ], function (utils, MLConfig, PusherConfig) {
         console.log('MapHosterArcGIS define');
         var
             MapHosterArcGIS = function (aMap, mapNo, mlconfig) {
@@ -57,7 +58,7 @@
                         if (selfPusherDetails.pusher === null) {
                             selfPusherDetails.pusher = pusher;
                             selfPusherDetails.channel = channel;
-                            self.mlconfig.setChannel(channel);
+                            self.pusherconfig.setChannel(channel);
 
                             $inj = self.mlconfig.getInjector();
                             evtSvc = $inj.get('PusherEventHandlerService');

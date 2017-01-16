@@ -15,6 +15,7 @@
         'libs/MapHosterArcGIS',
         'controllers/PusherSetupCtrl',
         'libs/MLConfig',
+        'libs/PusherConfig',
         'libs/utils',
         'services/PusherEventHandlerService',
         'services/CurrentMapTypeService',
@@ -23,7 +24,7 @@
         'esri/views/MapView',
         'dojo/promise/all'
         // 'dojo/domReady!'
-    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, utils, PusherEventHandlerService, CurrentMapTypeService, WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
+    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, PusherEventHandlerService, CurrentMapTypeService, WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig) {
@@ -59,6 +60,7 @@
                 }
 
                 self = this;
+
                 var
                     selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0", // Requires a space after map ID
                     previousSelectedWebMapId = selectedWebMapId,
@@ -101,9 +103,9 @@
                          */
 
                         console.log("start MapHoster with center " + pointWebMap[0] + ", " + pointWebMap[1] + ' zoom ' + zoomWebMap);
-                        console.log("selfDetails.mph : " + self.mph);
+                        console.log("self.mapHoster : " + self.mapHoster);
                         if (self.mapHoster === null) {
-                            console.log("self.Details.mph is null");
+                            console.log("self.mapHoster is null");
                             // alert("StartupArcGIS.initUI : selfDetails.mph == null");
                             // placeCustomControls();
 
@@ -291,12 +293,12 @@
                             }
                         };
 
-                        if (self.mlconfig.isNameChannelAccepted() === false) {
+                        if (PusherConfig.isNameChannelAccepted() === false) {
                             PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
                                 self.mlconfig.getUserName(), openNewDisplay,
                                     {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId});
                         } else {
-                            openNewDisplay(self.mlconfig.masherChannel(false), self.mlconfig.getUserName());
+                            openNewDisplay(PusherConfig.masherChannel(false), self.mlconfig.getUserName());
                         }
                     },
 

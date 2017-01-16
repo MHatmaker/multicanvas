@@ -62,14 +62,16 @@
                         mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber, mapConfig);
                     }
                     // mapStartups.push(mapStartup);
-                    mapStartup.configure(configMapNumber, mapOptions);
-                    mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
-                    $scope.mapHosterInstance = mapHoster;
-                    console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.mapNumber);
-                    console.log("Try accessor " + mapStartup.getMapNumber());
-                    // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
-                    MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
-                    mapHoster.addPopup(compiledMsg[0], centerCoord);
+                    setTimeout(function() {
+                        mapStartup.configure(configMapNumber, mapOptions);
+                        mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
+                        $scope.mapHosterInstance = mapHoster;
+                        console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.mapNumber);
+                        console.log("Try accessor " + mapStartup.getMapNumber());
+                        // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
+                        MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
+                        mapHoster.addPopup(compiledMsg[0], centerCoord);
+                      }, 3000);
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber, mapType) {

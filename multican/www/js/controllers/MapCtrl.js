@@ -18,7 +18,8 @@
             '$compile',
             'MapInstanceService',
             function ($scope, $compile, MapInstanceService) {
-                var outerMapNumber = MapInstanceService.getSlideCount();
+                var outerMapNumber = MapInstanceService.getSlideCount(),
+                    mapStartup;
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 //     configMapNumber = mapConfig.getMapId();
@@ -33,8 +34,23 @@
                 }
                 selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
 
+                function setupMapHoster(mapHoster, aMap) {
+                    var mapHoster,
+                        popmapString = "click me for map " + mapHoster.getMapNumber(),
+                        contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>",
+                        compiledMsg = $compile(contentString)($scope);
+                    // mapStartup.configure(configMapNumber, mapOptions);
+
+                    $scope.mapHosterInstance = mapHoster;
+                    console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
+                    console.log("Try accessor " + mapStartup.getMapNumber());
+                    // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
+                    MapInstanceService.setMapHosterInstance(mapHoster.getMapNumber(), mapHoster);
+                    // mapHoster.addPopup(compiledMsg[0], centerCoord);
+                }
+
                 function initialize(mapNo, mapType) {
-                    var mapStartup,
+                    var
                         mapHoster,
                         centerCoord,
                         mapOptions = null,
@@ -59,19 +75,19 @@
                     if (mapType === 'google') {
                         mapStartup = new StartupGoogle.StartupGoogle(mapNumber);
                     } else {
-                        mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber, mapConfig);
+                        mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber, mapConfig, setupMapHoster);
                     }
                     // mapStartups.push(mapStartup);
-                    setTimeout(function() {
-                        mapStartup.configure(configMapNumber, mapOptions);
-                        mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
-                        $scope.mapHosterInstance = mapHoster;
-                        console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.mapNumber);
-                        console.log("Try accessor " + mapStartup.getMapNumber());
-                        // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
-                        MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
-                        mapHoster.addPopup(compiledMsg[0], centerCoord);
-                      }, 3000);
+                    // setTimeout(function() {
+                    mapStartup.configure(configMapNumber, mapOptions);
+                    //     mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
+                    //     $scope.mapHosterInstance = mapHoster;
+                    //     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
+                    //     console.log("Try accessor " + mapStartup.getMapNumber());
+                    //     // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
+                    //     MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
+                    //     mapHoster.addPopup(compiledMsg[0], centerCoord);
+                    //   }, 1000);
                 }
                 // google.maps.event.addDomListener(window, 'load', initialize);
                 $scope.startMap = function (mapNumber, mapType) {

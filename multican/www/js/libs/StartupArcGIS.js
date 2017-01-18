@@ -27,12 +27,13 @@
     ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, PusherEventHandlerService, CurrentMapTypeService, WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
-            StartupArcGIS = function (mapNo, mlconfig) {
+            StartupArcGIS = function (mapNo, mlconfig, mapHosterSetupCallback) {
 
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
                 this.aMap = null;
                 this.mlconfig = mlconfig;
+                this.mapHosterSetupCallback = mapHosterSetupCallback;
                 console.log("Setting mapNumber to " + this.mapNumber);
                 function showLoading() {
                     utils.showLoading();
@@ -224,6 +225,7 @@
                                     //dojo.destroy(map.container);
                                 }
                                 self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
+                                self.mapHosterSetupCallback(self.mapHoster, self.aMap);
                                 initUI();
 
                                 // grab all the layers and load them

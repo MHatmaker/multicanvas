@@ -151,9 +151,9 @@
                             console.log('selected map type is ' + curmph);
                             pusher = PusherSetupCtrl.createPusherClient(
                                 {
-                                    'client-MapXtntEvent' : MapHosterArcGIS.retrievedBounds,
-                                    'client-MapClickEvent' : MapHosterArcGIS.retrievedClick,
-                                    'client-NewMapPosition' : curmph.retrievedNewPosition
+                                    'client-MapXtntEvent' : self.mapHoster.retrievedBounds,
+                                    'client-MapClickEvent' : self.mapHoster.retrievedClick,
+                                    'client-NewMapPosition' : self.mapHoster.retrievedNewPosition
                                 },
                                 pusherChannel,
                                 self.mlconfig.getUserName(),

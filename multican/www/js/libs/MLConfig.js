@@ -24,7 +24,10 @@
                     this.webmapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0";
                     var self = this,
                         details = {
-                            nginj : null
+                            nginj : null,
+                            masherChannel : "private-channel-mashchannel",
+                            masherChannelInitialized : false,
+                            nameChannelAccepted : false
                         },
 
                         setMapId = function (id) {
@@ -34,6 +37,35 @@
                         },
                         getMapId = function () {
                             return self.mapId;
+                        },
+                        masherChannel = function (newWindow) {
+                            // alert(getParameterByName('channel'));
+                            // alert(details.masherChannel);
+                            return newWindow ? getParameterByName('channel') : details.masherChannel;
+                        },
+                        getChannelFromUrl = function () {
+                            details.masherChannel = getParameterByName('channel');
+                            details.masherChannelInitialized = true;
+                            return details.masherChannel;
+                        },
+                        setChannel = function (chnl) {
+                            if (details.masherChannelInitialized === false) {
+                                details.masherChannelInitialized = true;
+                            }
+                            details.masherChannel = chnl;
+                        },
+                        isChannelInitialized = function () {
+                            return details.masherChannelInitialized;
+                        },
+
+                        setNameChannelAccepted = function (tf) {
+                            if (details.nameChannelAccepted === false) {
+                                details.nameChannelAccepted = true;
+                            }
+                            details.nameChannelAccepted = tf;
+                        },
+                        isNameChannelAccepted = function () {
+                            return details.nameChannelAccepted;
                         },
                         setMapHosterInstance = function (inst) {
                             self.mapHosterInstance = inst;
@@ -85,7 +117,11 @@
                         setInjector: setInjector,
                         getInjector: getInjector,
                         webmapId: webmapId,
-                        setWebmapId: setWebmapId
+                        setWebmapId: setWebmapId,
+                        masherChannel: masherChannel,
+                        getChannelFromUrl: getChannelFromUrl,
+                        isChannelInitialized: isChannelInitialized,
+                        isNameChannelAccepted: isNameChannelAccepted
                     };
                 };
 

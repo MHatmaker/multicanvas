@@ -93,6 +93,7 @@
                             $inj,
                             mapTypeSvc,
                             currentPusher,
+                            pusherChannel,
                             currentChannel;
 
                         /* Scalebar refuses to appear on map.  It appears outside the map on a bordering control.
@@ -125,6 +126,7 @@
                             mapTypeSvc = $inj.get('CurrentMapTypeService');
                             curmph = mapTypeSvc.getSelectedMapType();
                             console.log('selected map type is ' + curmph);
+                            pusherChannel = MLConfig.masherChannel(false);
 
                             pusher = PusherSetupCtrl.createPusherClient(
                                 {
@@ -149,6 +151,7 @@
                             mapTypeSvc = $inj.get('CurrentMapTypeService');
                             curmph = mapTypeSvc.getSelectedMapType();
                             console.log('selected map type is ' + curmph);
+                            pusherChannel = self.mlconfig.masherChannel(false);
                             pusher = PusherSetupCtrl.createPusherClient(
                                 {
                                     'client-MapXtntEvent' : self.mapHoster.retrievedBounds,
@@ -229,6 +232,7 @@
                                 initUI();
 
                                 // grab all the layers and load them
+                                console.log("Ready to get alllayers");
                                 var allLayers = self.aMap.allLayers,
                                     promises = allLayers.map(function (layer) {
                                         return layer.load();

@@ -12,7 +12,7 @@
         'libs/MLConfig',
         'libs/PusherConfig',
         'controllers/PusherCtrl'
-    ], function (MLConfig, PusherConfig) { //}, pusherCtrl) {
+    ], function (MLConfig, PusherConfig, PusherCtrl) { //}, pusherCtrl) {
         console.log('PusherSetupCtrl define');
 
         var selfdict = {
@@ -115,7 +115,7 @@
 
                 channelBind.bind('client-NewMapPosition', function (frame) {
                     console.log('frame is', frame);
-                    $inj = MLConfig.getInjector();
+                    $inj = PusherConfig.getInjector();
                     serv = $inj.get('PusherEventHandlerService');
                     handler = serv.getHandler('client-NewMapPosition');
                     handler(frame);
@@ -144,7 +144,7 @@
                 });
 
 
-                $inj = MLConfig.getInjector();
+                $inj = PusherConfig.PusherConfig().getInjector();
                 serv = $inj.get('CurrentMapTypeService');
                 selfdict.mph = serv.getSelectedMapType();
 

@@ -136,6 +136,7 @@
                                 },
                                 pusherChannel,
                                 self.mlconfig.getUserName(),
+                                self.mlconfig.getMapId(),
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
                                     console.log("It was a side effect of the createPusherClient:PusherClient process");
@@ -160,6 +161,7 @@
                                 },
                                 pusherChannel,
                                 self.mlconfig.getUserName(),
+                                self.mlconfig.getMapId(),
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
                                     console.log("It was a side effect of the createPusherClient:PusherClient process");

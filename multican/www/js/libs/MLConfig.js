@@ -27,7 +27,8 @@
                             nginj : null,
                             masherChannel : "private-channel-mashchannel",
                             masherChannelInitialized : false,
-                            nameChannelAccepted : false
+                            nameChannelAccepted : false,
+                            userName: 'defaultuser'
                         },
 
                         setMapId = function (id) {

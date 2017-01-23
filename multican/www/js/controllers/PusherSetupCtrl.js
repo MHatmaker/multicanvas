@@ -37,7 +37,7 @@
             allMapTypes,
             mptLength;
 
-        function PusherSetupCtrl($scope, $uibModal) {
+        function PusherSetupCtrl($scope, $uibModal, MapInstanceService) {
             console.log("in PusherSetupCtrl");
             selfdict.isInstantiated = areWeInitialized = false;
             console.log("areWeInitialized is " + areWeInitialized);
@@ -148,25 +148,30 @@
                 serv = $inj.get('CurrentMapTypeService');
                 selfdict.mph = serv.getSelectedMapType();
 
-                allMapTypes = serv.getMapTypes();
-                mptLength = allMapTypes.length;
+                // allMapTypes = serv.getMapTypes();
+                // mptLength = allMapTypes.length;
+                //
+                // console.log("BEWARE OF SIDE EFFECTS");
+                // console.log("Attempt to setPusherClient for all defined map types");
+                // for (i = 0; i < mptLength; i +=  1) {
+                //     maptypekey = allMapTypes[i].type;
+                //     maptypeobj = allMapTypes[i].mph;
+                //     console.log("PusherSetupCtrl iteratively setting pusher client for hoster type: " + maptypekey);
+                //     if (maptypeobj && maptypeobj !== "undefined") {
+                //         maptypeobj.setPusherClient(pusher, selfdict.CHANNEL);
+                //         maptypeobj.setUserName(selfdict.userName);
+                //     }
+                // }
 
-                console.log("BEWARE OF SIDE EFFECTS");
-                console.log("Attempt to setPusherClient for all defined map types");
-                for (i = 0; i < mptLength; i +=  1) {
-                    maptypekey = allMapTypes[i].type;
-                    maptypeobj = allMapTypes[i].mph;
-                    console.log("PusherSetupCtrl iteratively setting pusher client for hoster type: " + maptypekey);
-                    if (maptypeobj && maptypeobj !== "undefined") {
-                        maptypeobj.setPusherClient(pusher, selfdict.CHANNEL);
-                        maptypeobj.setUserName(selfdict.userName);
-                    }
-                }
+                maptypeobj = MapInstanceService.getMapHosterInstance(selfdict.mapNumber);
+                maptypeobj.setPusherClient(pusher, selfdict.CHANNEL);
+                maptypeobj.setUserName(selfdict.userName);
 
-                console.log("CurrentMapTypeService got mph, call setPusherClient");
-                selfdict.mph.setPusherClient(pusher, selfdict.CHANNEL);
-                selfdict.mph.setUserName(selfdict.userName);
-                selfdict.eventDct = selfdict.mph.getEventDictionary();
+                // console.log("CurrentMapTypeService got mph, call setPusherClient");
+                // selfdict.mph.setPusherClient(pusher, selfdict.CHANNEL);
+                // selfdict.mph.setUserName(selfdict.userName);
+                // selfdict.eventDct = selfdict.mph.getEventDictionary();
+                selfdict.eventDct = maptypeobj.getEventDictionary();
                 if (selfdict.callbackfunction !== null) {
                     if (selfdict.info) {
                         selfdict.callbackfunction(selfdict.CHANNEL, selfdict.userName,
@@ -286,10 +291,11 @@
                 }
             };
 
-            createPusherClient = function (eventDct, pusherChannel, initName, cbfn, nfo) {
+            createPusherClient = function (eventDct, pusherChannel, initName, mapno, cbfn, nfo) {
                 console.log("PusherSetupCtrl.createPusherClient");
                 selfdict.eventDct = eventDct;
                 selfdict.userName = initName;
+                selfdict.mapNumber = mapno;
                 if (selfdict.scope) {
                     selfdict.scope.data.userName = initName;
                 }
@@ -348,8 +354,8 @@
             return selfMethods.isInstantiated;
         }
 
-        function createPusherClient(eventDct, pusherChannel, initName, cbfn, nfo) {
-            return selfMethods.createPusherClient(eventDct, pusherChannel, initName, cbfn, nfo);
+        function createPusherClient(eventDct, pusherChannel, initName, mapno, cbfn, nfo) {
+            return selfMethods.createPusherClient(eventDct, pusherChannel, initName, mapno, cbfn, nfo);
         }
 
         function init(App) {
@@ -362,7 +368,7 @@
             // }
             if (!selfdict.isInitialized) {
                 selfdict.isInitialized = areWeInitialized = true;
-                App.controller('PusherSetupCtrl',  ['$scope', '$uibModal', PusherSetupCtrl]);
+                App.controller('PusherSetupCtrl',  ['$scope', '$uibModal', 'MapInstanceService', PusherSetupCtrl]);
             }
 
             // PusherSetupCtrl.self.scope = PusherSetupCtrl.$scope;

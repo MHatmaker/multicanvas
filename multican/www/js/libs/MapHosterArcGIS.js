@@ -59,6 +59,15 @@
 
                         console.log("MapHosterArcGIS configure with map no. " + self.mapNumber);
                     },
+                    setUserName = function(name) {
+                        self.mlconfig.setUserName(name);
+                    },
+                    getEventDictionary = function() {
+                        var $inj = self.mlconfig.getInjector(),
+                            evtSvc = $inj.get('PusherEventHandlerService'),
+                            eventDct = evtSvc.getEventDct();
+                        return eventDct;
+                    },
                     setPusherClient = function (pusher, channel) {
                         console.log("MapHosterArcGIS setPusherClient, selfPusherDetails.pusher " +  selfPusherDetails.pusher);
                         var $inj = self.mlconfig.getInjector(),
@@ -69,7 +78,7 @@
                         if (selfPusherDetails.pusher === null) {
                             selfPusherDetails.pusher = pusher;
                             selfPusherDetails.channel = channel;
-                            self.pusherconfig.setChannel(channel);
+                            PusherConfig.PusherConfig().setChannel(channel);
 
                             $inj = self.mlconfig.getInjector();
                             evtSvc = $inj.get('PusherEventHandlerService');
@@ -236,7 +245,9 @@
                     setPusherClient: setPusherClient,
                     retrievedBounds: retrievedBounds,
                     retrievedClick: retrievedClick,
-                    retrievedNewPosition: retrievedNewPosition
+                    retrievedNewPosition: retrievedNewPosition,
+                    setUserName: setUserName,
+                    getEventDictionary: getEventDictionary
                 };
             };
 

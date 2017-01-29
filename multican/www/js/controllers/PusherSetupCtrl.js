@@ -60,6 +60,10 @@
 
             function PusherClient(eventDct, channel, userName, cbfn) {
                 var pusher,
+                    APP_ID = '40938',
+                    APP_KEY = '5c6bad75dc0dd1cec1a6',
+                    APP_SECRET = '54546672d0196be97f6a',
+
                     channelBind,
                     // self = this,
                     handler,
@@ -85,7 +89,16 @@
                 selfdict.CHANNEL = channel.indexOf("private-channel-") > -1 ? channel : 'private-channel-' + channel;
                 console.log("with channel " + selfdict.CHANNEL);
 
-                pusher = new Pusher('5c6bad75dc0dd1cec1a6');
+                // pusher = new Pusher({appId: app_id, key: app_key, secret: app_secret});
+                pusher = new Pusher(APP_KEY, {
+                    authTransport: 'client',
+                    clientAuth: {
+                      key: APP_KEY,
+                      secret: APP_SECRET,
+                      user_id: USER_ID,
+                      user_info: {}
+                    }
+                });
                 pusher.connection.bind('state_change', function (state) {
                     if (state.current === 'connected') {
                         // alert("Yipee! We've connected!");

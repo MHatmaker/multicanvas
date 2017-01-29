@@ -19,12 +19,14 @@
         'libs/utils',
         'services/PusherEventHandlerService',
         'services/CurrentMapTypeService',
+        'services/MapControllerService',
         //'esri'
         'esri/WebMap',
         'esri/views/MapView',
         'dojo/promise/all'
         // 'dojo/domReady!'
-    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, PusherEventHandlerService, CurrentMapTypeService, WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
+    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, PusherEventHandlerService,
+        CurrentMapTypeService, MapControllerService, WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig, mapHosterSetupCallback) {
@@ -50,14 +52,15 @@
                     var $inj = self.mlconfig.getInjector(),
                         ctrlSvc = $inj.get('MapControllerService'),
                         mapCtrl = ctrlSvc.getController();
-                    mapCtrl.placeCustomControls();
+                        // mapCtrl = MapControllerService.getController();
+                    // mapCtrl.placeCustomControls();
                 }
 
                 function setupQueryListener() {
-                    var $inj = self.mlconfig.getInjector(),
-                        ctrlSvc = $inj.get('MapControllerService'),
-                        mapCtrl = ctrlSvc.getController();
-                    mapCtrl.setupQueryListener();
+                    //var // $inj = self.mlconfig.getInjector(),
+                        // ctrlSvc = $inj.get('MapControllerService'),
+                        // mapCtrl = MapControllerService.getController();
+                    // mapCtrl.setupQueryListener();
                 }
 
                 self = this;

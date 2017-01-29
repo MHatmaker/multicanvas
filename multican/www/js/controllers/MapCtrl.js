@@ -10,7 +10,8 @@
         'libs/StartupArcGIS'
     ], function (app, StartupGoogle, StartupArcGIS) {
         var selfMethods = {},
-            curMapTypeInitialized = false;
+            curMapTypeInitialized = false,
+            placeCustomControls;
 
         console.log("ready to create MapCtrl");
         app.controller('MapCtrl', [
@@ -35,7 +36,7 @@
                 selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
 
                 function setupMapHoster(mapHoster, aMap) {
-                    var mapHoster,
+                    var
                         popmapString = "click me for map " + mapHoster.getMapNumber(),
                         contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>",
                         compiledMsg = $compile(contentString)($scope);
@@ -51,7 +52,7 @@
 
                 function initialize(mapNo, mapType) {
                     var
-                        mapHoster,
+                        // mapHoster,
                         centerCoord,
                         mapOptions = null,
                         mapNumber = mapNo,
@@ -103,7 +104,12 @@
                 });
 
 
+                function placeCustomControls() {
+                    console.log("MapCtrl.placeCustomControls");
+                }
+                selfMethods.placeCustomControls = placeCustomControls;
             }
+
         ]);
 
         function invalidateCurrentMapTypeConfigured() {
@@ -112,9 +118,13 @@
                 selfMethods.invalidateCurrentMapTypeConfigured();
             }
         }
-
+        placeCustomControls = function () {
+            console.log("placeCustomControls");
+            selfMethods.placeCustomControls();
+        }
         return {
-            invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfigured
+            invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfigured,
+            placeCustomControls : placeCustomControls
         };
     });
 // }());

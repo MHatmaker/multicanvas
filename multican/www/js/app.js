@@ -20,6 +20,7 @@ define([
     var app = angular.module('app', [
         'ionic',
         'ui.bootstrap'
+        // 'doowb.angular-pusher'
     ]);
     console.log("ready to create MapDirective");
     require(['services/MapInstanceService',

@@ -25,6 +25,7 @@
             'PusherClient' : null,
             'userName' : '',
             'isInstantiated' : false,
+            'serverUrl' : 'http://linkr622-arcadian.rhcloud.com/',
             displayPusherDialog : null
         },
             selfMethods = {},
@@ -90,13 +91,15 @@
                 console.log("with channel " + selfdict.CHANNEL);
 
                 // pusher = new Pusher({appId: app_id, key: app_key, secret: app_secret});
+                // pusher = new Pusher(APP_KEY);
                 pusher = new Pusher(APP_KEY, {
-                    authTransport: 'client',
+                    authTransport: 'jsonp',
+                    authEndpoint: 'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                       key: APP_KEY,
                       secret: APP_SECRET,
-                      user_id: USER_ID,
-                      user_info: {}
+                      // user_id: USER_ID,
+                      // user_info: {}
                     }
                 });
                 pusher.connection.bind('state_change', function (state) {

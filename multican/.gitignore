@@ -16,4 +16,4 @@ www/service-worker.js
 www/js/libs/arcgis_js_v41*
 gitpass
 ../extras/
-../extras/service.js
+ngrok*

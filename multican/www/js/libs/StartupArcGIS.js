@@ -34,6 +34,7 @@
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
                 this.aMap = null;
+                this.aView = null;
                 this.mlconfig = mlconfig;
                 this.mapHosterSetupCallback = mapHosterSetupCallback;
                 console.log("Setting mapNumber to " + this.mapNumber);
@@ -219,7 +220,14 @@
                         // self.aMap = new WebMap({portalItem : {id: configOptions.webmap}});
                         // self.aMap = new WebMap({portalItem : {id: 'e691172598f04ea8881cd2a4adaa45ba'}});
 
-                        self.aMap = new WebMap({portalItem : {id: 'e691172598f04ea8881cd2a4adaa45ba'}});
+                        self.aMap = new WebMap({portalItem : {id: 'a4bb8a91ecfb4131aa544eddfbc2f1d0'}});
+                        self.aView = new MapView({
+                            map : self.aMap,
+                            container : document.getElementById("map" + self.mapNumber),
+                            zoom : 14,
+                            center : [-87.620692, 41.888941]
+                        });
+                        // initUI();
                         self.aMap.load()
                             .then(function () {
                               // load the basemap to get its layers created
@@ -234,6 +242,12 @@
                                 }
                                 self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
                                 self.mapHosterSetupCallback(self.mapHoster, self.aMap);
+                                self.aView = new MapView({
+                                    map : self.aMap,
+                                    container : document.getElementById("map" + self.mapNumber),
+                                    zoom : 14,
+                                    center : [-87.620692, 41.888941]
+                                });
                                 initUI();
 
                                 // grab all the layers and load them

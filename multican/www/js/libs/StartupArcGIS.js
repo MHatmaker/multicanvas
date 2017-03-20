@@ -21,12 +21,13 @@
         'services/CurrentMapTypeService',
         'services/MapControllerService',
         //'esri'
-        'esri/WebMap',
-        'esri/views/MapView',
-        'dojo/promise/all'
+        'exri.map'
+        // 'esri/WebMap',
+        // 'esri/views/MapView',
+        // 'dojo/promise/all'
         // 'dojo/domReady!'
     ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, PusherEventHandlerService,
-        CurrentMapTypeService, MapControllerService, WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
+        CurrentMapTypeService, MapControllerService, esrimap) { // WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig, mapHosterSetupCallback) {
@@ -61,7 +62,8 @@
                     //var // $inj = self.mlconfig.getInjector(),
                         // ctrlSvc = $inj.get('MapControllerService'),
                         // mapCtrl = MapControllerService.getController();
-                    // mapCtrl.setupQueryListener();
+                    var mapCtrl = MapControllerService.getController();
+                    mapCtrl.setupQueryListener();
                 }
 
                 self = this;
@@ -114,29 +116,29 @@
                             console.log("self.mapHoster is null");
                             // alert("StartupArcGIS.initUI : selfDetails.mph == null");
                             // placeCustomControls();
-
+                            self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
                             self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap);
                             placeCustomControls();
                             setupQueryListener();
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
                             console.log("StartupArcGIS.initUI : selfDetails.mph as initially null and should now be set");
-                            console.debug(MapHosterArcGIS);
-                            console.debug(pusherChannel);
-                            curmph = null;
+                            // console.debug(MapHosterArcGIS);
+                            // console.debug(pusherChannel);
+                            curmph = self.mapHoster;
 
-                            $inj = self.mlconfig.getInjector();
-                            console.log("$inj");
-                            console.debug($inj);
-                            mapTypeSvc = $inj.get('CurrentMapTypeService');
-                            curmph = mapTypeSvc.getSelectedMapType();
-                            console.log('selected map type is ' + curmph);
-                            pusherChannel = MLConfig.masherChannel(false);
+                            // $inj = self.mlconfig.getInjector();
+                            // console.log("$inj");
+                            // console.debug($inj);
+                            // mapTypeSvc = $inj.get('CurrentMapTypeService');
+                            // curmph = mapTypeSvc.getSelectedMapType();
+                            // console.log('selected map type is ' + curmph);
+                            pusherChannel = self.mlconfig.masherChannel(false);
 
                             pusher = PusherSetupCtrl.createPusherClient(
                                 {
-                                    'client-MapXtntEvent' : MapHosterArcGIS.retrievedBounds,
-                                    'client-MapClickEvent' : MapHosterArcGIS.retrievedClick,
-                                    'client-NewMapPosition' : curmph.retrievedNewPosition
+                                    'client-MapXtntEvent' : self.mapHoster.retrievedBounds,
+                                    'client-MapClickEvent' : self.mapHoster.retrievedClick,
+                                    'client-NewMapPosition' : self.mapHoster.retrievedNewPosition
                                 },
                                 pusherChannel,
                                 self.mlconfig.getUserName(),
@@ -152,10 +154,10 @@
 
                         } else {
                             console.log("self.mapHoster is something or other");
-                            $inj = self.mlconfig.getInjector();
-                            mapTypeSvc = $inj.get('CurrentMapTypeService');
-                            curmph = mapTypeSvc.getSelectedMapType();
-                            console.log('selected map type is ' + curmph);
+                            // $inj = self.mlconfig.getInjector();
+                            // mapTypeSvc = $inj.get('CurrentMapTypeService');
+                            // curmph = mapTypeSvc.getSelectedMapType();
+                            // console.log('selected map type is ' + curmph);
                             pusherChannel = self.mlconfig.masherChannel(false);
                             pusher = PusherSetupCtrl.createPusherClient(
                                 {
@@ -186,7 +188,7 @@
                         }
                     },
 
-                    initializePostProc = function (newMapId) {
+                    initializePostProc = function (newSelectedWebMapId) {
                         // var
                         //     $inj,
                         //     mapOptions = {},

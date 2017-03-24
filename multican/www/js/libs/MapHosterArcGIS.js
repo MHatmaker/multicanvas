@@ -10,9 +10,8 @@
         'libs/utils',
         'libs/MLConfig',
         'libs/PusherConfig',
-        'esri/geometry/Point',
-        'esri/views/MapView'
-    ], function (PositionViewCtrl, utils, MLConfig, PusherConfig, GeometryPoint, MapView) {
+        'esri/geometry/Point'
+    ], function (PositionViewCtrl, utils, MLConfig, PusherConfig, GeometryPoint) {
         console.log('MapHosterArcGIS define');
         var
             MapHosterArcGIS = function (aMap, mapNo, mlconfig) {

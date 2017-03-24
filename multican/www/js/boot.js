@@ -10,9 +10,9 @@ require([
     'controllers/MapCtrl',
     'controllers/CarouselCtrl',
     'controllers/CanvasHolderCtrl',
-    'controllers/MapDirective'
+    'controllers/MapDirective',
     // 'js/libs/MLConfig',
-    // 'esri.map',
+    'esri/map',
     // 'esri.tasks.geometry',
     // 'esri.tasks.locator',
     // 'esri/geometry/webMercatorUtils',

@@ -66,7 +66,7 @@
                     console.log("initialize MapCtrl with map id " + mapNo);
                     curMapTypeInitialized = true;
                     console.log("curMapTypeInitialized is " + curMapTypeInitialized);
-                    centerCoord = { lat: 43.07493, lng: -89.381388};
+                    centerCoord = { lat: 43.07493, lng: -89.381388}; // <<<<<<<<<<<<<Madison, WI
 
                     mapOptions = {
                         center: centerCoord,

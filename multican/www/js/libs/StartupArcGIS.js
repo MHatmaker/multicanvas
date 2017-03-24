@@ -21,7 +21,7 @@
         'services/CurrentMapTypeService',
         'services/MapControllerService',
         //'esri'
-        'exri.map'
+        'esri/map'
         // 'esri/WebMap',
         // 'esri/views/MapView',
         // 'dojo/promise/all'
@@ -124,7 +124,7 @@
                             console.log("StartupArcGIS.initUI : selfDetails.mph as initially null and should now be set");
                             // console.debug(MapHosterArcGIS);
                             // console.debug(pusherChannel);
-                            curmph = self.mapHoster;
+                            // curmph = self.mapHoster;
 
                             // $inj = self.mlconfig.getInjector();
                             // console.log("$inj");
@@ -149,7 +149,7 @@
                                     self.mlconfig.setUserName(userName);
                                     // MapHosterArcGIS.prototype.setPusherClient(pusher, callbackChannel);
                                 },
-                                {'destination' : "destPlaceHolder", 'currentMapHolder' : curmph, 'newWindowId' : "windowIdPlaceholder"}
+                                {'destination' : "destPlaceHolder", 'currentMapHolder' : self.mapHoster, 'newWindowId' : "windowIdPlaceholder"}
                             );
 
                         } else {
@@ -189,10 +189,14 @@
                     },
 
                     initializePostProc = function (newSelectedWebMapId) {
-                        // var
+                        var
+                            mapDeferred;
                         //     $inj,
                         //     mapOptions = {},
-                        //     mapDeferred;
+
+                        //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
+                        esri.config.defaults.geometryService =
+                            new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
                         console.log("StartupArcGIS configure with map no. " + self.mapNumber);
                         console.log("configOptions.webmap will be " + selectedWebMapId);
@@ -210,8 +214,8 @@
                         };
 
                         console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + self.mapNumber);                        // return self.mapHoster;
-                        // esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
-                        // esri.config.defaults.io.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
+                        esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
+                        esri.config.defaults.io.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
 
                         //create the map using the web map id specified using configOptions or via the url parameter
                         // var cpn = new dijit.layout.ContentPane({}, "map_canvas").startup();
@@ -222,14 +226,15 @@
                         // self.aMap = new WebMap({portalItem : {id: configOptions.webmap}});
                         // self.aMap = new WebMap({portalItem : {id: 'e691172598f04ea8881cd2a4adaa45ba'}});
 
-                        self.aMap = new WebMap({portalItem : {id: 'a4bb8a91ecfb4131aa544eddfbc2f1d0'}});
-                        self.aView = new MapView({
-                            map : self.aMap,
-                            container : document.getElementById("map" + self.mapNumber),
-                            zoom : 14,
-                            center : [-87.620692, 41.888941]
-                        });
+                        // self.aMap = new WebMap({portalItem : {id: 'a4bb8a91ecfb4131aa544eddfbc2f1d0'}});
+                        // self.aView = new MapView({
+                        //     map : self.aMap,
+                        //     container : document.getElementById("map" + self.mapNumber),
+                        //     zoom : 14,
+                        //     center : [-87.620692, 41.888941]
+                        // });
                         // initUI();
+                        /*
                         self.aMap.load()
                             .then(function () {
                               // load the basemap to get its layers created
@@ -268,6 +273,65 @@
                                 console.log("otherwise error");
                                 console.error(error);
                             });
+                            */
+                        try {
+                            mapDeferred = esri.arcgis.utils.createMap(configOptions.webmap, "map_canvas", {
+                                mapOptions: {
+                                    slider: true,
+                                    nav: false,
+                                    wrapAround180: true
+
+                                },
+                                ignorePopups: false,
+                                bingMapsKey: configOptions.bingMapsKey,
+                                geometryServiceURL: "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+
+                            });
+                        } catch (err) {
+                            console.log(err.message);
+                            alert(err.message);
+                        } finally {
+                            console.log("finally???????????????");
+                            //alert("why are we in finally?");
+                        }
+
+                        console.log("set up mapDeferred anonymous method");
+                        try {
+                            mapDeferred.then(function (response) {
+                                console.log("mapDeferred.then");
+                                if (previousSelectedWebMapId !== selectedWebMapId) {
+                                    previousSelectedWebMapId = selectedWebMapId;
+                                    //dojo.destroy(map.container);
+                                }
+                                if (aMap) {
+                                    aMap.destroy();
+                                }
+                                aMap = response.map;
+                                console.log("in mapDeferred anonymous method");
+                                console.log("configOptions title " + configOptions.title);
+                                console.debug("ItemInfo object " + response.itemInfo);
+                                console.log("ItemInfo.item object " + response.itemInfo.item);
+                                console.log("response title " + response.itemInfo.item.title);
+                                dojo.connect(aMap, "onUpdateStart", showLoading);
+                                dojo.connect(aMap, "onUpdateEnd", hideLoading);
+                                dojo.connect(aMap, "onLoad", initUI);
+
+                                setTimeout(function () {
+                                    if (aMap.loaded) {
+                                        initUI();
+                                    } else {
+                                        dojo.connect(aMap, "onLoad", initUI);
+                                    }
+                                }, 300);
+                            }, function (error) {
+                                // alert("Create Map Failed ");
+                                console.log('Create Map Failed: ' + dojo.toJson(error));
+                                console.log("Error: ", error.code, " Message: ", error.message);
+                                mapDeferred.cancel();
+                            });
+                        } catch (err) {
+                            console.log("deferred failed with err " + err.message);
+                        }
                     },
                     // function getMapHoster() {
                     //     console.log('StartupArcGIS return mapHoster with map no. ' + mapHoster.getMapNumber());
@@ -346,14 +410,15 @@
                             This branch handles a new ArcGIS Online webmap presentation from either selecting the ArcGIS tab in the master
                             site or opening the webmap from a url sent through a publish event.
                              */
+
+                            initializePostProc(newSelectedWebMapId);
+
                             $inj = self.mlconfig.getInjector();
                             evtSvc = $inj.get('PusherEventHandlerService');
                             CurrentMapTypeService = $inj.get('CurrentMapTypeService');
                             CurrentMapTypeService.setCurrentMapType('arcgis');
-                            evtSvc.addEvent('client-MapXtntEvent', curmph.retrievedBounds);
-                            evtSvc.addEvent('client-MapClickEvent',  curmph.retrievedClick);
-
-                            initializePostProc(newSelectedWebMapId);
+                            evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
+                            evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
                         }
                     },
                     initializePreProc = function () {
@@ -374,7 +439,7 @@
                             selectedWebMapId = 'a4bb8a91ecfb4131aa544eddfbc2f1d0'; //'f2e9b762544945f390ca4ac3671cfa72'/
                             self.mlconfig.setWebmapId(selectedWebMapId);
                             console.log("use " + selectedWebMapId);
-                            // pointWebMap = [-87.7, lat=41.8];
+                            // pointWebMap = [-87.7, lat=41.8];  [-89.381388, 43.07493];
                             pointWebMap = [-87.620692, 41.888941];
                             zoomWebMap = 15;
                             // initialize(selectedWebMapId, '', '');   original from mlhybrid requires space after comma

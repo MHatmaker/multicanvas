@@ -13,7 +13,7 @@ require({
         'run' : 'run',
         // 'main' : 'http://localhost:8100/js/main',
         //  'dojox' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
-        'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.20compact',
+        'esri' : 'https://js.arcgis.com/3.20/esri',
         // 'esri' : 'https://js.arcgis.com/4.2/esri',
         // 'WebMap' : 'https://js.arcgis.com/4.1/esri/WebMap',
         // 'MapView' : 'esri/views/MapView',

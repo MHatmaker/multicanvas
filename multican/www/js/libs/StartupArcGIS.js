@@ -275,7 +275,7 @@
                             });
                             */
                         try {
-                            mapDeferred = esri.arcgis.utils.createMap(configOptions.webmap, "map_canvas", {
+                            mapDeferred = esri.arcgis.utils.createMap(configOptions.webmap, "map" + self.mapNumber, {
                                 mapOptions: {
                                     slider: true,
                                     nav: false,

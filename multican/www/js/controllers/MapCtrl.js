@@ -7,8 +7,9 @@
     define([
         'app',
         'libs/StartupGoogle',
-        'libs/StartupArcGIS'
-    ], function (app, StartupGoogle, StartupArcGIS) {
+        'libs/StartupArcGIS',
+        'libs/utils'
+    ], function (app, StartupGoogle, StartupArcGIS, utils) {
         var selfMethods = {},
             curMapTypeInitialized = false,
             placeCustomControls;
@@ -49,6 +50,72 @@
                     MapInstanceService.setMapHosterInstance(mapHoster.getMapNumber(), mapHoster);
                     // mapHoster.addPopup(compiledMsg[0], centerCoord);
                 }
+                function setupQueryListener() {
+                    var
+                        cnvs = utils.getElemById(whichCanvas),
+                        curMapType = CurrentMapTypeService.getMapTypeKey(),
+                        fnLink,
+                        pacinput,
+                        pacinputParent,
+                        pacinputElement,
+                        template = ' \
+                            <div id="gmsearch" \
+                                class="gmsearchclass" \
+                                style="width: 28em; margin-left: 7em; margin-right : 2em;"> \
+                                <input id="pac-input" \
+                                    class="gmsearchcontrols" className="controls" \
+                                    type="text" onclick="cancelBubble=true;" onmousemove="event.stopPropagation();" \
+                                    onmousedown="event.stopPropagation();" onmouseup="event.stopPropagation();" \
+                                    placeholder="Search Google Places"  \
+                                    ng-class="{\'gmsposition-rel\' : !gsearch.isGoogle, \'gmsposition-abs\' : gsearch.isGoogle}" \
+                                    ng-model="gsearch.query" \
+                                    ng-change="queryChanged()" auto-focus > \
+                            </div>';
+                    if (curMapType === 'google') {
+                        $scope.gsearch.isGoogle = true;
+                    } else {
+                        $scope.gsearch.isGoogle = false;
+                        if (curMapType === 'arcgis') {
+                            whichCanvas = 'map_canvas_root';
+                            pacinputElement = document.getElementById('pac-input');
+                            if (pacinputElement) {
+                                pacinputParent = pacinputElement.parentElement;
+                                pacinputParent.removeChild(pacinputElement);
+                            }
+                        }
+                    }
+
+                    whichCanvas = curMapType === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+                    pacinput = document.getElementById('pac-input');
+                    if (!pacinput) {
+                        pacinput = angular.element(template);
+                        cnvs.append(pacinput);
+                        fnLink = $compile(pacinput);
+                        fnLink($scope);
+                    }
+
+                    $scope.safeApply();
+
+                    setTimeout(function () {
+                        searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input'));
+                        if (searchInput) {
+                            // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
+                            searchInput.value = '';
+                            searchBox = new google.maps.places.SearchBox(searchInput);
+
+                            google.maps.event.addListener(searchBox, 'places_changed', function () {
+                                console.log("MapCtrl 'places_changed' listener");
+                                connectQuery();
+                                searchInput.blur();
+                                setTimeout(function () {
+                                    searchInput.value = '';
+                                }, 10);
+                            });
+                        }
+                    }, 500);
+                }
+
+                selfMethods.setupQueryListener = setupQueryListener;
 
                 function initialize(mapNo, mapType) {
                     var
@@ -108,6 +175,7 @@
                     console.log("MapCtrl.placeCustomControls");
                 }
                 selfMethods.placeCustomControls = placeCustomControls;
+
             }
 
         ]);
@@ -122,9 +190,16 @@
             console.log("placeCustomControls");
             selfMethods.placeCustomControls();
         }
+        function setupQueryListener() {
+            console.log("setupQueryListener");
+            if (selfMethods.setupQueryListener) {
+                selfMethods.setupQueryListener();
+            }
+        }
         return {
             invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfigured,
-            placeCustomControls : placeCustomControls
+            placeCustomControls : placeCustomControls,
+            setupQueryListener : setupQueryListener
         };
     });
 // }());

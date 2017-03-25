@@ -17,17 +17,16 @@
         'libs/MLConfig',
         'libs/PusherConfig',
         'libs/utils',
-        'services/PusherEventHandlerService',
-        'services/CurrentMapTypeService',
-        'services/MapControllerService',
+        // 'services/PusherEventHandlerService',
+        // 'services/CurrentMapTypeService',
+        // 'services/MapControllerService',
         //'esri'
         'esri/map'
         // 'esri/WebMap',
         // 'esri/views/MapView',
         // 'dojo/promise/all'
         // 'dojo/domReady!'
-    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, PusherEventHandlerService,
-        CurrentMapTypeService, MapControllerService, esrimap) { // WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
+    ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, esrimap) { // WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
             StartupArcGIS = function (mapNo, mlconfig, mapHosterSetupCallback) {
@@ -39,6 +38,9 @@
                 this.mlconfig = mlconfig;
                 this.mapHosterSetupCallback = mapHosterSetupCallback;
                 console.log("Setting mapNumber to " + this.mapNumber);
+
+                self = this;
+
                 function showLoading() {
                     utils.showLoading();
                     self.aMap.disableMapNavigation();
@@ -59,14 +61,12 @@
                 }
 
                 function setupQueryListener() {
-                    //var // $inj = self.mlconfig.getInjector(),
-                        // ctrlSvc = $inj.get('MapControllerService'),
-                        // mapCtrl = MapControllerService.getController();
-                    var mapCtrl = MapControllerService.getController();
+                    var $inj = self.mlconfig.getInjector(),
+                        ctrlSvc = $inj.get('MapControllerService'),
+                        mapCtrl = ctrlSvc.getController();
+                    // var mapCtrl = MapControllerService.getController();
                     mapCtrl.setupQueryListener();
                 }
-
-                self = this;
 
                 var
                     selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0", // Requires a space after map ID
@@ -194,7 +194,7 @@
                             aMap = null;
                         //     $inj,
                         //     mapOptions = {},
-                        window.loading = dojo.byId("loadingImg"); 
+                        window.loading = dojo.byId("loadingImg");
                         //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
                         esri.config.defaults.geometryService =
                             new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
@@ -307,7 +307,7 @@
                                 if (aMap) {
                                     aMap.destroy();
                                 }
-                                aMap = response.map;
+                                self.aMap = aMap = response.map;
                                 console.log("in mapDeferred anonymous method");
                                 console.log("configOptions title " + configOptions.title);
                                 console.debug("ItemInfo object " + response.itemInfo);
@@ -317,6 +317,8 @@
                                 dojo.connect(aMap, "onUpdateEnd", hideLoading);
                                 dojo.connect(aMap, "onLoad", initUI);
 
+                                self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
+                                self.mapHosterSetupCallback(self.mapHoster, self.aMap);
                                 setTimeout(function () {
                                     if (aMap.loaded) {
                                         initUI();
@@ -418,8 +420,8 @@
                             evtSvc = $inj.get('PusherEventHandlerService');
                             CurrentMapTypeService = $inj.get('CurrentMapTypeService');
                             CurrentMapTypeService.setCurrentMapType('arcgis');
-                            evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
-                            evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
+                            // evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
+                            // evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
                         }
                     },
                     initializePreProc = function () {

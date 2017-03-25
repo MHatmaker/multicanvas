@@ -9,11 +9,11 @@ define([
     'use strict';
 
     console.log("ready to create MapControllerService");
-    app.service('MapControllerService', [
-        function () {
-            this.getController = function () {
-                return MapCtrl;
-            }
-        }
-    ]);
-});
+    app.factory('MapControllerService', function () {
+        var getController = function () {
+            return MapCtrl;
+        };
+        return {getController : getController};
+    });
+  }
+);

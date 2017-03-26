@@ -8,10 +8,12 @@
         'app',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
-        'libs/utils'
-    ], function (app, StartupGoogle, StartupArcGIS, utils) {
+        'libs/utils',
+        'services/CurrentMapTypeService'
+    ], function (app, StartupGoogle, StartupArcGIS, utils, CurrentMapTypeService) {
         var selfMethods = {},
             curMapTypeInitialized = false,
+            whichcanvas,
             placeCustomControls;
 
         console.log("ready to create MapCtrl");
@@ -52,7 +54,7 @@
                 }
                 function setupQueryListener() {
                     var
-                        cnvs = utils.getElemById(whichCanvas),
+                        cnvs, //  = utils.getElemById(whichCanvas),
                         curMapType = CurrentMapTypeService.getMapTypeKey(),
                         fnLink,
                         pacinput,
@@ -71,12 +73,14 @@
                                     ng-model="gsearch.query" \
                                     ng-change="queryChanged()" auto-focus > \
                             </div>';
+                    // curMapType = CurrentMapTypeService.getMapTypeKey(),
                     if (curMapType === 'google') {
                         $scope.gsearch.isGoogle = true;
                     } else {
                         $scope.gsearch.isGoogle = false;
                         if (curMapType === 'arcgis') {
-                            whichCanvas = 'map_canvas_root';
+                            whichCanvas = 'map' + mapStartup.getMapNumber() + '_root'; // 'map_canvas_root';
+                            cnvs = utils.getElementById(whichCanvas);
                             pacinputElement = document.getElementById('pac-input');
                             if (pacinputElement) {
                                 pacinputParent = pacinputElement.parentElement;
@@ -85,7 +89,7 @@
                         }
                     }
 
-                    whichCanvas = curMapType === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+                    whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber() + '_canvas';
                     pacinput = document.getElementById('pac-input');
                     if (!pacinput) {
                         pacinput = angular.element(template);
@@ -170,6 +174,85 @@
                     invalidateCurrentMapTypeConfigured();
                 });
 
+                function placeCustomControls() {
+                    function stopLintUnusedComplaints(lnkr, minmaxr) {
+                        console.log("stopLintUnusedComplaints");
+                    }
+                    if (document.getElementById("linkerDirectiveId") === null) {
+
+                        var contextScope = $scope,
+                            cnvs = utils.getElemById(whichCanvas),
+                            templateLnkr = ' \
+                                <div id="linkerDirectiveId" class="lnkrclass"> \
+                                <label id="idLinkerText" class="lnkmaxcontrol_label lnkcontrol_margin"  \
+                                style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                                </label> \
+                                <img id="idLinkerSymbol" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
+                                   style="cursor:url(../img/LinkerCursor.png) 9 9,auto;" > \
+                                </div>',
+
+                            templateMinMaxr = ' \
+                                <div id="mapmaximizerDirectiveId" class="mnmxclass" > \
+                                <label id="idMinMaxText" class="lnkmaxcontrol_label maxcontrol_margin" \
+                                    style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                                </label> \
+                                <img id="idMinMaxSymbol" class="lnkmaxcontrol_symbol maxcontrol_margin" \
+                                     style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                                </div>',
+                            lnkr1 = angular.element(templateLnkr),
+                            lnkr = cnvs.append(lnkr1),
+
+                            minmaxr1 = angular.element(templateMinMaxr),
+                            minmaxr = cnvs.append(minmaxr1),
+
+                            lnkrdiv,
+                            mnmxdiv,
+                            lnkrText,
+                            lnkrSymbol,
+                            refreshDelay;
+                        stopLintUnusedComplaints(lnkr, minmaxr);
+
+                        setTimeout(function () {
+                            lnkrdiv = document.getElementsByClassName('lnkrclass')[0];
+                            lnkrdiv.addEventListener('click', function (event) {
+                                console.log('lnkr[0].onclick   display LinkerEvent');
+                                event.stopPropagation();
+
+                                LinkrSvc.showLinkr();
+                            });
+                            mnmxdiv = document.getElementsByClassName('mnmxclass')[0];
+
+                            mnmxdiv.addEventListener('click', function (event) {
+                                console.log('minmaxr[0].onclick   mapMaximizerEvent');
+                                event.stopPropagation();
+                                contextScope.$emit('mapMaximizerEvent');
+                                contextScope.$apply();
+                                refreshMinMax();
+                            });
+                        }, 200);
+
+
+                        lnkrText = document.getElementById("idLinkerText");
+                        lnkrSymbol = document.getElementById("idLinkerSymbol");
+                        refreshDelay = 500;
+                        if (lnkrSymbol && lnkrText) {
+                            refreshDelay = 10;
+                        }
+                        setTimeout(function () {
+                            refreshLinker();
+                            refreshMinMax();
+                        }, refreshDelay);
+                    }
+                    // else {
+                    //     refreshDelay = 500;
+                    //     setTimeout(function () {
+                    //         setupQueryListener();
+                    //         refreshLinker();
+                    //         refreshMinMax();
+                    //     }, refreshDelay);
+                    // }
+                    // connectQuery();
+                }
 
                 function placeCustomControls() {
                     console.log("MapCtrl.placeCustomControls");

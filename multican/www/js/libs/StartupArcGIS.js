@@ -57,7 +57,7 @@
                         ctrlSvc = $inj.get('MapControllerService'),
                         mapCtrl = ctrlSvc.getController();
                         // mapCtrl = MapControllerService.getController();
-                    // mapCtrl.placeCustomControls();
+                    mapCtrl.placeCustomControls();
                 }
 
                 function setupQueryListener() {

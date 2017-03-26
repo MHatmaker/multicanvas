@@ -22,7 +22,7 @@ define([
     });
 
     console.log("ready to create CurrentMapTypeService");
-    app.service('CurrentMapTypeService', ['mapsvcScopes', '$rootScope', function (mapsvcScopes, $rootScope) {
+    app.factory('CurrentMapTypeService', ['mapsvcScopes', '$rootScope', function (mapsvcScopes, $rootScope) {
         var mapTypes = {
             // 'leaflet': MapHosterLeaflet,
             'google' : MapHosterGoogle,
@@ -38,7 +38,7 @@ define([
             previousMapType = 'google',
 
             mapRestUrl = {
-                'leaflet': 'leaflet',
+                // 'leaflet': 'leaflet',
                 'google' : 'google',
                 'arcgis' : 'arcgis',
                 'Leaflet': 'leaflet',
@@ -48,7 +48,7 @@ define([
             },
 
             mapType2Config = {
-                'leaflet': 2,
+                // 'leaflet': 2,
                 'google' : 0,
                 'arcgis' : 1
             },
@@ -59,8 +59,8 @@ define([
                 programmed with {2} embedded in it.',
             mapSystemDct = {
                 'google' : 0,
-                'arcgis' : 1,
-                'leaflet' : 2
+                'arcgis' : 1
+                // 'leaflet' : 2
             },
             mapconfigs = [
                 {
@@ -84,113 +84,129 @@ define([
                     imgAlt : "ArcGIS Web Maps",
                     active : false,
                     disabled : false
+                } //,
+                // {
+                //     maptype : 'leaflet',
+                //     title : 'Leaflet/OSM Maps',
+                //     site : 'Web Site featuring a Leaflet Map',
+                //     content : contentsText.format('Leaflet/OSM Map',  'a Leaflet/OSM map', 'Leaflet content'),
+                //     url : "/partials/leaflet.html",
+                //     imgSrc :  "img/Leaflet.png",
+                //     imgAlt : "Leaflet/OSM Maps",
+                //     active : false,
+                //     disabled : false
+                // }
+            ],
+
+            getMapTypes = function () {
+                var values = Object.keys(mapTypes).map(function (key) {
+                    return {'type' : key, 'mph' : mapTypes[key]};
+                });
+                return values;
+
+                // var mapTypeValues = [];
+                // for (var key in mapTypes){
+                    // mapTypeValues.push(mapTypes[key]);
+                // return mapTypes;
+            },
+            getMapConfigurations = function () {
+                return mapconfigs;
+            },
+            getCurrentMapConfiguration = function () {
+                return mapconfigs[mapType2Config[currentMapType]];
+            },
+            getSpecificMapType = function (key) {
+                return mapTypes[key];
+            },
+            getCurrentMapType = function () {
+                return mapTypes[currentMapType];
+            },
+            getMapStartup = function () {
+                return mapStartups[currentMapType];
+            },
+            getMapTypeKey = function () {
+                return selectedMapType;
+            },
+            getMapRestUrl = function () {
+                return mapRestUrl[selectedMapType];
+            },
+            getMapRestUrlForType = function (tp) {
+                return mapRestUrl[tp];
+            },
+            setCurrentMapType = function (mpt) {
+                var data = {
+                    'whichsystem' : mapconfigs[mapSystemDct[mpt]],
                 },
-                {
-                    maptype : 'leaflet',
-                    title : 'Leaflet/OSM Maps',
-                    site : 'Web Site featuring a Leaflet Map',
-                    content : contentsText.format('Leaflet/OSM Map',  'a Leaflet/OSM map', 'Leaflet content'),
-                    url : "/partials/leaflet.html",
-                    imgSrc :  "img/Leaflet.png",
-                    imgAlt : "Leaflet/OSM Maps",
-                    active : false,
-                    disabled : false
+                    scp = mapsvcScopes.getScopes()[0];
+                previousMapType = currentMapType;
+                selectedMapType = mpt;
+                currentMapType = mpt;
+                console.log("selectedMapType set to " + selectedMapType);
+                MapCtrl.invalidateCurrentMapTypeConfigured();
+                if (scp) {
+                    scp.$broadcast('SwitchedMapSystemEvent', data);
                 }
-            ];
-
-        this.getMapTypes = function () {
-            var values = Object.keys(mapTypes).map(function (key) {
-                return {'type' : key, 'mph' : mapTypes[key]};
-            });
-            return values;
-
-            // var mapTypeValues = [];
-            // for (var key in mapTypes){
-                // mapTypeValues.push(mapTypes[key]);
-            // return mapTypes;
-        };
-        this.getMapConfigurations = function () {
-            return mapconfigs;
-        };
-        this.getCurrentMapConfiguration = function () {
-            return mapconfigs[mapType2Config[currentMapType]];
-        };
-        this.getSpecificMapType = function (key) {
-            return mapTypes[key];
-        };
-        this.getCurrentMapType = function () {
-            return mapTypes[currentMapType];
-        };
-        this.getMapStartup = function () {
-            return mapStartups[currentMapType];
-        };
-        this.getMapTypeKey = function () {
-            return selectedMapType;
-        };
-        this.getMapRestUrl = function () {
-            return mapRestUrl[selectedMapType];
-        };
-        this.getMapRestUrlForType = function (tp) {
-            return mapRestUrl[tp];
-        };
-        this.setCurrentMapType = function (mpt) {
-            var data = {
-                'whichsystem' : mapconfigs[mapSystemDct[mpt]],
             },
-                scp = mapsvcScopes.getScopes()[0];
-            previousMapType = currentMapType;
-            selectedMapType = mpt;
-            currentMapType = mpt;
-            console.log("selectedMapType set to " + selectedMapType);
-            // MapCtrl.invalidateCurrentMapTypeConfigured();
-            $rootScope.$broadcast('invalidateCurrentMapTypeConfigured');
-            if (scp) {
-                scp.$broadcast('SwitchedMapSystemEvent', data);
-            }
-        };
-        this.getPreviousMapType = function () {
-            return mapTypes[previousMapType];
-        };
-        this.getSelectedMapType = function () {
-            console.log("getSelectedMapType : " + selectedMapType);
-            return mapTypes[selectedMapType];
-        };
-
-        this.addScope = function (scope) {
-            mapsvcScopes.addScope(scope);
-        };
-        this.forceAGO = function () {
-        // Simulate a click on ArcGIS Ago mapSystem "Show the Map" buttons under the map system tabs.
-        // The listener resets the $locationPath under the ng-view.
-        // This code should be entered in a new window created by a publish event with the map system
-        // in the url
-
-            var data = {
-                'whichsystem' : mapconfigs[mapSystemDct.arcgis],
-                'newpath' : "/views/partials/arcgis"
+            getPreviousMapType = function () {
+                return mapTypes[previousMapType];
             },
-                scp = mapsvcScopes.getScopes()[0];
-            if (scp) {
-                scp.$broadcast('ForceAGOEvent', data);
-            }
-            console.log("forceAGO setting path to : " + data.newpath);
-            // window.location.pathname += "/views/partials/GoogleMap";
-            // window.location.reload();
-        };
+            getSelectedMapType = function () {
+                console.log("getSelectedMapType : " + selectedMapType);
+                return mapTypes[selectedMapType];
+            },
 
-        this.forceMapSystem = function (mapSystem) {
-        // Simulate a click on one of the mapSystem "Show the Map" buttons under the map system tabs.
-        // The listener resets the $locationPath under the ng-view.
-        // This code should be entered in a new window created by a publish event with the map system
-        // in the url
+            addScope = function (scope) {
+                mapsvcScopes.addScope(scope);
+            },
+            forceAGO = function () {
+            // Simulate a click on ArcGIS Ago mapSystem "Show the Map" buttons under the map system tabs.
+            // The listener resets the $locationPath under the ng-view.
+            // This code should be entered in a new window created by a publish event with the map system
+            // in the url
 
-            var data = {'whichsystem' : mapconfigs[mapSystemDct[mapSystem]], 'newpath' : "/views/partials/" + mapSystem},
-                scp = mapsvcScopes.getScopes()[0];
-            if (scp) {
-                scp.$broadcast('ForceMapSystemEvent', data);
-            }
-            console.log("forceMapSystem setting path to : " + data.newpath);
-        };
+                var data = {
+                    'whichsystem' : mapconfigs[mapSystemDct.arcgis],
+                    'newpath' : "/views/partials/arcgis"
+                },
+                    scp = mapsvcScopes.getScopes()[0];
+                if (scp) {
+                    scp.$broadcast('ForceAGOEvent', data);
+                }
+                console.log("forceAGO setting path to : " + data.newpath);
+                // window.location.pathname += "/views/partials/GoogleMap";
+                // window.location.reload();
+            },
 
+            forceMapSystem = function (mapSystem) {
+            // Simulate a click on one of the mapSystem "Show the Map" buttons under the map system tabs.
+            // The listener resets the $locationPath under the ng-view.
+            // This code should be entered in a new window created by a publish event with the map system
+            // in the url
+
+                var data = {'whichsystem' : mapconfigs[mapSystemDct[mapSystem]], 'newpath' : "/views/partials/" + mapSystem},
+                    scp = mapsvcScopes.getScopes()[0];
+                if (scp) {
+                    scp.$broadcast('ForceMapSystemEvent', data);
+                }
+                console.log("forceMapSystem setting path to : " + data.newpath);
+            };
+        return {
+            addScope : addScope,
+            getMapTypes: getMapTypes,
+            getCurrentMapType : getCurrentMapType,
+            getMapConfigurations : getMapConfigurations,
+            getCurrentMapConfiguration : getCurrentMapConfiguration,
+            getMapStartup : getMapStartup,
+            setCurrentMapType : setCurrentMapType,
+            getPreviousMapType : getPreviousMapType,
+            getSelectedMapType : getSelectedMapType,
+            getMapTypeKey : getMapTypeKey,
+            getMapRestUrl : getMapRestUrl,
+            getMapRestUrlForType : getMapRestUrlForType,
+            getSpecificMapType : getSpecificMapType,
+            forceMapSystem : forceMapSystem,
+            forceAGO : forceAGO
+          };
     }]);
-});
+  }
+);

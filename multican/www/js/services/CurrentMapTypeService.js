@@ -6,9 +6,8 @@ define([
     'libs/StartupGoogle',
     'libs/StartupArcGIS',
     'libs/MapHosterGoogle',
-    'libs/MapHosterArcGIS',
-    'controllers/MapCtrl'
-], function (app, StartupGoogle, StartupArcGIS, MapHosterGoogle, MapHosterArcGIS, MapCtrl) {
+    'libs/MapHosterArcGIS'
+], function (app, StartupGoogle, StartupArcGIS, MapHosterGoogle, MapHosterArcGIS) {
     'use strict';
 
     app.value('mapsvcScopes', {
@@ -22,7 +21,7 @@ define([
     });
 
     console.log("ready to create CurrentMapTypeService");
-    app.factory('CurrentMapTypeService', ['mapsvcScopes', '$rootScope', function (mapsvcScopes, $rootScope) {
+    app.factory('CurrentMapTypeService', ['mapsvcScopes', '$rootScope', 'MapControllerService', function (mapsvcScopes, $rootScope, MapControllerService) {
         var mapTypes = {
             // 'leaflet': MapHosterLeaflet,
             'google' : MapHosterGoogle,
@@ -137,11 +136,13 @@ define([
                 var data = {
                     'whichsystem' : mapconfigs[mapSystemDct[mpt]],
                 },
+                    MapCtrl,
                     scp = mapsvcScopes.getScopes()[0];
                 previousMapType = currentMapType;
                 selectedMapType = mpt;
                 currentMapType = mpt;
                 console.log("selectedMapType set to " + selectedMapType);
+                MapCtrl = MapControllerService.getController();
                 MapCtrl.invalidateCurrentMapTypeConfigured();
                 if (scp) {
                     scp.$broadcast('SwitchedMapSystemEvent', data);

@@ -8,12 +8,12 @@
         'app',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
-        'libs/utils',
-        'services/CurrentMapTypeService'
-    ], function (app, StartupGoogle, StartupArcGIS, utils, CurrentMapTypeService) {
+        'libs/utils'
+    ], function (app, StartupGoogle, StartupArcGIS, utils) {
         var selfMethods = {},
             curMapTypeInitialized = false,
             whichcanvas,
+            mapStartup,
             placeCustomControls;
 
         console.log("ready to create MapCtrl");
@@ -21,9 +21,9 @@
             '$scope',
             '$compile',
             'MapInstanceService',
-            function ($scope, $compile, MapInstanceService) {
-                var outerMapNumber = MapInstanceService.getSlideCount(),
-                    mapStartup;
+            'CurrentMapTypeService',
+            function ($scope, $compile, MapInstanceService, CurrentMapTypeService) {
+                var outerMapNumber = MapInstanceService.getSlideCount();
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 //     configMapNumber = mapConfig.getMapId();
@@ -181,6 +181,7 @@
                     if (document.getElementById("linkerDirectiveId") === null) {
 
                         var contextScope = $scope,
+                            whichCanvas = 'map' + mapStartup.getMapNumber() + '_root', // 'map_canvas_root';
                             cnvs = utils.getElemById(whichCanvas),
                             templateLnkr = ' \
                                 <div id="linkerDirectiveId" class="lnkrclass"> \
@@ -254,9 +255,9 @@
                     // connectQuery();
                 }
 
-                function placeCustomControls() {
-                    console.log("MapCtrl.placeCustomControls");
-                }
+                // function placeCustomControls() {
+                //     console.log("MapCtrl.placeCustomControls");
+                // }
                 selfMethods.placeCustomControls = placeCustomControls;
 
             }

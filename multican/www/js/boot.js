@@ -6,6 +6,7 @@ require([
     'config',
     'run',
     'controllers/PusherSetupCtrl',
+    'controllers/MapLinkrMgrCtrl',
     // 'libs/PusherConfig',
     'controllers/MapCtrl',
     'controllers/CarouselCtrl',
@@ -19,11 +20,12 @@ require([
     // 'esri.IdentityManager',
     // 'esri.dijit.Scalebar',
     // 'esri.arcgis.utils'
-], function (routes, config, run, PusherSetupCtrl) { //}, PusherConfig) {
+], function (routes, config, run, PusherSetupCtrl, MapLinkrMgrCtrl) { //}, PusherConfig) {
     'use strict';
     // Here you have to set your app name to bootstrap it manually
     console.log('wait for onload to bootstrap');
     PusherSetupCtrl.start(angular.module('app'));
+    // MapLinkrMgrCtrl.start();
     angular.element(document).ready(function () {
         angular.bootstrap(document, ['app']);
         // var $inj = angular.element(document.body).injector();

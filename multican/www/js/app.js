@@ -17,7 +17,9 @@ define([
 
     // the app with its used plugins
     console.log("create module");
-    var app = angular.module('app', [
+    var
+        isMobile = typeof ionic !== 'undefined' && (ionic.Platform.is("ios") || ionic.Platform.is("android")),
+        app = angular.module('app', [
         'ionic',
         'ui.bootstrap'
         // 'doowb.angular-pusher'
@@ -27,6 +29,9 @@ define([
         'services/PusherEventHandlerService',
         'services/CurrentMapTypeService',
         'services/MapControllerService',
+        'services/InjectorService',
+        'services/LinkrService',
+        'services/SiteViewService',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
         'libs/MapHosterGoogle',

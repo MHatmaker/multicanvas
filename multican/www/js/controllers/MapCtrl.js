@@ -8,11 +8,14 @@
         'app',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
-        'libs/utils'
-    ], function (app, StartupGoogle, StartupArcGIS, utils) {
+        'libs/utils',
+        'controllers/MapLinkrMgrCtrl'
+    ], function (app, StartupGoogle, StartupArcGIS, utils, MapLinkrMgrCtrl) {
         var selfMethods = {},
             curMapTypeInitialized = false,
-            whichcanvas,
+            whichCanvas,
+            searchInput,
+            searchBox,
             mapStartup,
             placeCustomControls;
 
@@ -22,8 +25,11 @@
             '$compile',
             'MapInstanceService',
             'CurrentMapTypeService',
-            function ($scope, $compile, MapInstanceService, CurrentMapTypeService) {
-                var outerMapNumber = MapInstanceService.getSlideCount();
+            'SiteViewService',
+            function ($scope, $compile, MapInstanceService, CurrentMapTypeService, SiteViewService) {
+                var outerMapNumber = MapInstanceService.getSlideCount(),
+                    mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
+                    // gmquery = mlconfig.query();
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 //     configMapNumber = mapConfig.getMapId();
@@ -32,6 +38,7 @@
                 $scope.mapheight = 450;
                 $scope.mapwidth = 380;
                 $scope.mapHosterInstance = null;
+                $scope.gsearch = {};
 
                 function invalidateCurrentMapTypeConfigured() {
                     curMapTypeInitialized = false;
@@ -80,7 +87,7 @@
                         $scope.gsearch.isGoogle = false;
                         if (curMapType === 'arcgis') {
                             whichCanvas = 'map' + mapStartup.getMapNumber() + '_root'; // 'map_canvas_root';
-                            cnvs = utils.getElementById(whichCanvas);
+                            cnvs = utils.getElemById(whichCanvas);
                             pacinputElement = document.getElementById('pac-input');
                             if (pacinputElement) {
                                 pacinputParent = pacinputElement.parentElement;
@@ -174,6 +181,37 @@
                     invalidateCurrentMapTypeConfigured();
                 });
 
+                function refreshLinker() {
+                    var lnkrText = document.getElementById("idLinkerText"),
+                        lnkrSymbol = document.getElementById("idLinkerSymbol"),
+                        lnkrTxt,
+                        lnkrSmbl;
+                    if (lnkrSymbol && lnkrText) {
+                        try {
+                            lnkrTxt =  MapLinkrMgrCtrl.getLinkrMgrData().ExpandPlug;
+                            lnkrText.innerHTML = lnkrTxt;
+                            console.log("refresh Linker Text with " + lnkrText.innerHTML);
+                            lnkrSmbl = "../img/" + MapLinkrMgrCtrl.getLinkrMgrData().mapLinkrBtnImage + ".png";
+                            lnkrSymbol.src = lnkrSmbl;
+                            console.log("refresh Linker Symbol with " + lnkrSymbol.src);
+                        } catch(err) {
+                            lnkrText.innerHTML = "Expand";
+                            lnkrSmbl = "../img/Expand.png";
+                        }
+                    }
+                }
+
+                function refreshMinMax() {
+                    var minMaxText = document.getElementById("idMinMaxText"),
+                        minMaxSymbol = document.getElementById("idMinMaxSymbol");
+                    if (minMaxText && minMaxSymbol) {
+                        minMaxText.innerHTML = SiteViewService.getSiteExpansion();
+                        console.log("refresh MinMax Text with " + minMaxText.innerHTML);
+                        minMaxSymbol.src = "../img/" + SiteViewService.getMinMaxSymbol() + ".png";
+                        console.log("refresh MinMax Symbol with " + minMaxSymbol.src);
+                    }
+                }
+
                 function placeCustomControls() {
                     function stopLintUnusedComplaints(lnkr, minmaxr) {
                         console.log("stopLintUnusedComplaints");
@@ -259,6 +297,13 @@
                 //     console.log("MapCtrl.placeCustomControls");
                 // }
                 selfMethods.placeCustomControls = placeCustomControls;
+
+                // $scope.gsearchVisible = 'inline-block';
+                // if (gmquery !== '') {
+                //     $scope.gsearch = {'query' : gmquery};  // was read from url when opening new window
+                // } else {
+                //     $scope.gsearch = {'query' : 'SearcherBox'};
+                // }
 
             }
 

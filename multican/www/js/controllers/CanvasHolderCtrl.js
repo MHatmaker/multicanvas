@@ -23,6 +23,7 @@
             function ($scope, CanvasService, MapInstanceService) {
                 console.log("CanvasHolderCtrl calling into CanvasService");
                 $scope.addCanvas = function (mapType) {
+                    console.log("in CanvasHolderCtrl.addCanvas");
                     var currIndex = MapInstanceService.getSlideCount(),
                         // mlConfig = new MLConfig.MLConfig(currIndex),
                         newCanvasItem,

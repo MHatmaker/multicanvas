@@ -21,7 +21,7 @@ define([
     });
 
     console.log("ready to create CurrentMapTypeService");
-    app.factory('CurrentMapTypeService', ['mapsvcScopes', '$rootScope', 'MapControllerService', function (mapsvcScopes, $rootScope, MapControllerService) {
+    app.factory('CurrentMapTypeService', ['mapsvcScopes', 'MapControllerService', function (mapsvcScopes, MapControllerService) {
         var mapTypes = {
             // 'leaflet': MapHosterLeaflet,
             'google' : MapHosterGoogle,
@@ -52,10 +52,11 @@ define([
                 'arcgis' : 1
             },
 
-            contentsText = ' \
-                The {0} tab opens a typical web page \
-                displaying typical web page stuff, including a div with {1} \
-                programmed with {2} embedded in it.',
+            contentsText =
+            ' \
+            The {0} tab opens a typical web page \
+            displaying typical web page stuff, including a div with {1} \
+            programmed with {2} embedded in it.',
             mapSystemDct = {
                 'google' : 0,
                 'arcgis' : 1
@@ -207,7 +208,6 @@ define([
             getSpecificMapType : getSpecificMapType,
             forceMapSystem : forceMapSystem,
             forceAGO : forceAGO
-          };
+        };
     }]);
-  }
-);
+});

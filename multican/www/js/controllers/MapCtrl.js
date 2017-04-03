@@ -8,9 +8,10 @@
         'app',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
+        'libs/StartupLeaflet',
         'libs/utils',
         'controllers/MapLinkrMgrCtrl'
-    ], function (app, StartupGoogle, StartupArcGIS, utils, MapLinkrMgrCtrl) {
+    ], function (app, StartupGoogle, StartupArcGIS, StartupLeaflet, utils, MapLinkrMgrCtrl) {
         var selfMethods = {},
             curMapTypeInitialized = false,
             whichCanvas,
@@ -24,9 +25,13 @@
             '$scope',
             '$compile',
             'MapInstanceService',
+            'LinkrService',
             'CurrentMapTypeService',
+            'PusherEventHandlerService',
+            'GoogleQueryService',
             'SiteViewService',
-            function ($scope, $compile, MapInstanceService, CurrentMapTypeService, SiteViewService) {
+            function ($scope, $compile, MapInstanceService, LinkrService,
+                CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
                 var outerMapNumber = MapInstanceService.getSlideCount(),
                     mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
                     // gmquery = mlconfig.query();
@@ -35,6 +40,8 @@
                 //     configMapNumber = mapConfig.getMapId();
                     // mapStartups = [];
                 // console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
+                $scope.PusherEventHandlerService = PusherEventHandlerService;
+                $scope.GoogleQueryService = GoogleQueryService;
                 $scope.mapheight = 450;
                 $scope.mapwidth = 380;
                 $scope.mapHosterInstance = null;
@@ -153,6 +160,8 @@
                     };
                     if (mapType === 'google') {
                         mapStartup = new StartupGoogle.StartupGoogle(mapNumber);
+                    } else if(mapType === 'leaflet') {
+                        mapStartup = new StartupLeaflet.StartupLeaflet(mapNumber, mapConfig);
                     } else {
                         mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber, mapConfig, setupMapHoster);
                     }

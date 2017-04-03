@@ -5,9 +5,11 @@ define([
     'app',
     'libs/StartupGoogle',
     'libs/StartupArcGIS',
+    'libs/StartupLeaflet',
     'libs/MapHosterGoogle',
-    'libs/MapHosterArcGIS'
-], function (app, StartupGoogle, StartupArcGIS, MapHosterGoogle, MapHosterArcGIS) {
+    'libs/MapHosterArcGIS',
+    'libs/MapHosterLeaflet'
+], function (app, StartupGoogle, StartupArcGIS, StartupLeaflet, MapHosterGoogle, MapHosterArcGIS, MapHosterLeaflet) {
     'use strict';
 
     app.value('mapsvcScopes', {
@@ -23,12 +25,12 @@ define([
     console.log("ready to create CurrentMapTypeService");
     app.factory('CurrentMapTypeService', ['mapsvcScopes', 'MapControllerService', function (mapsvcScopes, MapControllerService) {
         var mapTypes = {
-            // 'leaflet': MapHosterLeaflet,
+            'leaflet': MapHosterLeaflet,
             'google' : MapHosterGoogle,
             'arcgis' : MapHosterArcGIS
         },
             mapStartups = {
-                // 'leaflet': StartupLeaflet,
+                'leaflet': StartupLeaflet,
                 'google' : StartupGoogle,
                 'arcgis' : StartupArcGIS
             },
@@ -37,7 +39,7 @@ define([
             previousMapType = 'google',
 
             mapRestUrl = {
-                // 'leaflet': 'leaflet',
+                'leaflet': 'leaflet',
                 'google' : 'google',
                 'arcgis' : 'arcgis',
                 'Leaflet': 'leaflet',
@@ -47,7 +49,7 @@ define([
             },
 
             mapType2Config = {
-                // 'leaflet': 2,
+                'leaflet': 2,
                 'google' : 0,
                 'arcgis' : 1
             },
@@ -59,8 +61,8 @@ define([
             programmed with {2} embedded in it.',
             mapSystemDct = {
                 'google' : 0,
-                'arcgis' : 1
-                // 'leaflet' : 2
+                'arcgis' : 1,
+                'leaflet' : 2
             },
             mapconfigs = [
                 {
@@ -84,18 +86,18 @@ define([
                     imgAlt : "ArcGIS Web Maps",
                     active : false,
                     disabled : false
-                } //,
-                // {
-                //     maptype : 'leaflet',
-                //     title : 'Leaflet/OSM Maps',
-                //     site : 'Web Site featuring a Leaflet Map',
-                //     content : contentsText.format('Leaflet/OSM Map',  'a Leaflet/OSM map', 'Leaflet content'),
-                //     url : "/partials/leaflet.html",
-                //     imgSrc :  "img/Leaflet.png",
-                //     imgAlt : "Leaflet/OSM Maps",
-                //     active : false,
-                //     disabled : false
-                // }
+                },
+                {
+                    maptype : 'leaflet',
+                    title : 'Leaflet/OSM Maps',
+                    site : 'Web Site featuring a Leaflet Map',
+                    content : contentsText.format('Leaflet/OSM Map',  'a Leaflet/OSM map', 'Leaflet content'),
+                    url : "/partials/leaflet.html",
+                    imgSrc :  "img/Leaflet.png",
+                    imgAlt : "Leaflet/OSM Maps",
+                    active : false,
+                    disabled : false
+                }
             ],
 
             getMapTypes = function () {

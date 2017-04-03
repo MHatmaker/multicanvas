@@ -42,7 +42,7 @@
             console.log("in PusherSetupCtrl");
             selfdict.isInstantiated = areWeInitialized = false;
             console.log("areWeInitialized is " + areWeInitialized);
-            $scope.privateChannelMashover = PusherConfig.PusherConfig().masherChannel();
+            $scope.privateChannelMashover = PusherConfig.getInstance().masherChannel();
             selfdict.scope = $scope;
             selfdict.scope.userName = selfdict.userName;
             selfdict.pusher = null;
@@ -51,7 +51,7 @@
 
             $scope.showDialog = selfdict.scope.showDialog = false;
             $scope.data = {
-                privateChannelMashover : PusherConfig.PusherConfig().masherChannel(),
+                privateChannelMashover : PusherConfig.getInstance().masherChannel(),
                 prevChannel : 'mashchannel',
                 userName : selfdict.userName,
                 prevUserName : selfdict.userName,
@@ -94,7 +94,7 @@
                 // pusher = new Pusher(APP_KEY);
                 pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://bb22d455.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://392d0487.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                       key: APP_KEY,
                       secret: APP_SECRET,
@@ -131,7 +131,7 @@
 
                 channelBind.bind('client-NewMapPosition', function (frame) {
                     console.log('frame is', frame);
-                    $inj = PusherConfig.getInjector();
+                    $inj = PusherConfig.getInstance().getInjector();
                     serv = $inj.get('PusherEventHandlerService');
                     handler = serv.getHandler('client-NewMapPosition');
                     handler(frame);
@@ -160,7 +160,7 @@
                 });
 
 
-                $inj = PusherConfig.PusherConfig().getInjector();
+                $inj = PusherConfig.getInstance().getInjector();
                 serv = $inj.get('CurrentMapTypeService');
                 selfdict.mph = serv.getSelectedMapType();
 
@@ -220,8 +220,8 @@
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
                 selfdict.CHANNEL = $scope.data.privateChannelMashover;
-                PusherConfig.PusherConfig().setChannel($scope.data.privateChannelMashover);
-                PusherConfig.PusherConfig().setNameChannelAccepted(true);
+                PusherConfig.getInstance().setChannel($scope.data.privateChannelMashover);
+                PusherConfig.getInstance().setNameChannelAccepted(true);
                 selfdict.pusher = new PusherClient(selfdict.eventDct,
                     $scope.data.privateChannelMashover,
                     $scope.data.userName,
@@ -281,7 +281,7 @@
                     console.log('Pusher Modal dismissed at: ' + new Date());
                 });
 
-                $inj = MLConfig.getInjector();
+                $inj = PusherConfig.getInstance().getInjector();
                 serv = $inj.get('CurrentMapTypeService');
                 selfdict.mph = serv.getSelectedMapType();
 
@@ -372,6 +372,10 @@
 
         function createPusherClient(eventDct, pusherChannel, initName, mapno, cbfn, nfo) {
             return selfMethods.createPusherClient(eventDct, pusherChannel, initName, mapno, cbfn, nfo);
+        }
+
+        function setupPusherClient(eventDct, userName, cbfn, nfo) {
+            return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
         }
 
         function init(App) {

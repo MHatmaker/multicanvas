@@ -32,10 +32,13 @@ define([
         'services/InjectorService',
         'services/LinkrService',
         'services/SiteViewService',
+        'services/GoogleQueryService',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
+        'libs/StartupLeaflet',
         'libs/MapHosterGoogle',
         'libs/MapHosterArcGIS',
+        'libs/MapHosterLeaflet',
         'services/CanvasService'
     ]);
         // require(['libs/MLConfig']);

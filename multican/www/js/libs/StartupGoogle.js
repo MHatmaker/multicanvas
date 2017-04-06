@@ -7,8 +7,10 @@
 
     define([
         'libs/MapHosterGoogle',
-        'libs/MLConfig'
-    ], function (MapHosterGoogle, MLConfig) {
+        'controllers/PusherSetupCtrl',
+        'libs/MLConfig',
+        'libs/utils'
+    ], function (MapHosterGoogle, PusherSetupCtrl, MLConfig, utils) {
         console.log('StartupGoogle define');
         var
             StartupGoogle = function (mapNo) {
@@ -16,6 +18,11 @@
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
                 this.gMap = null;
+                this.newSelectedWebMapId = '';
+                this.pusherChannel = null;
+                this.pusher = null;
+                this.mlconfig = MLConfig;
+
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var self = this,
 
@@ -42,6 +49,7 @@
                             zoomStr;
 
                         console.log("StartupGoogle configure with map no. " + self.mapNumber);
+                        self.newSelectedWebMapId = newMapId;
                         // var centerLatLng = new google.maps.LatLng(41.8, -87.7);
                         centerLatLng = new google.maps.LatLng(mapOpts.center.lat, mapOpts.center.lng);
                         initZoom = 15;
@@ -61,6 +69,29 @@
                         self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapOptions);
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
                         self.mapHoster = new MapHosterGoogle.MapHosterGoogle(self.gMap, self.mapNumber, mapOptions, google, google.maps.places);
+
+                        $inj = self.mlconfig.getInstance().getInjector(); // angular.injector(['mapModule']);
+                        evtSvc = $inj.get('PusherEventHandlerService');
+                        evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
+                        evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
+
+                        self.pusherChannel = self.mlconfig.masherChannel(false);
+                        console.debug(self.pusherChannel);
+                        self.pusher = PusherSetupCtrl.createPusherClient(
+                            {
+                                'client-MapXtntEvent' : self.mapHoster.retrievedBounds,
+                                'client-MapClickEvent' : self.mapHoster.retrievedClick,
+                                'client-NewMapPosition' : self.mapHoster.retrievedNewPosition
+                            },
+                            self.pusherChannel,
+                            self.mlconfig.getUserName(),
+                            function (channel, userName) {
+                                self.mlonfig.setUserName(userName);
+                            }
+                        );
+                        if (!self.pusher) {
+                            console.log("failed to create Pusher in StartupGoogle");
+                        }
                         // return self.mapHoster;
                     },
 

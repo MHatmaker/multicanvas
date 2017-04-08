@@ -103,7 +103,7 @@
                         }
                     }
 
-                    whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber() + '_canvas';
+                    whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
                     pacinput = document.getElementById('pac-input');
                     if (!pacinput) {
                         pacinput = angular.element(template);

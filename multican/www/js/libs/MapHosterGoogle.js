@@ -324,7 +324,7 @@
         }
 
         function configureMap(gMap, mapNumber, mapOptions, goooogle, googPlaces, config) {
-            mlconfig = config.getInstance();
+            mlconfig = config;
             mphmap = gMap;
             google = goooogle;
             geoCoder = new google.maps.Geocoder();
@@ -501,7 +501,7 @@
                 }
                 convertedBounds = {'llx' : changedBounds.getSouthWest().lng(), 'lly' : changedBounds.getSouthWest().lat(),
                              'urx' : changedBounds.getNorthEast().lng(), 'ury' : changedBounds.getNorthEast().lat()};
-                MLConfig.setBounds(convertedBounds);
+                mlconfig.setBounds(convertedBounds);
             });
 
             google.maps.event.addListener(mphmap, 'dragend', function () {

@@ -21,7 +21,8 @@
                 this.newSelectedWebMapId = '';
                 this.pusherChannel = null;
                 this.pusher = null;
-                this.mlconfig = MLConfig;
+                this.mlconfig = MLConfig.getInstance();
+                this.mlconfig.setMapNumber(mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var self = this,
@@ -71,7 +72,7 @@
                         self.mapHoster = new MapHosterGoogle.start();
                         self.mapHoster.config(self.gMap, self.mapNumber, mapOptions, google, google.maps.places, self.mlconfig);
 
-                        $inj = self.mlconfig.getInstance().getInjector(); // angular.injector(['mapModule']);
+                        $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
                         evtSvc = $inj.get('PusherEventHandlerService');
                         evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
                         evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
@@ -86,6 +87,7 @@
                             },
                             self.pusherChannel,
                             self.mlconfig.getUserName(),
+                            self.mlconfig.getMapNumber(),
                             function (channel, userName) {
                                 self.mlonfig.setUserName(userName);
                             }

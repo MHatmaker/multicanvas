@@ -22,6 +22,7 @@ define(function () {
             details = {
                 mapId : ndx,
                 mapHosterInstance : null,
+                mapNumber: null,
                 mapHoster : null,
                 webmapId : "a4bb8a91ecfb4131aa544eddfbc2f1d0",
                 nginj : null,
@@ -40,6 +41,12 @@ define(function () {
             },
             getMapId = function () {
                 return details.mapId;
+            },
+            setMapNumber = function(mapNo) {
+                details.mapNumber = mapNo;
+            },
+            getMapNumber = function() {
+                return details.mapNumber;
             },
             masherChannel = function (newWindow) {
                 // alert(getParameterByName('channel'));
@@ -76,9 +83,9 @@ define(function () {
                 console.debug(self.mapHosterInstance);
             },
             getMapHosterInstance = function () {
-                console.log("MLConfig.mapHosterInstance is returning instance " + self.mapId);
-                console.debug(self.mapHosterInstance);
-                return self.mapHosterInstance;
+                console.log("MLConfig.mapHosterInstance is returning instance " + details.mapId);
+                console.debug(details.mapHosterInstance);
+                return details.mapHosterInstance;
             },
             webmapId = function (newWindow) {
                 return newWindow ? getParameterByName('id', self.details) : self.details.webmapId;
@@ -109,6 +116,11 @@ define(function () {
                 return rslt.length !== 0;
             },
 
+            masherChannel = function (newWindow) {
+                // alert(getParameterByName('channel'));
+                // alert(details.masherChannel);
+                return newWindow ? getParameterByName('channel') : details.masherChannel;
+            },
             setPosition = function (position) {
                 details.lon = position.lon;
                 details.lat = position.lat;
@@ -170,6 +182,8 @@ define(function () {
         return {
             setMapId: setMapId,
             getMapId: getMapId,
+            setMapNumber: setMapNumber,
+            getMapNumber: getMapNumber,
             setMapHosterInstance: setMapHosterInstance,
             getMapHosterInstance: getMapHosterInstance,
             setUserName: setUserName,
@@ -194,7 +208,8 @@ define(function () {
             getStartupView: getStartupView,
             setStartupView: setStartupView,
             query: query,
-            getQueryFromUrl: getQueryFromUrl
+            getQueryFromUrl: getQueryFromUrl,
+            masherChannel: masherChannel
         };
     }
 

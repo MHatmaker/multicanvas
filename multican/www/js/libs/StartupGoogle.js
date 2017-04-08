@@ -54,10 +54,10 @@
                         centerLatLng = new google.maps.LatLng(mapOpts.center.lat, mapOpts.center.lng);
                         initZoom = 15;
 
-                        if (mapOpts) {
-                            centerLatLng = mapOpts.center;
-                            initZoom = mapOpts.zoom;
-                        }
+                        // if (mapOpts) {
+                        //     centerLatLng = mapOpts.center;
+                        //     initZoom = mapOpts.zoom;
+                        // }
 
                         mapOptions = {
                             center: centerLatLng, //new google.maps.LatLng(41.8, -87.7),
@@ -68,7 +68,8 @@
 
                         self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapOptions);
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
-                        self.mapHoster = new MapHosterGoogle.MapHosterGoogle(self.gMap, self.mapNumber, mapOptions, google, google.maps.places);
+                        self.mapHoster = new MapHosterGoogle.start();
+                        self.mapHoster.config(self.gMap, self.mapNumber, mapOptions, google, google.maps.places, self.mlconfig);
 
                         $inj = self.mlconfig.getInstance().getInjector(); // angular.injector(['mapModule']);
                         evtSvc = $inj.get('PusherEventHandlerService');

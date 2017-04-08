@@ -29,7 +29,8 @@ define(function () {
                 masherChannelInitialized : false,
                 nameChannelAccepted : false,
                 userName: 'defaultuser',
-                search: '/'
+                search: '/',
+                startupView : {'summaryShowing' : true, 'websiteDisplayMode' : true},
             },
 
             setMapId = function (id) {
@@ -96,12 +97,75 @@ define(function () {
             setUserName = function (name) {
                 details.userName = name;
             },
+            testUrlArgs = function (args) {
+                var rslt = getParameterByName('id', details);
+                // alert("getParameterByName('id') = " + rslt);
+                // alert(rslt.length);
+                // alert(rslt.length != 0);
+
+                console.log("getParameterByName('id') = " + rslt);
+                console.log(rslt.length);
+                console.log(rslt.length !== 0);
+                return rslt.length !== 0;
+            },
+
+            setPosition = function (position) {
+                details.lon = position.lon;
+                details.lat = position.lat;
+                details.zoom = position.zoom;
+            },
+            getPosition = function () {
+                return {"webmapId" : details.webmapId, "lon" : details.lon, "lat" : details.lat, "zoom" : details.zoom};
+            },
+
+            query = function () {
+                return getParameterByName('gmquery', details);
+            },
+            getQueryFromUrl = function () {
+                // details.query.push(getParameterByName('gmquery'));
+                return details.query;
+            },
+            setBounds = function (bnds) {
+                details.bounds = bnds;
+            },
+            getBounds = function () {
+                return details.bounds;
+            },
             setInjector = function (inj) {
                 details.nginj = inj;
             },
             getInjector = function () {
                 return details.nginj;
+            },
+            setStartupView = function (sum, site) {
+                details.startupView.summaryShowing = sum;
+                details.startupView.websiteDisplayMode = site;
+            },
+            getStartupView = function () {
+                return details.startupView;
+            },
+            showConfigDetails = function (msg) {
+                console.log(msg);
+                console.log(
+                    'isInitialUser ' + details.isInitialUser + "\n",
+                    "  userId : "  + details.userId + ', userName ' + details.userName + "\n" +
+                        "referrerId : "  + details.referrerId + "\n" +
+                        "locationPath : "  + details.locationPath + "\n" +
+                        "host : "  + details.host + "\n" +
+                        "hostport : "  + details.hostport + "\n" +
+                        "href : "  + details.href + "\n"  +
+                        "search : "  + details.search + "\n" +
+                        "maphost : "  + details.maphost + "\n" +
+                        "webmapId : "  + details.webmapId + "\n" +
+                        "masherChannel : "  + details.masherChannel + "\n" +
+                        "lon :" + details.lon + '\n' +
+                        "lat : " + details.lat + "\n" +
+                        "zoom : " + details.zoom +
+                        "startupView.summaryShowing : " + details.startupView.summaryShowing + ", startupView.websiteDisplayMode : " + details.startupView.websiteDisplayMode
+                )
             };
+
+
         setInjector(angular.element(document.body).injector());
         return {
             setMapId: setMapId,
@@ -120,7 +184,17 @@ define(function () {
             isNameChannelAccepted: isNameChannelAccepted,
             setChannel: setChannel,
             setNameChannelAccepted: setNameChannelAccepted,
-            getUserNameFromUrl: getUserNameFromUrl
+            getUserNameFromUrl: getUserNameFromUrl,
+            testUrlArgs: testUrlArgs,
+            setPosition: setPosition,
+            getPosition: getPosition,
+            getBounds: getBounds,
+            setBounds: setBounds,
+            showConfigDetails: showConfigDetails,
+            getStartupView: getStartupView,
+            setStartupView: setStartupView,
+            query: query,
+            getQueryFromUrl: getQueryFromUrl
         };
     }
 

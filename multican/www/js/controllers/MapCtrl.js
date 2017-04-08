@@ -107,6 +107,7 @@
                     pacinput = document.getElementById('pac-input');
                     if (!pacinput) {
                         pacinput = angular.element(template);
+                        cnvs = utils.getElemById(whichCanvas);
                         cnvs.append(pacinput);
                         fnLink = $compile(pacinput);
                         fnLink($scope);

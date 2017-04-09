@@ -13,7 +13,7 @@
     ], function (MapHosterGoogle, PusherSetupCtrl, MLConfig, utils) {
         console.log('StartupGoogle define');
         var
-            StartupGoogle = function (mapNo) {
+            StartupGoogle = function (mapNo, mapconfig) {
                 console.log("StartupGoogle ctor");
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
@@ -21,7 +21,7 @@
                 this.newSelectedWebMapId = '';
                 this.pusherChannel = null;
                 this.pusher = null;
-                this.mlconfig = MLConfig.getInstance();
+                this.mlconfig = mapconfig; //MLConfig.getInstance();
                 this.mlconfig.setMapNumber(mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);

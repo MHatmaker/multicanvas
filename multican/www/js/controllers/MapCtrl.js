@@ -160,7 +160,7 @@
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     };
                     if (mapType === 'google') {
-                        mapStartup = new StartupGoogle.StartupGoogle(mapNumber);
+                        mapStartup = new StartupGoogle.StartupGoogle(mapNumber, mapConfig);
                     } else if(mapType === 'leaflet') {
                         mapStartup = new StartupLeaflet.StartupLeaflet(mapNumber, mapConfig);
                     } else {

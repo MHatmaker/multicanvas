@@ -211,6 +211,81 @@
                     }
                 }
 
+                function placesQueryCallback(placesFromSearch, status) {
+                    var googmph,
+                        curMapType = "no map",
+                        placesSearchResults,
+                        onAcceptDestination;
+
+                    console.log('status is ' + status);
+                    utils.hideLoading();
+
+                    onAcceptDestination = function (info) {
+                        var sourceMapType,
+                            evtSvc = $scope.PusherEventHandlerService,
+                            newSelectedWebMapId,
+                            destWnd;
+
+
+                        if (info) {
+                            sourceMapType = info.mapType;
+                            destWnd = info.dstSel;
+                        }
+                        newSelectedWebMapId = "NoId";
+
+                        if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
+                            if (MLConfig.isNameChannelAccepted() === false) {
+
+                                evtSvc.addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
+                                evtSvc.addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
+
+                                PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
+                                    MLConfig.getUserName(), WindowStarter.openNewDisplay,
+                                    {
+                                        'destination' : destWnd,
+                                        'currentMapHolder' : sourceMapType,
+                                        'newWindowId' : newSelectedWebMapId,
+                                        'query' : queryForNewDisplay
+                                    });
+                                queryForNewDisplay = "";
+                            } else {
+                                WindowStarter.openNewDisplay(MLConfig.masherChannel(false),
+                                    MLConfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
+                                queryForNewDisplay = "";
+                            }
+
+                        } else {  //(destWnd == "Same Window")
+                            googmph = CurrentMapTypeService.getSpecificMapType('google');
+                            googmph.placeMarkers(placesSearchResults);
+                            MLConfig.setQuery(queryForNewDisplay);
+                            queryForSameDisplay = queryForNewDisplay;
+                        }
+                    };
+
+                    if (placesFromSearch && placesFromSearch.length > 0) {
+                        placesSearchResults = placesFromSearch;
+
+
+                        $scope.subsetDestinations(placesFromSearch);
+
+                        gmQSvc = $scope.GoogleQueryService;
+                        scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
+                        $scope.showDestDialog(
+                            onAcceptDestination,
+                            scope,
+                            {
+                                'id' : null,
+                                'title' : searchInput.value,
+                                'snippet' : 'No snippet available',
+                                'icon' : 'img/googlemap.png',
+                                'mapType' : CurrentMapTypeService.getCurrentMapType()
+                            }
+                        );
+                    } else {
+                        console.log('searchBox.getPlaces() still returned no results');
+                    }
+                }
+
                 function connectQuery () {
                     var googmph,
                         mapLinkrBounds,
@@ -222,7 +297,7 @@
                         mapOptions,
                         pacinput,
                         queryPlaces = {},
-                        outerMapNumber = MapInstanceService.getSlideCount(),
+                        outerMapNumber = MapInstanceService.getSlideCount() - 1,
                         mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
                         service;
 
@@ -233,7 +308,7 @@
                         new google.maps.LatLng({'lat' : mapLinkrBounds.lly, 'lng' : mapLinkrBounds.llx}),
                         new google.maps.LatLng({'lat' : mapLinkrBounds.ury, 'lng' : mapLinkrBounds.urx})
                     );
-                    position = mlonfig.getPosition();
+                    position = mlconfig.getPosition();
                     center = {'lat' : position.lat, 'lng' : position.lon};
                     googleCenter = new google.maps.LatLng(position.lat, position.lon);
                     gmap = googmph.getMap();
@@ -249,9 +324,9 @@
 
                     // placesFromSearch = searchBox.getPlaces();
 
-                    pacinput = $('#pac-input');
+                    pacinput = document.getElementById('pac-input');
                     queryPlaces.bounds = searchBounds;
-                    queryPlaces.query = pacinput[0].value;
+                    queryPlaces.query = pacinput.value;
                     queryPlaces.location = center;
                     // MLConfig.setQuery(queryPlaces.query);
 

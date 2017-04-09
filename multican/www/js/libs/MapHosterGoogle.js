@@ -306,7 +306,7 @@
                     // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                     // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                     // gBnds = new google.maps.LatLngBounds(ll, ur);
-                    qtext = mlconfig.getQuery();
+                    qtext = mlconfig.query();
                     if (qtext && qtext !== "") {
                         queryPlaces.bounds = gBnds;
                         queryPlaces.query = qtext;
@@ -722,7 +722,7 @@
                     // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                     // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                     // gBnds = new google.maps.LatLngBounds(ll, ur);
-                    qtext = mlconfig.getQuery();
+                    qtext = mlconfig.guery();
                     if (qtext && qtext !== "") {
                         queryPlaces.bounds = gBnds;
                         queryPlaces.query = qtext;
@@ -852,7 +852,7 @@
                 console.log("MapHosterGoogle.publishPosition");
                 console.log(pos);
 
-                gmQuery = mlconfig.getQuery();
+                gmQuery = mlconfig.query();
                 if (gmQuery !== '') {
                     console.log("adding gmQuery : " + gmQuery);
                     pos.gmquery = gmQuery;

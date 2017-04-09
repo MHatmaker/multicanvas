@@ -78,9 +78,9 @@ define(function () {
                 return details.nameChannelAccepted;
             },
             setMapHosterInstance = function (inst) {
-                self.mapHosterInstance = inst;
-                console.log("MLConfig.mapHosterInstance is set to " + self.mapHosterInstance.getMapNumber());
-                console.debug(self.mapHosterInstance);
+                details.mapHosterInstance = inst;
+                console.log("MLConfig.mapHosterInstance is set to " + details.mapNumber);
+                console.debug(details.mapHosterInstance);
             },
             getMapHosterInstance = function () {
                 console.log("MLConfig.mapHosterInstance is returning instance " + details.mapId);

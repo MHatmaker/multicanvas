@@ -94,7 +94,7 @@
                         $scope.gsearch.isGoogle = false;
                         if (curMapType === 'arcgis') {
                             whichCanvas = 'map' + mapStartup.getMapNumber() + '_root'; // 'map_canvas_root';
-                            cnvs = utils.getElemById(whichCanvas);
+                            // whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
                             pacinputElement = document.getElementById('pac-input');
                             if (pacinputElement) {
                                 pacinputParent = pacinputElement.parentElement;
@@ -211,6 +211,56 @@
                     }
                 }
 
+                function connectQuery () {
+                    var googmph,
+                        mapLinkrBounds,
+                        searchBounds,
+                        position,
+                        center,
+                        googleCenter,
+                        gmap,
+                        mapOptions,
+                        pacinput,
+                        queryPlaces = {},
+                        outerMapNumber = MapInstanceService.getSlideCount(),
+                        mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
+                        service;
+
+                    googmph = CurrentMapTypeService.getSpecificMapType('google');
+
+                    mapLinkrBounds = mlconfig.getBounds();
+                    searchBounds = new google.maps.LatLngBounds(
+                        new google.maps.LatLng({'lat' : mapLinkrBounds.lly, 'lng' : mapLinkrBounds.llx}),
+                        new google.maps.LatLng({'lat' : mapLinkrBounds.ury, 'lng' : mapLinkrBounds.urx})
+                    );
+                    position = mlonfig.getPosition();
+                    center = {'lat' : position.lat, 'lng' : position.lon};
+                    googleCenter = new google.maps.LatLng(position.lat, position.lon);
+                    gmap = googmph.getMap();
+                    utils.showLoading();
+                    if (!gmap) {
+                        mapOptions = {
+                            center : googleCenter,
+                            zoom : 15,
+                            mapTypeId : google.maps.MapTypeId.ROADMAP
+                        };
+                        gmap = new google.maps.Map(document.getElementById("hiddenmap_canvas"), mapOptions);
+                    }
+
+                    // placesFromSearch = searchBox.getPlaces();
+
+                    pacinput = $('#pac-input');
+                    queryPlaces.bounds = searchBounds;
+                    queryPlaces.query = pacinput[0].value;
+                    queryPlaces.location = center;
+                    // MLConfig.setQuery(queryPlaces.query);
+
+                    service = new google.maps.places.PlacesService(gmap);
+                    if (queryPlaces.query !== '') {
+                        service.textSearch(queryPlaces, placesQueryCallback);
+                    }
+                };
+
                 function refreshMinMax() {
                     var minMaxText = document.getElementById("idMinMaxText"),
                         minMaxSymbol = document.getElementById("idMinMaxSymbol");
@@ -229,7 +279,9 @@
                     if (document.getElementById("linkerDirectiveId") === null) {
 
                         var contextScope = $scope,
-                            whichCanvas = 'map' + mapStartup.getMapNumber() + '_root', // 'map_canvas_root';
+                            curMapType = CurrentMapTypeService.getMapTypeKey(),
+                            // whichCanvas = 'map' + mapStartup.getMapNumber() + '_root', // 'map_canvas_root';
+                            whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber(),
                             cnvs = utils.getElemById(whichCanvas),
                             templateLnkr = ' \
                                 <div id="linkerDirectiveId" class="lnkrclass"> \

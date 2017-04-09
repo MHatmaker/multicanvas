@@ -1,4 +1,4 @@
-/*global require, define, console, google, navigator, alert, loading, esri*/
+/*global require, define, console, google, navigator, alert, loading*/
 /*jslint unparam: true*/
 
 (function () {
@@ -126,8 +126,8 @@
                 showSomething = function () {
                     if (selfPusherDetails.pusher) {
                         var fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6),
-                            referrerId = MLConfig.getUserId(),
-                            referrerName = MLConfig.getUserName(),
+                            referrerId = mlconfig.getUserId(),
+                            referrerName = mlconfig.getUserName(),
                             pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                                 "referrerId" : referrerId, "referrerName" : referrerName,
                                 'address' : marker.address, 'title' : marker.title };
@@ -144,8 +144,8 @@
                 infowindow.open(mphmap, this);
 
                 btnShare = document.getElementById(shareBtnId);
-                // referrerId = MLConfig.getReferrerId();
-                // usrId = MLConfig.getUserId();
+                // referrerId = mlconfig.getReferrerId();
+                // usrId = mlconfig.getUserId();
                 // if (referrerId && referrerId != usrId) {
                     // if (btnShare) {
                     //     console.debug(btnShare);
@@ -306,7 +306,7 @@
                     // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                     // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                     // gBnds = new google.maps.LatLngBounds(ll, ur);
-                    qtext = MLConfig.getQuery();
+                    qtext = mlconfig.getQuery();
                     if (qtext && qtext !== "") {
                         queryPlaces.bounds = gBnds;
                         queryPlaces.query = qtext;
@@ -320,7 +320,7 @@
 
         function hideLoading(error) {
             console.log("hide loading");
-            esri.hide(loading);
+            utils.hideLoading(error);
         }
 
         function configureMap(gMap, mapNumber, mapOptions, goooogle, googPlaces, config) {
@@ -414,7 +414,7 @@
                 addInitialSymbols();
                 // google.maps.event.trigger(mphmap, 'resize');
                 // mphmap.setCenter(center);
-                gmQuery = MLConfig.query();
+                gmQuery = mlconfig.query();
                 console.log("getMaxZoomAtLatLng for " + cntr.lng + ", " + cntr.lat);
 
                 zsvc.getMaxZoomAtLatLng(cntr, function (response) {
@@ -424,7 +424,7 @@
                         maxZoom = response.zoom;
                         zoomLevels = maxZoom - minZoom;
                         collectScales(zoomLevels);
-                        // MLConfig.showConfigDetails('MapHosterGoogle zsvc.getMaxZoomAtLatLng - after collectScales');
+                        // mlconfig.showConfigDetails('MapHosterGoogle zsvc.getMaxZoomAtLatLng - after collectScales');
                         showGlobals("after zsvc.getMaxZoomAtLatLng collectScales");
                     } else {
                         if (response) {
@@ -441,18 +441,18 @@
                 console.log('gmQuery contains ' + gmQuery);
                 if (gmQuery !== '') {
                     searchFiredFromUrl = true;
-                    MLConfig.setQuery(gmQuery);
+                    mlconfig.setQuery(gmQuery);
                 }
                 if (searchFiredFromUrl === true) {
                     console.log("getBoundsFromUrl.......in MapHosterGoogle 'places_changed' listener");
-                    bnds = MLConfig.getBoundsFromUrl();
+                    bnds = mlconfig.getBoundsFromUrl();
                     console.debug(bnds);
                     ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                     ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                     gBnds = new google.maps.LatLngBounds(ll, ur);
                     searchFiredFromUrl = false;
 
-                    qtext = MLConfig.query();
+                    qtext = mlconfig.query();
 
                     pacnpt = $('#pac-input');
                     pacnpt.value = qtext;
@@ -576,8 +576,8 @@
                 // if (selfPusherDetails.pusher)
                 // {
                     // var fixedLL = utils.toFixed(popPt.lng(), popPt.lat(), 6);
-                    // var referrerId = MLConfig.getUserId();
-                    // var referrerName = MLConfig.getUserName();
+                    // var referrerId = mlconfig.getUserId();
+                    // var referrerName = mlconfig.getUserName();
                     // var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                         // "referrerId" : referrerId, "referrerName" : referrerName };
                     // console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
@@ -647,7 +647,7 @@
                 btnShare;
             console.log("Back in retrievedClick - with click at " +  clickPt.x + ", " + clickPt.y);
             // latlng = L.latLng(clickPt.y, clickPt.x, clickPt.y);
-            // $inj = MLConfig.getInjector();
+            // $inj = mlconfig.getInjector();
             // linkrSvc = $inj.get('LinkrService');
             // linkrSvc.hideLinkr();
 
@@ -659,11 +659,11 @@
             if (clickPt.address) {
                 content += '<br>' + clickPt.address;
             }
-            if (popDetails !== null && clickPt.referrerId !== MLConfig.getUserId()) {
+            if (popDetails !== null && clickPt.referrerId !== mlconfig.getUserId()) {
                 popDetails.infoWnd.close();
                 popDetails.infoMarker.setMap(null);
             }
-            if (clickPt.referrerId !== MLConfig.getUserId()) {
+            if (clickPt.referrerId !== mlconfig.getUserId()) {
                 popDetails = markerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
                 popDetails.infoWnd.open(mphmap, popDetails.infoMarker);
 
@@ -684,7 +684,7 @@
         }
 
         function getEventDictionary() {
-            var $inj = MLConfig.getInjector(),
+            var $inj = mlconfig.getInjector(),
                 evtSvc = $inj.get('PusherEventHandlerService'),
                 eventDct = evtSvc.getEventDct();
             return eventDct;
@@ -722,7 +722,7 @@
                     // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                     // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                     // gBnds = new google.maps.LatLngBounds(ll, ur);
-                    qtext = MLConfig.getQuery();
+                    qtext = mlconfig.getQuery();
                     if (qtext && qtext !== "") {
                         queryPlaces.bounds = gBnds;
                         queryPlaces.query = qtext;
@@ -798,13 +798,13 @@
 
 
         function setUserName(name) {
-            MLConfig.setUserName(name);
+            mlconfig.setUserName(name);
         }
 
         // MapHosterGoogle.prototype.setPusherClient = function (pusher, channel)
         function setPusherClient(pusher, channel) {
 
-            var $inj = MLConfig.getInjector(),
+            var $inj = mlconfig.getInjector(),
                 evtSvc = $inj.get('PusherEventHandlerService'),
                 evtDct = evtSvc.getEventDct(),
                 key;
@@ -815,7 +815,7 @@
             }
             selfPusherDetails.pusher = pusher;
             selfPusherDetails.channel = channel;
-            MLConfig.setChannel(channel);
+            mlconfig.setChannel(channel);
             console.log("reset MapHosterGoogle setPusherClient, selfPusherDetails.pusher " +  selfPusherDetails.pusher);
         }
 
@@ -852,12 +852,12 @@
                 console.log("MapHosterGoogle.publishPosition");
                 console.log(pos);
 
-                gmQuery = MLConfig.getQuery();
+                gmQuery = mlconfig.getQuery();
                 if (gmQuery !== '') {
                     console.log("adding gmQuery : " + gmQuery);
                     pos.gmquery = gmQuery;
                     pos.search += "&gmquery=" + gmQuery;
-                    pubBounds = MLConfig.getBoundsForUrl();
+                    pubBounds = mlconfig.getBoundsForUrl();
                     pos.search += pubBounds;
                 }
                 console.log('After adding gmQuery');

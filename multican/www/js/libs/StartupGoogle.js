@@ -1,4 +1,4 @@
-/*global require, define, google, console, document*/
+/*global require, define, google, console, document, loading*/
 /*jslint unparam: true*/
 
 (function () {
@@ -41,6 +41,7 @@
                     configure = function (newMapId, mapOpts) {
                         var $inj,
                             evtSvc,
+                            mapInstanceSvc,
                             centerLatLng,
                             initZoom,
                             mapOptions = {},
@@ -51,6 +52,9 @@
 
                         console.log("StartupGoogle configure with map no. " + self.mapNumber);
                         self.newSelectedWebMapId = newMapId;
+
+                        window.loading = dojo.byId("loadingImg");
+                        utils.showLoading();
                         // var centerLatLng = new google.maps.LatLng(41.8, -87.7);
                         centerLatLng = new google.maps.LatLng(mapOpts.center.lat, mapOpts.center.lng);
                         initZoom = 15;
@@ -76,6 +80,8 @@
                         evtSvc = $inj.get('PusherEventHandlerService');
                         evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
                         evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
+                        mapInstanceSvc = $inj.get('MapInstanceService');
+                        mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
 
                         self.pusherChannel = self.mlconfig.masherChannel(false);
                         console.debug(self.pusherChannel);
@@ -89,7 +95,7 @@
                             self.mlconfig.getUserName(),
                             self.mlconfig.getMapNumber(),
                             function (channel, userName) {
-                                self.mlonfig.setUserName(userName);
+                                self.mlconfig.setUserName(userName);
                             }
                         );
                         if (!self.pusher) {

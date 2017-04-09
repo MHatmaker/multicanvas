@@ -29,13 +29,13 @@
     ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, esrimap) { // WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
-            StartupArcGIS = function (mapNo, mlconfig, mapHosterSetupCallback) {
+            StartupArcGIS = function (mapNo, mapconfig, mapHosterSetupCallback) {
 
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
                 this.aMap = null;
                 this.aView = null;
-                this.mlconfig = mlconfig;
+                this.mlconfig = mapconfig; //MLConfig.getInstance();
                 this.mapHosterSetupCallback = mapHosterSetupCallback;
                 console.log("Setting mapNumber to " + this.mapNumber);
 

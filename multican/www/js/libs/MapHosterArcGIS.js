@@ -77,7 +77,7 @@
                         if (selfPusherDetails.pusher === null) {
                             selfPusherDetails.pusher = pusher;
                             selfPusherDetails.channel = channel;
-                            PusherConfig.PusherConfig().setChannel(channel);
+                            PusherConfig.getInstance().setChannel(channel);
 
                             $inj = self.mlconfig.getInjector();
                             evtSvc = $inj.get('PusherEventHandlerService');

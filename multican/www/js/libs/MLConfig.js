@@ -88,11 +88,11 @@ define(function () {
                 return details.mapHosterInstance;
             },
             webmapId = function (newWindow) {
-                return newWindow ? getParameterByName('id', self.details) : self.details.webmapId;
+                return newWindow ? getParameterByName('id', details) : details.webmapId;
             },
             setWebmapId = function (id) {
                 console.log("Setting webmapId to " + id);
-                self.webmapId = id;
+                details.webmapId = id;
             },
             getUserName = function () {
                 return details.userName;

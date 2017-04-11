@@ -53,7 +53,8 @@
                 popups = [],
                 mrkr,
                 customControl = null,
-                queryListenerLoaded = false;
+                queryListenerLoaded = false;,
+                mlconfig;
 
             function showLoading() {
                 utils.showLoading();
@@ -76,7 +77,7 @@
                     lfltBounds.ymin = sw.lat;
                     lfltBounds.xmax = ne.lng;
                     lfltBounds.ymax = ne.lat;
-                    MLConfig.setBounds({'llx' : sw.lng, 'lly' : sw.lat, 'urx' : ne.lng, 'ury' : ne.lat});
+                    mlconfig.setBounds({'llx' : sw.lng, 'lly' : sw.lat, 'urx' : ne.lng, 'ury' : ne.lat});
                 }
                 zmG = zm;
                 cntrxG = cntrx;
@@ -90,7 +91,7 @@
                     'evlng' : cntrxG,
                     'evlat' : cntryG
                 });
-                MLConfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
+                mlconfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
             }
 
             function showGlobals(cntxt) {
@@ -137,8 +138,8 @@
                         pushLL;
                     if (selfPusherDetails.pusher && selfPusherDetails.active) {
                         fixedLL = utils.toFixed(contextPos[1], contextPos[0], 6);
-                        referrerId = MLConfig.getUserId();
-                        referrerName = MLConfig.getUserName();
+                        referrerId = mlconfig.getUserId();
+                        referrerName = mlconfig.getUserName();
                         pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                             "referrerId" : referrerId, "referrerName" :  referrerName,
                             'address' : contextContent, 'title' : contextHint };
@@ -157,8 +158,8 @@
                 mphmap.on('popupopen', function () {
                     // alert('pop pop pop');
                     console.debug(popup);
-                    var referrerId = MLConfig.getReferrerId(),
-                        usrId = MLConfig.getUserId(),
+                    var referrerId = mlconfig.getReferrerId(),
+                        usrId = mlconfig.getUserId(),
                         btnShare = document.getElementById(shareBtnId);
                     if (referrerId && referrerId !== usrId) {
                         if (btnShare) {
@@ -306,7 +307,7 @@
                     linkrSvc,
                     content = "Received Pushed Click from user " + clickPt.referrerName + ", " + clickPt.referrerId + " at " + latlng.toString();
 
-                $inj = MLConfig.getInjector();
+                $inj = mlconfig.getInjector();
                 linkrSvc = $inj.get('LinkrService');
                 linkrSvc.hideLinkr();
                 if (clickPt.title) {
@@ -315,7 +316,7 @@
                 if (clickPt.address) {
                     content += '<br>' + clickPt.address;
                 }
-                if (clickPt.referrerId !== MLConfig.getUserId()) {
+                if (clickPt.referrerId !== mlconfig.getUserId()) {
                     popup
                         .setLatLng(latlng)
                         .setContent(content)
@@ -353,7 +354,7 @@
                     userZoom = true;
                 }
 
-                MLConfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
+                mlconfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
             }
 
             customControl =  L.Control.extend({
@@ -368,25 +369,26 @@
             });
 
             function placeCustomControls() {
-                var $inj = MLConfig.getInjector(),
+                var $inj = mlconfig.getInjector(),
                     ctrlSvc = $inj.get('MapControllerService'),
                     mapCtrl = ctrlSvc.getController();
                 mapCtrl.placeCustomControls();
             }
 
             function setupQueryListener() {
-                var $inj = MLConfig.getInjector(),
+                var $inj = mlconfig.getInjector(),
                     ctrlSvc = $inj.get('MapControllerService'),
                     mapCtrl = ctrlSvc.getController();
                 mapCtrl.setupQueryListener();
             }
 
-            function configureMap(lmap) {
-                var qlat = MLConfig.lat(),
-                    qlon = MLConfig.lon(),
-                    qzoom = MLConfig.zoom(),
+            function configureMap(lmap, config) {
+                var qlat = mlconfig.lat(),
+                    qlon = mlconfig.lon(),
+                    qzoom = mlconfig.zoom(),
                     osmUrl,
                     lyr;
+                mlconfig = config;
                 console.debug("ready to show mphmap");
                 mphmap = lmap; //L.map('map_canvas').setView([51.50, -0.09], 13);
                 selfPusherDetails.active = true;
@@ -395,10 +397,10 @@
 
                 geoCoder =  GeoCoder; //.nominatim();
 
-                if (MLConfig.testUrlArgs()) {
-                    qlat = MLConfig.lat();
-                    qlon = MLConfig.lon();
-                    qzoom = MLConfig.zoom();
+                if (mlconfig.testUrlArgs()) {
+                    qlat = mlconfig.lat();
+                    qlon = mlconfig.lon();
+                    qzoom = mlconfig.zoom();
                     mphmap.setView([qlat, qlon], qzoom);
                     updateGlobals("init with qlon, qlat", qlon, qlat, qzoom);
                 } else {
@@ -464,7 +466,7 @@
             }
 
             function getEventDictionary() {
-                var $inj = MLConfig.getInjector(),
+                var $inj = mlconfig.getInjector(),
                     evtSvc = $inj.get('PusherEventHandlerService'),
                     eventDct = evtSvc.getEventDct();
                 return eventDct;
@@ -473,19 +475,19 @@
 
 
             function setUserName(name) {
-                MLConfig.setUserName(name);
+                mlconfig.setUserName(name);
             }
 
             function setPusherClient(pusher, channel) {
-                var $inj = MLConfig.getInjector(),
+                var $inj = mlconfig.getInjector(),
                     evtSvc = $inj.get('PusherEventHandlerService'),
                     evtDct = evtSvc.getEventDct(),
                     key;
                 selfPusherDetails.pusher = pusher;
                 selfPusherDetails.channel = channel;
-                MLConfig.setChannel(channel);
+                mlconfig.setChannel(channel);
 
-                $inj = MLConfig.getInjector();
+                $inj = mlconfig.getInjector();
                 evtSvc = $inj.get('PusherEventHandlerService');
                 evtDct = evtSvc.getEventDct();
                 for (key in evtDct) {
@@ -546,10 +548,10 @@
 
                         bnds = {'llx' : sw.lng, 'lly' : sw.lat,
                                      'urx' : ne.lng, 'ury' : ne.lat};
-                        MLConfig.setBounds(bnds);
+                        mlconfig.setBounds(bnds);
                     }
 
-                    bnds = MLConfig.getBoundsForUrl();
+                    bnds = mlconfig.getBoundsForUrl();
                     pos.search += bnds;
 
                     selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-NewMapPosition', pos);
@@ -570,7 +572,21 @@
             }
 
             function init() {
-                return MapHosterLeaflet;
+                return {
+                    start: init,
+                    config : configureMap,
+                    retrievedBounds: retrievedBounds,
+                    retrievedClick: retrievedClick,
+                    setPusherClient: setPusherClient,
+                    setUserName : setUserName,
+                    getGlobalsForUrl: getGlobalsForUrl,
+                    getEventDictionary : getEventDictionary,
+                    publishPosition : publishPosition,
+                    getCenter : getCenter,
+                    removeEventListeners : removeEventListeners,
+                    getMapHosterName : getMapHosterName,
+                    geoLocate : geoLocate
+                };
             }
 
             function removeEventListeners(destWnd) {

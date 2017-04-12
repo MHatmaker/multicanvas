@@ -50,6 +50,7 @@
                     configure = function (newMapId) {
                         var $inj = self.mlconfig.getInjector(),
                             evtSvc = $inj.get('PusherEventHandlerService'),
+                            mapInstanceSvc,
                             CurrentMapTypeService;
                         self.newSelectedWebMapId = newMapId;
                         CurrentMapTypeService = $inj.get('CurrentMapTypeService');
@@ -83,7 +84,7 @@
                             }
 
                             self.mapHoster = new MapHosterLeaflet.start();
-                            self.mapHoster.config(self.gMap, self.mapNumber, self.mlconfig);
+                            self.mapHoster.config(self.lMap, self.mapNumber, self.mlconfig);
                             $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
                             evtSvc = $inj.get('PusherEventHandlerService');
                             evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
@@ -102,6 +103,7 @@
                                 },
                                 self.pusherChannel,
                                 self.mlconfig.getUserName(),
+                                self.mapNumber,
                                 function (channel, userName) {
                                     self.mlconfig.setUserName(userName);
                                 },

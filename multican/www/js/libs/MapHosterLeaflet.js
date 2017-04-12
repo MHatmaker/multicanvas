@@ -1,8 +1,4 @@
-/*global require*/
-/*global define*/
-/*global L*/
-/*global GeoCoder*/
-/*global google*/
+/*global require, console, define, L, GeoCoder, google, document*/
 // define('leaflet', function () {
     // if (leaflet) {
         // return leaflet;
@@ -53,7 +49,7 @@
                 popups = [],
                 mrkr,
                 customControl = null,
-                queryListenerLoaded = false;,
+                queryListenerLoaded = false,
                 mlconfig;
 
             function showLoading() {
@@ -148,7 +144,7 @@
                     }
                 };
 
-                container = $('<div />');
+                container = angular.element('<div />');
                 container.html(allContent);
 
                 popup = L.popup().setContent(container[0]);
@@ -382,10 +378,10 @@
                 mapCtrl.setupQueryListener();
             }
 
-            function configureMap(lmap, config) {
-                var qlat = mlconfig.lat(),
-                    qlon = mlconfig.lon(),
-                    qzoom = mlconfig.zoom(),
+            function configureMap(lmap, mapno, config) {
+                var qlat, // = config.lat(),
+                    qlon, // = config.lon(),
+                    qzoom, // = config.zoom(),
                     osmUrl,
                     lyr;
                 mlconfig = config;

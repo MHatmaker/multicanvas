@@ -1,4 +1,4 @@
-/*global require, define, console, google, navigator, alert, loading*/
+/*global require, define, console, google, navigator, alert, loading, document, setTimeout, angular, window*/
 /*jslint unparam: true*/
 
 (function () {
@@ -12,7 +12,7 @@
         'libs/utils',
         'libs/MLConfig',
         'controllers/PusherSetupCtrl',
-        'controllers/LocateSelfCtrl',
+        'controllers/LocateSelfCtrl'
     ], function (PositionViewCtrl, utils, MLConfig, PusherSetupCtrl, LocateSelfCtrl) {
 
         var
@@ -94,7 +94,7 @@
                 scale = 1128.497220,
                 i,
                 obj;
-            for (i = topLevel; i > 0; i--) {
+            for (i = topLevel; i > 0; i -= 1) {
                 obj = {"scale" : scale, "level" : i};
                 scale = scale * 2;
                 // console.log("scale " + obj.scale + " level " + obj.level);
@@ -165,7 +165,7 @@
                 marker,
                 place,
                 i;
-            for (i = 0; i < markers.length; i++) {
+            for (i = 0; i < markers.length; i += 1) {
                 marker = markers[i];
                 if (marker) {
                     marker.setMap(null);
@@ -175,7 +175,7 @@
             // For each place, get the icon, place name, and location.
             markers = [];
             boundsForMarkers = new google.maps.LatLngBounds();
-            for (i = 0; i < places.length; i++) {
+            for (i = 0; i < places.length; i += 1) {
                 place = places[i];
                 if (place) {
                     image = {
@@ -234,12 +234,12 @@
             // this.circle([51.508, -0.11], 500);
         }
 
-        function formatBounds(b) {
-            var s = String.format("ll : {0}, {1}, ru : {2}, {3}",
-                                b.getSouthWest().lng(), b.getSouthWest().lat(),
-                                b.getNorthEast().lng(), b.getNorthEast().lat());
-            return s;
-        }
+        // function formatBounds(b) {
+        //     var s = String.format("ll : {0}, {1}, ru : {2}, {3}",
+        //                         b.getSouthWest().lng(), b.getSouthWest().lat(),
+        //                         b.getNorthEast().lng(), b.getNorthEast().lat());
+        //     return s;
+        // }
 
         function extractBounds(action) {
             var zm = mphmap.getZoom(),
@@ -454,7 +454,7 @@
 
                     qtext = mlconfig.query();
 
-                    pacnpt = $('#pac-input');
+                    pacnpt = angular.element('pac-input');
                     pacnpt.value = qtext;
                     // pacnpt.focus();
                     queryPlaces.bounds = gBnds;
@@ -830,7 +830,7 @@
             return pos;
         }
 
-        function formatCoords (pos) {
+        function formatCoords(pos) {
             var fixed = utils.toFixed(pos.lng, pos.lat, 5),
                 formatted  = '<div style="color: blue;">' + fixed.lon + ', ' + fixed.lat + '</div>';
             return formatted;
@@ -888,10 +888,14 @@
             console.log(placesFromSearch);
         }
 
-        function MapHosterGoogle() {
-            mapReady = false;
-            // bounds = null;
-            userZoom = true;
+        // function MapHosterGoogle() {
+        //     mapReady = false;
+        //     // bounds = null;
+        //     userZoom = true;
+        // }
+
+        function removeEventListeners() {
+            console.log("empty removeEventListeners block in MapHosterGoogle");
         }
 
         function init() {
@@ -914,12 +918,9 @@
                 getMap : getMap,
                 placeMarkers : placeMarkers,
                 geoLocate : geoLocate
-            }
+            };
         }
 
-        function removeEventListeners() {
-            console.log("empty removeEventListeners block in MapHosterGoogle");
-        }
 
         return {
             start: init,

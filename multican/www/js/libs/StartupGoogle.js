@@ -1,4 +1,4 @@
-/*global require, define, google, console, document, loading*/
+/*global require, define, google, console, document, loading, window, dojo*/
 /*jslint unparam: true*/
 
 (function () {
@@ -44,11 +44,11 @@
                             mapInstanceSvc,
                             centerLatLng,
                             initZoom,
-                            mapOptions = {},
-                            qlat,
-                            qlon,
-                            bnds,
-                            zoomStr;
+                            mapOptions = {};
+                            // qlat,
+                            // qlon,
+                            // bnds,
+                            // zoomStr;
 
                         console.log("StartupGoogle configure with map no. " + self.mapNumber);
                         self.newSelectedWebMapId = newMapId;

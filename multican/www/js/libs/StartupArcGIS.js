@@ -96,8 +96,8 @@
                         console.debug(self.aMap);
                         var
                             curmph = null,
-                            $inj,
-                            mapTypeSvc,
+                            // $inj,
+                            // mapTypeSvc,
                             currentPusher,
                             pusherChannel,
                             currentChannel;

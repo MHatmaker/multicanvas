@@ -1,4 +1,4 @@
-/*global require, console, define, L, GeoCoder, google, document*/
+/*global require, console, define, L, GeoCoder, google, document, angular*/
 // define('leaflet', function () {
     // if (leaflet) {
         // return leaflet;
@@ -19,10 +19,9 @@
     console.log("ready to require stuff in MapHosterLeaflet");
     require(['http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js', "libs/utils", 'libs/GeoCoder']);
 
-    define(['controllers/PositionViewCtrl', 'libs/GeoCoder', 'libs/utils', 'libs/MLConfig',
-        'controllers/PusherSetupCtrl'],
+    define(['controllers/PositionViewCtrl', 'libs/GeoCoder', 'libs/utils', 'libs/MLConfig'], // ,'controllers/PusherSetupCtrl'],
 
-        function (PositionViewCtrl, GeoCoder, utils, MLConfig, PusherSetupCtrl) {
+        function (PositionViewCtrl, GeoCoder, utils, MLConfig) { //, PusherSetupCtrl) {
 
             var
                 hostName = "MapHosterLeaflet",
@@ -48,7 +47,7 @@
                 markers = [],
                 popups = [],
                 mrkr,
-                customControl = null,
+                CustomControl = null,
                 queryListenerLoaded = false,
                 mlconfig;
 
@@ -103,7 +102,7 @@
                     i;
                 scale2Level = [];
                 sc2lv = scale2Level;
-                for (i = 0; i < zoomLevels + 1; i++) {
+                for (i = 0; i < zoomLevels + 1; i += 1) {
                     scale = mphmap.options.crs.scale(i);
                     obj = {"scale" : scale, "level" : i};
                     // console.log("scale " + obj.scale + " level " + obj.level);
@@ -246,7 +245,7 @@
                     });
             }
 
-            function extractBounds(action, latlng) {
+            function extractBounds(action) { // , latlng) {
                 var zm = mphmap.getZoom(),
                     // scale = mphmap.options.crs.scale(zm),
                     // oldMapCenter = mphmapCenter,
@@ -353,12 +352,12 @@
                 mlconfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
             }
 
-            customControl =  L.Control.extend({
+            CustomControl =  L.Control.extend({
                 options: {
                     position: 'topright'
                 },
 
-                onAdd: function (map) {
+                onAdd: function () { //map) {
                     var container = document.getElementById('gmsearch');
                     return container;
                 }
@@ -421,10 +420,10 @@
                         queryListenerLoaded = true;
                     }
                     hideLoading();
-                    mphmap.addControl(new customControl());
+                    mphmap.addControl(new CustomControl());
                 });
 
-                lyr.on("loading", function (e) {
+                lyr.on("loading", function () { //(e) {
                     showLoading();
                 });
 
@@ -444,7 +443,7 @@
                 mphmap.on("click", function (e) {
                     onMapClick(e);
                 });
-                mphmap.on("zoomend", function (e) {
+                mphmap.on("zoomend", function () { //e) {
                     if (userZoom === true) {
                         setBounds('zoom', null);
                     }
@@ -504,7 +503,7 @@
                 return "&lon=" + cntrxG + "&lat=" + cntryG + "&zoom=" + zmG;
             }
 
-            function formatCoords (pos) {
+            function formatCoords(pos) {
                 var fixed = utils.toFixed(pos.lng, pos.lat, 5),
                     formatted  = '<div style="color: blue;">' + fixed.lon + ', ' + fixed.lat + '</div>';
                 return formatted;
@@ -567,24 +566,6 @@
                 userZoom = true;
             }
 
-            function init() {
-                return {
-                    start: init,
-                    config : configureMap,
-                    retrievedBounds: retrievedBounds,
-                    retrievedClick: retrievedClick,
-                    setPusherClient: setPusherClient,
-                    setUserName : setUserName,
-                    getGlobalsForUrl: getGlobalsForUrl,
-                    getEventDictionary : getEventDictionary,
-                    publishPosition : publishPosition,
-                    getCenter : getCenter,
-                    removeEventListeners : removeEventListeners,
-                    getMapHosterName : getMapHosterName,
-                    geoLocate : geoLocate
-                };
-            }
-
             function removeEventListeners(destWnd) {
                 var ctrlDiv = document.getElementsByClassName("leaflet-control-container")[0],
                     paneDiv = document.getElementsByClassName("leaflet-map-pane")[0],
@@ -602,6 +583,24 @@
 
                     }
                 }
+            }
+
+            function init() {
+                return {
+                    start: init,
+                    config : configureMap,
+                    retrievedBounds: retrievedBounds,
+                    retrievedClick: retrievedClick,
+                    setPusherClient: setPusherClient,
+                    setUserName : setUserName,
+                    getGlobalsForUrl: getGlobalsForUrl,
+                    getEventDictionary : getEventDictionary,
+                    publishPosition : publishPosition,
+                    getCenter : getCenter,
+                    removeEventListeners : removeEventListeners,
+                    getMapHosterName : getMapHosterName,
+                    geoLocate : geoLocate
+                };
             }
 
             return {

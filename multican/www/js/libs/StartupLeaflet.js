@@ -1,4 +1,4 @@
-/*global require, define, L, dojo, google, console, window, document*/
+/*global require, define, L, dojo, google, console, window, document, lmap*/
 /*jslint unparam: true*/
 
 (function () {
@@ -28,7 +28,7 @@
                 var
                     self = this,
                     getMap = function () {
-                        return lMap;
+                        return self.lMap;
                     },
 
                     getMapNumber = function () {
@@ -37,15 +37,15 @@
                     getMapHosterInstance = function (ndx) {
                         return self.mapHoster;
                     },
-                    openAGOWindow = function (channel, userName) {
-                        var url = "?id=" + newSelectedWebMapId + MapHosterLeaflet.getGlobalsForUrl() + "&channel=" + channel + "&userName=" + userName;
-                        console.log("open new ArcGIS window with URI " + url);
-                        console.log("using channel " + channel + " with user name " + userName);
-                        self.mlconfig.setUrl(url);
-                        self.mlconfig.setChannel(channel);
-                        self.mlconfig.userName(userName);
-                        window.open(self.mlconfig.gethref() + "arcgis/" + url, newSelectedWebMapId, self.mlconfig.getSmallFormDimensions());
-                    },
+                    // openAGOWindow = function (channel, userName) {
+                    //     var url = "?id=" + self.newSelectedWebMapId + MapHosterLeaflet.getGlobalsForUrl() + "&channel=" + channel + "&userName=" + userName;
+                    //     console.log("open new ArcGIS window with URI " + url);
+                    //     console.log("using channel " + channel + " with user name " + userName);
+                    //     self.mlconfig.setUrl(url);
+                    //     self.mlconfig.setChannel(channel);
+                    //     self.mlconfig.userName(userName);
+                    //     window.open(self.mlconfig.gethref() + "arcgis/" + url, self.newSelectedWebMapId, self.mlconfig.getSmallFormDimensions());
+                    // },
 
                     configure = function (newMapId) {
                         var $inj = self.mlconfig.getInjector(),
@@ -76,43 +76,43 @@
                         // } else {
 
 
-                            if (self.lMap) {
-                                // lMap.remove();
-                                self.lMap = new L.Map(document.getElementById("map" + self.mapNumber));
-                            } else {
-                                self.lMap = new L.Map(document.getElementById("map" + self.mapNumber));
-                            }
+                        if (self.lMap) {
+                            // lMap.remove();
+                            self.lMap = new L.Map(document.getElementById("map" + self.mapNumber));
+                        } else {
+                            self.lMap = new L.Map(document.getElementById("map" + self.mapNumber));
+                        }
 
-                            self.mapHoster = new MapHosterLeaflet.start();
-                            self.mapHoster.config(self.lMap, self.mapNumber, self.mlconfig);
-                            $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
-                            evtSvc = $inj.get('PusherEventHandlerService');
-                            evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
-                            evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
-                            CurrentMapTypeService = $inj.get('CurrentMapTypeService');
-                            CurrentMapTypeService.setCurrentMapType('leaflet');
-                            mapInstanceSvc = $inj.get('MapInstanceService');
-                            mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
-                            self.pusherChannel = self.mlconfig.masherChannel(false);
-                            console.debug(self.pusherChannel);
-                            self.pusher = PusherSetupCtrl.createPusherClient(
-                                {
-                                    'client-MapXtntEvent' : MapHosterLeaflet.retrievedBounds,
-                                    'client-MapClickEvent' : MapHosterLeaflet.retrievedClick,
-                                    'client-NewMapPosition' : MapHosterLeaflet.retrievedNewPosition
-                                },
-                                self.pusherChannel,
-                                self.mlconfig.getUserName(),
-                                self.mapNumber,
-                                function (channel, userName) {
-                                    self.mlconfig.setUserName(userName);
-                                },
-                                null
-                                // {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId}
-                            );
-                            if (!self.pusher) {
-                                console.log("createPusherClient failed in StartupLeaflet");
-                            }
+                        self.mapHoster = new MapHosterLeaflet.start();
+                        self.mapHoster.config(self.lMap, self.mapNumber, self.mlconfig);
+                        $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
+                        evtSvc = $inj.get('PusherEventHandlerService');
+                        evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
+                        evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
+                        CurrentMapTypeService = $inj.get('CurrentMapTypeService');
+                        CurrentMapTypeService.setCurrentMapType('leaflet');
+                        mapInstanceSvc = $inj.get('MapInstanceService');
+                        mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
+                        self.pusherChannel = self.mlconfig.masherChannel(false);
+                        console.debug(self.pusherChannel);
+                        self.pusher = PusherSetupCtrl.createPusherClient(
+                            {
+                                'client-MapXtntEvent' : MapHosterLeaflet.retrievedBounds,
+                                'client-MapClickEvent' : MapHosterLeaflet.retrievedClick,
+                                'client-NewMapPosition' : MapHosterLeaflet.retrievedNewPosition
+                            },
+                            self.pusherChannel,
+                            self.mlconfig.getUserName(),
+                            self.mapNumber,
+                            function (channel, userName) {
+                                self.mlconfig.setUserName(userName);
+                            },
+                            null
+                            // {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId}
+                        );
+                        if (!self.pusher) {
+                            console.log("createPusherClient failed in StartupLeaflet");
+                        }
                         // }
                     },
 

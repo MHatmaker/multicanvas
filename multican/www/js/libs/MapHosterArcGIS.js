@@ -1,4 +1,4 @@
-/*global require, define, google, console, document, angular*/
+/*global require, define, google, console, document, angular, esri*/
 /*jslint unparam: true*/
 
 (function () {
@@ -23,7 +23,7 @@
 
                 var self = this,
                     scale2Level = [],
-                    zoomLevels = 0,
+                    // zoomLevels = 0,
                     zmG,
                     cntrxG,
                     cntryG,
@@ -58,10 +58,10 @@
 
                         console.log("MapHosterArcGIS configure with map no. " + self.mapNumber);
                     },
-                    setUserName = function(name) {
+                    setUserName = function (name) {
                         self.mlconfig.setUserName(name);
                     },
-                    getEventDictionary = function() {
+                    getEventDictionary = function () {
                         var $inj = self.mlconfig.getInjector(),
                             evtSvc = $inj.get('PusherEventHandlerService'),
                             eventDct = evtSvc.getEventDct();
@@ -142,6 +142,37 @@
 
                     retrievedBounds = function (xj) {
                         console.log("Back in retrievedBounds");
+                        function compareExtents(msg, xtnt) {
+                            var cmp = xtnt.zoom === zmG,
+                                wdth = Math.abs(bounds.xmax - bounds.xmin),
+                                hgt = Math.abs(bounds.ymax - bounds.ymin),
+                                lonDif = Math.abs((xtnt.lon - cntrxG) / wdth),
+                                latDif =  Math.abs((xtnt.lat - cntryG) / hgt);
+                            // cmp = ((cmp == true) && (xtnt.lon == cntrxG) && (xtnt.lat == cntryG));
+                            cmp = ((cmp === true) && (lonDif < 0.0005) && (latDif < 0.0005));
+                            console.log("compareExtents " + msg + " " + cmp);
+                            return cmp;
+                        }
+                        function updateGlobals(msg, cntrx, cntry, zm) {
+                            console.log("updateGlobals ");
+                            zmG = zm;
+                            cntrxG = cntrx;
+                            cntryG = cntry;
+                            if (self.aMap !== null) {
+                                bounds = self.aMap.geographicExtent;
+                                MLConfig.setBounds({'llx' : bounds.xmin, 'lly' : bounds.ymin, 'urx' : bounds.xmax, 'ury' : bounds.ymax});
+                            }
+                            console.log("Updated Globals " + msg + " " + cntrxG + ", " + cntryG + " : " + zmG);
+                            PositionViewCtrl.update('zm', {
+                                'zm' : zmG,
+                                'scl' : scale2Level.length > 0 ? scale2Level[zmG].scale : 3,
+                                'cntrlng' : cntrxG,
+                                'cntrlat': cntryG,
+                                'evlng' : cntrxG,
+                                'evlat' : cntryG
+                            });
+                            MLConfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
+                        }
                         var zm = xj.zoom,
                             cmp = compareExtents("retrievedBounds",
                                 {
@@ -199,42 +230,11 @@
                         console.log('MapHosterArcGIS init');
                         return MapHosterArcGIS;
                     };
-                function updateGlobals(msg, cntrx, cntry, zm) {
-                    console.log("updateGlobals ");
-                    zmG = zm;
-                    cntrxG = cntrx;
-                    cntryG = cntry;
-                    if (self.aMap !== null) {
-                        bounds = self.aMap.geographicExtent;
-                        MLConfig.setBounds({'llx' : bounds.xmin, 'lly' : bounds.ymin, 'urx' : bounds.xmax, 'ury' : bounds.ymax});
-                    }
-                    console.log("Updated Globals " + msg + " " + cntrxG + ", " + cntryG + " : " + zmG);
-                    PositionViewCtrl.update('zm', {
-                        'zm' : zmG,
-                        'scl' : scale2Level.length > 0 ? scale2Level[zmG].scale : 3,
-                        'cntrlng' : cntrxG,
-                        'cntrlat': cntryG,
-                        'evlng' : cntrxG,
-                        'evlat' : cntryG
-                    });
-                    MLConfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
-                }
 
-                function showGlobals(cntxt) {
-                    console.log(cntxt + " Globals : lon " + cntrxG + " lat " + cntryG + " zoom " + zmG);
-                }
+                // function showGlobals(cntxt) {
+                //     console.log(cntxt + " Globals : lon " + cntrxG + " lat " + cntryG + " zoom " + zmG);
+                // }
 
-                function compareExtents(msg, xtnt) {
-                    var cmp = xtnt.zoom === zmG,
-                        wdth = Math.abs(bounds.xmax - bounds.xmin),
-                        hgt = Math.abs(bounds.ymax - bounds.ymin),
-                        lonDif = Math.abs((xtnt.lon - cntrxG) / wdth),
-                        latDif =  Math.abs((xtnt.lat - cntryG) / hgt);
-                    // cmp = ((cmp == true) && (xtnt.lon == cntrxG) && (xtnt.lat == cntryG));
-                    cmp = ((cmp === true) && (lonDif < 0.0005) && (latDif < 0.0005));
-                    console.log("compareExtents " + msg + " " + cmp);
-                    return cmp;
-                }
                 return {
                     getMap: getMap,
                     getMapNumber: getMapNumber,

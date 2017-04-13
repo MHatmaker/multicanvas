@@ -104,6 +104,12 @@ define(function () {
             setUserName = function (name) {
                 details.userName = name;
             },
+            getUserId = function () {
+                return details.userId;
+            },
+            setUserId = function (id) {
+                details.userId = id;
+            },
             testUrlArgs = function (args) {
                 var rslt = getParameterByName('id', details);
                 // alert("getParameterByName('id') = " + rslt);

@@ -13,13 +13,14 @@ require([
     'controllers/CanvasHolderCtrl',
     'controllers/MapDirective',
     // 'js/libs/MLConfig',
+    'esri',
     'esri/map',
-    // 'esri.tasks.geometry',
-    // 'esri.tasks.locator',
+    'esri/tasks/GeometryService',
+    'esri/tasks/locator'
     // 'esri/geometry/webMercatorUtils',
-    // 'esri.IdentityManager',
-    // 'esri.dijit.Scalebar',
-    // 'esri.arcgis.utils'
+    // 'esri/IdentityManager',
+    // 'esri/dijit/Scalebar',
+    // 'esri/arcgis/utils'
 ], function (routes, config, run, PusherConfig, PusherSetupCtrl, MapLinkrMgrCtrl) {
     'use strict';
     // Here you have to set your app name to bootstrap it manually

@@ -94,7 +94,7 @@
                 // pusher = new Pusher(APP_KEY);
                 pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://6352370d.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://fe996914.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                       key: APP_KEY,
                       secret: APP_SECRET,

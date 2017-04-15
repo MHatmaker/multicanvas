@@ -116,8 +116,8 @@
                             console.log("self.mapHoster is null");
                             // alert("StartupArcGIS.initUI : selfDetails.mph == null");
                             // placeCustomControls();
-                            self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
-                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap);
+                            self.mapHoster = new MapHosterArcGIS.start();
+                            self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
                             placeCustomControls();
                             setupQueryListener();
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
@@ -317,8 +317,9 @@
                                 dojo.connect(aMap, "onUpdateEnd", hideLoading);
                                 dojo.connect(aMap, "onLoad", initUI);
 
-                                self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS(self.aMap, self.mapNumber, self.mlconfig);
-                                self.mapHosterSetupCallback(self.mapHoster, self.aMap);
+                                self.mapHoster = new MapHosterArcGIS.start();
+                                // self.mapHosterSetupCallback(self.mapHoster, self.aMap);
+                                self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
                                 setTimeout(function () {
                                     if (aMap.loaded) {
                                         initUI();

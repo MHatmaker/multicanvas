@@ -10,11 +10,11 @@ require({
         'libs' : 'libs',
         'services' : 'services',
         //  'dojox' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
-        // 'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
-        'esri' : 'https://js.arcgis.com/4.1/esri',
+        // 'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.20compact'
+        'esri' : 'https://js.arcgis.com/3.20/esri',
         // 'WebMap' : 'https://js.arcgis.com/4.1/esri/WebMap',
         // 'MapView' : 'esri/views/MapView',
-        'dojo' : 'https://js.arcgis.com/4.1/dojo',
+        // 'dojo' : 'https://js.arcgis.com/4.1/dojo',
         // 'domReady' : 'dojo/domReady',
         // 'all' : 'dojo/promise/all'
 

@@ -13,11 +13,11 @@ require([
     'controllers/CanvasHolderCtrl',
     'controllers/MapDirective',
     // 'js/libs/MLConfig',
-    'esri',
-    'esri/map',
-    'esri/tasks/GeometryService',
-    'esri/tasks/locator',
-    'proj4'
+    // 'esri',
+    // 'esri/map',
+    // 'esri/tasks/GeometryService',
+    // 'esri/tasks/locator'
+    // 'proj4'
     // 'esri/geometry/webMercatorUtils',
     // 'esri/IdentityManager',
     // 'esri/dijit/Scalebar',

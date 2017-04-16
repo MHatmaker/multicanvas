@@ -178,7 +178,7 @@
                             );
                             currentPusher = pusher;
                             currentChannel = channel;
-                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap);
+                            self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
 
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
                             console.log("use current pusher - now setPusherClient");
@@ -191,8 +191,9 @@
                     initializePostProc = function (newSelectedWebMapId) {
                         var
                             mapDeferred,
-                            aMap = null;
-                        //     $inj,
+                            aMap = null,
+                            mapInstanceSvc,
+                            $inj;
                         //     mapOptions = {},
                         window.loading = dojo.byId("loadingImg");
                         //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
@@ -320,6 +321,9 @@
                                 self.mapHoster = new MapHosterArcGIS.start();
                                 // self.mapHosterSetupCallback(self.mapHoster, self.aMap);
                                 self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
+                                $inj = self.mlconfig.getInjector();
+                                mapInstanceSvc = $inj.get('MapInstanceService');
+                                mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                                 setTimeout(function () {
                                     if (aMap.loaded) {
                                         initUI();

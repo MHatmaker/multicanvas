@@ -12,6 +12,7 @@ require({
         //  'dojox' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5compact',
         // 'esri' : 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.20compact'
         'esri' : 'https://js.arcgis.com/3.20/esri',
+        'proj4' : 'https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js'
         // 'WebMap' : 'https://js.arcgis.com/4.1/esri/WebMap',
         // 'MapView' : 'esri/views/MapView',
         // 'dojo' : 'https://js.arcgis.com/4.1/dojo',

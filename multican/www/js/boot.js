@@ -16,7 +16,8 @@ require([
     'esri',
     'esri/map',
     'esri/tasks/GeometryService',
-    'esri/tasks/locator'
+    'esri/tasks/locator',
+    'proj4'
     // 'esri/geometry/webMercatorUtils',
     // 'esri/IdentityManager',
     // 'esri/dijit/Scalebar',

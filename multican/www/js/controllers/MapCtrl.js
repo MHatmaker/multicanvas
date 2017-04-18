@@ -6,12 +6,14 @@
     console.log('MapCtrl setup');
     define([
         'app',
+        'esri/map',
+        'controllers/DestWndSetupCtrl',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
         'libs/StartupLeaflet',
         'libs/utils',
         'controllers/MapLinkrMgrCtrl'
-    ], function (app, StartupGoogle, StartupArcGIS, StartupLeaflet, utils, MapLinkrMgrCtrl) {
+    ], function (app, Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, utils, MapLinkrMgrCtrl) {
         var selfMethods = {},
             curMapTypeInitialized = false,
             whichCanvas,
@@ -284,6 +286,21 @@
                         console.log('searchBox.getPlaces() still returned no results');
                     }
                 }
+
+                $scope.subsetDestinations = function (placesFromSearch) {
+                    var curMapType = CurrentMapTypeService.getMapTypeKey(),
+                        googmph = CurrentMapTypeService.getSpecificMapType('google');
+
+                    if (curMapType === 'google') {
+                        if (placesFromSearch) {
+                            googmph.setPlacesFromSearch(placesFromSearch);
+                        }
+                        $scope.destSelections[0].showing = 'destination-option-showing';
+                    } else {
+                        $scope.destSelections[0].showing = 'destination-option-hidden';
+                        $scope.data.dstSel = $scope.destSelections[2].option;
+                    }
+                };
 
                 function connectQuery () {
                     var googmph,

@@ -1,4 +1,4 @@
-/*global define, require, console, google, document, window, navigator, alert, angular*/
+/*global define, require, console, google, document, window, navigator, alert, angular, plugin*/
 
 /*jslint es5: true */
 /*jslint unparam: true*/
@@ -18,13 +18,19 @@
         'libs/StartupLeaflet',
         'libs/utils',
         'controllers/PusherSetupCtrl',
-        'controllers/MapLinkrMgrCtrl'
-    ], function (app, Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl) {
+        'controllers/MapLinkrMgrCtrl',
+        'controllers/WindowStarter'
+    ], function (app, Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg) {
         var selfMethods = {},
             MapInstanceService,
+            CurrentMapTypeService,
+            SiteViewService,
+            LinkrSvc,
+            WindowStarter = WindowStarterArg,
             outerMapNumber,
             mlconfig,
             gmquery,
+            currentMapType,
             curMapTypeInitialized = false,
             whichCanvas = 'map_canvas',
             searchBox = null,
@@ -33,19 +39,62 @@
             mlmap,
             MapCtrl,
             infoWindow = null,
+            tmpltName,
             utils = libutils,
+            queryForNewDisplay = "",
+            queryForSameDisplay = "",
+            searchInput,
+            $scope,
+            $compile,
+            $routeParams,
+            stup,
             mapStartup;
 
-        function initializeCommon(scope, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc, MapInstanceSvc,
-                    CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
+        function invalidateCurrentMapTypeConfigured() {
+            curMapTypeInitialized = false;
+        }
+        selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
 
-            var
-                stup,
-                tmpltName,
-                queryForNewDisplay = "",
-                queryForSameDisplay = "",
-                searchInput,
-                $scope = scope;
+        function refreshLinker() {
+            var lnkrText = document.getElementById("idLinkerText"),
+                lnkrSymbol = document.getElementById("idLinkerSymbol"),
+                lnkrTxt,
+                lnkrSmbl;
+            if (lnkrSymbol && lnkrText) {
+                try {
+                    lnkrTxt =  MapLinkrMgrCtrl.getLinkrMgrData().ExpandPlug;
+                    lnkrText.innerHTML = lnkrTxt;
+                    console.log("refresh Linker Text with " + lnkrText.innerHTML);
+                    lnkrSmbl = "../img/" + MapLinkrMgrCtrl.getLinkrMgrData().mapLinkrBtnImage + ".png";
+                    lnkrSymbol.src = lnkrSmbl;
+                    console.log("refresh Linker Symbol with " + lnkrSymbol.src);
+                } catch (err) {
+                    lnkrText.innerHTML = "Expand";
+                    lnkrSmbl = "../img/Expand.png";
+                }
+            }
+        }
+
+        function refreshMinMax() {
+            var minMaxText = document.getElementById("idMinMaxText"),
+                minMaxSymbol = document.getElementById("idMinMaxSymbol");
+            if (minMaxText && minMaxSymbol) {
+                minMaxText.innerHTML = SiteViewService.getSiteExpansion();
+                console.log("refresh MinMax Text with " + minMaxText.innerHTML);
+                minMaxSymbol.src = "../img/" + SiteViewService.getMinMaxSymbol() + ".png";
+                console.log("refresh MinMax Symbol with " + minMaxSymbol.src);
+            }
+        }
+
+        function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, LinkrSvcArg, MapInstanceSvc,
+                    CurrentMapTypeSvc, PusherEventHandlerService, GoogleQueryService, SiteViewServiceArg) {
+
+            $scope = scope;
+            $compile = compileArg;
+            $routeParams = $routeParamsArg;
+            CurrentMapTypeService = CurrentMapTypeSvc;
+            LinkrSvc = LinkrSvcArg;
+            SiteViewService = SiteViewServiceArg;
                     // gmquery = mlconfig.query();
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
@@ -118,25 +167,6 @@
             $scope.cancel = function () {
                 modalInstance.dismiss('cancel');
             };
-            function refreshLinker() {
-                var lnkrText = document.getElementById("idLinkerText"),
-                    lnkrSymbol = document.getElementById("idLinkerSymbol"),
-                    lnkrTxt,
-                    lnkrSmbl;
-                if (lnkrSymbol && lnkrText) {
-                    try {
-                        lnkrTxt =  MapLinkrMgrCtrl.getLinkrMgrData().ExpandPlug;
-                        lnkrText.innerHTML = lnkrTxt;
-                        console.log("refresh Linker Text with " + lnkrText.innerHTML);
-                        lnkrSmbl = "../img/" + MapLinkrMgrCtrl.getLinkrMgrData().mapLinkrBtnImage + ".png";
-                        lnkrSymbol.src = lnkrSmbl;
-                        console.log("refresh Linker Symbol with " + lnkrSymbol.src);
-                    } catch (err) {
-                        lnkrText.innerHTML = "Expand";
-                        lnkrSmbl = "../img/Expand.png";
-                    }
-                }
-            }
             // function refreshLinker() {
             //     var lnkrText = document.getElementById("idLinkerText"),
             //         lnkrSymbol = document.getElementById("idLinkerSymbol"),
@@ -152,11 +182,6 @@
             //     }
             // }
 
-            function invalidateCurrentMapTypeConfigured() {
-                curMapTypeInitialized = false;
-            }
-            selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
-
             function setupMapHoster(mapHoster, aMap) {
                 // var
                 //     popmapString = "click me for map " + mapHoster.getMapNumber(),
@@ -171,6 +196,82 @@
                 MapInstanceService.setMapHosterInstance(mapHoster.getMapNumber(), mapHoster);
                 // mapHoster.addPopup(compiledMsg[0], centerCoord);
             }
+
+            function placesQueryCallback(placesFromSearch, status) {
+                var googmph,
+                    curMapType = "no map",
+                    placesSearchResults,
+                    onAcceptDestination;
+
+                console.log('status is ' + status);
+                utils.hideLoading();
+
+                onAcceptDestination = function (info) {
+                    var sourceMapType,
+                        evtSvc = $scope.PusherEventHandlerService,
+                        newSelectedWebMapId,
+                        destWnd;
+
+
+                    if (info) {
+                        sourceMapType = info.mapType;
+                        destWnd = info.dstSel;
+                    }
+                    newSelectedWebMapId = "NoId";
+
+                    if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
+                        if (mlconfig.isNameChannelAccepted() === false) {
+
+                            evtSvc.addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
+                            evtSvc.addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
+
+                            PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
+                                mlconfig.getUserName(), WindowStarter.openNewDisplay,
+                                {
+                                    'destination' : destWnd,
+                                    'currentMapHolder' : sourceMapType,
+                                    'newWindowId' : newSelectedWebMapId,
+                                    'query' : queryForNewDisplay
+                                });
+                            queryForNewDisplay = "";
+                        } else {
+                            WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
+                                mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
+                            queryForNewDisplay = "";
+                        }
+
+                    } else {  //(destWnd == "Same Window")
+                        googmph = CurrentMapTypeService.getSpecificMapType('google');
+                        googmph.placeMarkers(placesSearchResults);
+                        mlconfig.setQuery(queryForNewDisplay);
+                        queryForSameDisplay = queryForNewDisplay;
+                    }
+                };
+
+                if (placesFromSearch && placesFromSearch.length > 0) {
+                    placesSearchResults = placesFromSearch;
+
+
+                    $scope.subsetDestinations(placesFromSearch);
+
+                    gmQSvc = $scope.GoogleQueryService;
+                    scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
+                    $scope.showDestDialog(
+                        onAcceptDestination,
+                        scope,
+                        {
+                            'id' : null,
+                            'title' : searchInput.value,
+                            'snippet' : 'No snippet available',
+                            'icon' : 'img/googlemap.png',
+                            'mapType' : CurrentMapTypeService.getCurrentMapType()
+                        }
+                    );
+                } else {
+                    console.log('searchBox.getPlaces() still returned no results');
+                }
+            }
+
             function connectQuery() {
                 var googmph,
                     mapLinkrBounds,
@@ -289,16 +390,6 @@
 
             selfMethods.setupQueryListener = setupQueryListener;
 
-            function refreshMinMax() {
-                var minMaxText = document.getElementById("idMinMaxText"),
-                    minMaxSymbol = document.getElementById("idMinMaxSymbol");
-                if (minMaxText && minMaxSymbol) {
-                    minMaxText.innerHTML = SiteViewService.getSiteExpansion();
-                    console.log("refresh MinMax Text with " + minMaxText.innerHTML);
-                    minMaxSymbol.src = "../img/" + SiteViewService.getMinMaxSymbol() + ".png";
-                    console.log("refresh MinMax Symbol with " + minMaxSymbol.src);
-                }
-            }
 
             $scope.$on('minmaxDirtyEvent', function (event, args) {
                 refreshMinMax();
@@ -372,6 +463,7 @@
 
             console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
             console.log("initialize MapCtrl with map id " + mapNo);
+            console.log(compiledMsg);
             curMapTypeInitialized = true;
             console.log("curMapTypeInitialized is " + curMapTypeInitialized);
             centerCoord = { lat: 41.888996, lng: -87.623294};
@@ -414,80 +506,6 @@
 
 
 
-        function placesQueryCallback(placesFromSearch, status) {
-            var googmph,
-                curMapType = "no map",
-                placesSearchResults,
-                onAcceptDestination;
-
-            console.log('status is ' + status);
-            utils.hideLoading();
-
-            onAcceptDestination = function (info) {
-                var sourceMapType,
-                    evtSvc = $scope.PusherEventHandlerService,
-                    newSelectedWebMapId,
-                    destWnd;
-
-
-                if (info) {
-                    sourceMapType = info.mapType;
-                    destWnd = info.dstSel;
-                }
-                newSelectedWebMapId = "NoId";
-
-                if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
-                    if (mlconfig.isNameChannelAccepted() === false) {
-
-                        evtSvc.addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
-                        evtSvc.addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
-
-                        PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
-                            mlconfig.getUserName(), WindowStarter.openNewDisplay,
-                            {
-                                'destination' : destWnd,
-                                'currentMapHolder' : sourceMapType,
-                                'newWindowId' : newSelectedWebMapId,
-                                'query' : queryForNewDisplay
-                            });
-                        queryForNewDisplay = "";
-                    } else {
-                        WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
-                            mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
-                        queryForNewDisplay = "";
-                    }
-
-                } else {  //(destWnd == "Same Window")
-                    googmph = CurrentMapTypeService.getSpecificMapType('google');
-                    googmph.placeMarkers(placesSearchResults);
-                    mlconfig.setQuery(queryForNewDisplay);
-                    queryForSameDisplay = queryForNewDisplay;
-                }
-            };
-
-            if (placesFromSearch && placesFromSearch.length > 0) {
-                placesSearchResults = placesFromSearch;
-
-
-                $scope.subsetDestinations(placesFromSearch);
-
-                gmQSvc = $scope.GoogleQueryService;
-                scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
-                $scope.showDestDialog(
-                    onAcceptDestination,
-                    scope,
-                    {
-                        'id' : null,
-                        'title' : searchInput.value,
-                        'snippet' : 'No snippet available',
-                        'icon' : 'img/googlemap.png',
-                        'mapType' : CurrentMapTypeService.getCurrentMapType()
-                    }
-                );
-            } else {
-                console.log('searchBox.getPlaces() still returned no results');
-            }
-        }
 
         $scope.subsetDestinations = function (placesFromSearch) {
             var curMapType = CurrentMapTypeService.getMapTypeKey(),
@@ -510,10 +528,8 @@
             }
             if (document.getElementById("linkerDirectiveId") === null) {
 
+                whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
                 var contextScope = $scope,
-                    curMapType = CurrentMapTypeService.getMapTypeKey(),
-                    // whichCanvas = 'map' + mapStartup.getMapNumber() + '_root', // 'map_canvas_root';
-                    whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber(),
                     cnvs = utils.getElemById(whichCanvas),
                     templateLnkr = ' \
                         <div id="linkerDirectiveId" class="lnkrclass"> \
@@ -632,9 +648,6 @@
         }
 
         selfMethods.configureCurrentMapType = configureCurrentMapType;
-      }
-
-      ]);
 
         function MapCtrlMobile($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
                     CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
@@ -644,7 +657,8 @@
 
             function initialize() {
                 console.log("In initialize MOBILE");
-                var mapOptions = {
+                var
+                    mapOptions = {
                         center: new google.maps.LatLng(37.422858, -122.085065),
                         zoom: 15,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -744,9 +758,9 @@
 
                 watch.clearWatch();
 
-                function toPluginPosition(lat, lng) {
-                    return new plugin.google.maps.LatLng(lat, lng);
-                }
+                // function toPluginPosition(lat, lng) {
+                //     return new plugin.google.maps.LatLng(lat, lng);
+                // }
 
                 // mapdiv = document.getElementById("mapdiv");
 
@@ -815,24 +829,15 @@
             // $ionicPlatform.ready(initialize);
         }
 
-        function invalidateCurrentMapTypeConfigured() {
+        function invalidateCurrentMapTypeConfiguredOuter() {
             console.log("invalidateCurrentMapTypeConfigured");
             if (selfMethods.invalidateCurrentMapTypeConfigured) {
                 selfMethods.invalidateCurrentMapTypeConfigured();
             }
         }
-        placeCustomControls = function () {
-            console.log("placeCustomControls");
-            selfMethods.placeCustomControls();
-        }
 
         function getSearchBox() {
             selfMethods.getSearchBox();
-        }
-
-        function configureCurrentMapType(mapOptions) {
-            console.log("configureCurrentMapType");
-            selfMethods.configureCurrentMapType(mapOptions);
         }
 
         function setupQueryListener() {
@@ -856,14 +861,15 @@
                     'LinkrService', 'CurrentMapTypeService', 'PusherEventHandlerService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlBrowser]);
 
-                      console.log("ready to create MapCtrl");
+                console.log("ready to create MapCtrl");
+            }
             return MapCtrl;
         }
 
         return {
             start: init,
             configureCurrentMapType: configureCurrentMapType,
-            invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfigured,
+            invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfiguredOuter,
             placeCustomControls : placeCustomControls,
             setupQueryListener : setupQueryListener,
             getSearchBox: getSearchBox

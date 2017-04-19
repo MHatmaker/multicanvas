@@ -21,6 +21,10 @@
         'controllers/MapLinkrMgrCtrl'
     ], function (app, Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl) {
         var selfMethods = {},
+            MapInstanceService,
+            outerMapNumber,
+            mlconfig,
+            gmquery,
             curMapTypeInitialized = false,
             whichCanvas = 'map_canvas',
             searchBox = null,
@@ -30,609 +34,738 @@
             MapCtrl,
             infoWindow = null,
             utils = libutils,
-            mlconfig,
             mapStartup;
 
-        function initializeCommon(scope, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc, MapInstanceService,
+        function initializeCommon(scope, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc, MapInstanceSvc,
                     CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
 
-            var gmquery = MLConfig.query(),
+            var
                 stup,
                 tmpltName,
-                connectQuery,
                 queryForNewDisplay = "",
                 queryForSameDisplay = "",
                 searchInput,
                 $scope = scope;
-
-                var outerMapNumber = MapInstanceService.getSlideCount(),
-                    mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
                     // gmquery = mlconfig.query();
                 // var mapNumber = MapInstanceService.getSlideCount(),
                 //     mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 //     configMapNumber = mapConfig.getMapId();
                     // mapStartups = [];
                 // console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
+            MapInstanceService = MapInstanceSvc;
+            outerMapNumber = MapInstanceService.getSlideCount();
+            mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
+            gmquery = mlconfig.query();
 
-                whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
-                // CurrentMapTypeService.addScope($scope);
-                // $scope.$on('ForceMapSystemEvent', function (evt, args) {
-                //     $scope.currentMapSystem = args.whichsystem;
-                // });
-                $scope.currentMapSystem = CurrentMapTypeService.getCurrentMapConfiguration();
+            whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+            // CurrentMapTypeService.addScope($scope);
+            // $scope.$on('ForceMapSystemEvent', function (evt, args) {
+            //     $scope.currentMapSystem = args.whichsystem;
+            // });
+            $scope.currentMapSystem = CurrentMapTypeService.getCurrentMapConfiguration();
 
-                $scope.$on('SwitchedMapSystemEvent', function (evt, args) {
-                    console.log("In MapCtrl ... SwitchedMapSystemEvent");
+            $scope.$on('SwitchedMapSystemEvent', function (evt, args) {
+                console.log("In MapCtrl ... SwitchedMapSystemEvent");
 
-                    $scope.currentMapSystem = args.whichsystem;
-                    whichCanvas = $scope.currentMapSystem.maptype === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
-                });
+                $scope.currentMapSystem = args.whichsystem;
+                whichCanvas = $scope.currentMapSystem.maptype === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+            });
 
-                $scope.PusherEventHandlerService = PusherEventHandlerService;
-                $scope.GoogleQueryService = GoogleQueryService;
-                $scope.mapheight = 450;
-                $scope.mapwidth = 380;
-                $scope.mapHosterInstance = null;
+            $scope.PusherEventHandlerService = PusherEventHandlerService;
+            $scope.GoogleQueryService = GoogleQueryService;
+            $scope.mapheight = 450;
+            $scope.mapwidth = 380;
+            $scope.mapHosterInstance = null;
 
-                $scope.destSelections = [
-                    {'option' : "Same Window", 'showing' : "destination-option-showing"},
-                    {'option' : "New Tab", 'showing' : "destination-option-showing"},
-                    {'option' : "New Pop-up Window", 'showing' : "destination-option-showing"}];
-                $scope.selectedDestination = "Same Window";
-                $scope.gsearch = {};
-                $scope.data = {
-                    dstSel : $scope.destSelections[0].option,
-                    prevDstSel : $scope.destSelections[0].option,
-                    title : 'map has no title',
-                    icon : null,
-                    snippet : 'nothing in snippet',
-                    mapType : $scope.currentMapSystem.maptype,
-                    imgSrc : $scope.currentMapSystem.imgSrc,
-                    destSelections : $scope.destSelections,
-                    query : "no query yet"
+            $scope.destSelections = [
+                {'option' : "Same Window", 'showing' : "destination-option-showing"},
+                {'option' : "New Tab", 'showing' : "destination-option-showing"},
+                {'option' : "New Pop-up Window", 'showing' : "destination-option-showing"}];
+            $scope.selectedDestination = "Same Window";
+            $scope.gsearch = {};
+            $scope.data = {
+                dstSel : $scope.destSelections[0].option,
+                prevDstSel : $scope.destSelections[0].option,
+                title : 'map has no title',
+                icon : null,
+                snippet : 'nothing in snippet',
+                mapType : $scope.currentMapSystem.maptype,
+                imgSrc : $scope.currentMapSystem.imgSrc,
+                destSelections : $scope.destSelections,
+                query : "no query yet"
 
-                };
+            };
 
-                $scope.preserveState = function () {
-                    console.log("preserveState");
+            $scope.preserveState = function () {
+                console.log("preserveState");
 
-                    $scope.data.prevDstSel = $scope.data.dstSel;
-                    console.log("preserve " + $scope.data.prevDstSel + " from " + $scope.data.dstSel);
-                };
+                $scope.data.prevDstSel = $scope.data.dstSel;
+                console.log("preserve " + $scope.data.prevDstSel + " from " + $scope.data.dstSel);
+            };
 
-                $scope.restoreState = function () {
-                    console.log("restoreState");
+            $scope.restoreState = function () {
+                console.log("restoreState");
 
-                    console.log("restore " + $scope.data.dstSel + " from " + $scope.data.prevDstSel);
-                    $scope.data.dstSel = $scope.data.prevDstSel;
-                };
-                $scope.updateState = function (selectedDestination) {
-                    console.log("updateState");
-                    $scope.selectedDestination  = selectedDestination;
-                    $scope.data.dstSel = $scope.data.prevDstSel = selectedDestination;
-                };
+                console.log("restore " + $scope.data.dstSel + " from " + $scope.data.prevDstSel);
+                $scope.data.dstSel = $scope.data.prevDstSel;
+            };
+            $scope.updateState = function (selectedDestination) {
+                console.log("updateState");
+                $scope.selectedDestination  = selectedDestination;
+                $scope.data.dstSel = $scope.data.prevDstSel = selectedDestination;
+            };
 
-                $scope.cancel = function () {
-                    modalInstance.dismiss('cancel');
-                            };
-
-                function refreshLinker() {
-                    var lnkrText = document.getElementById("idLinkerText"),
-                        lnkrSymbol = document.getElementById("idLinkerSymbol"),
-                        lnkrTxt,
-                        lnkrSmbl;
-                    if (lnkrSymbol && lnkrText) {
+            $scope.cancel = function () {
+                modalInstance.dismiss('cancel');
+            };
+            function refreshLinker() {
+                var lnkrText = document.getElementById("idLinkerText"),
+                    lnkrSymbol = document.getElementById("idLinkerSymbol"),
+                    lnkrTxt,
+                    lnkrSmbl;
+                if (lnkrSymbol && lnkrText) {
+                    try {
                         lnkrTxt =  MapLinkrMgrCtrl.getLinkrMgrData().ExpandPlug;
                         lnkrText.innerHTML = lnkrTxt;
                         console.log("refresh Linker Text with " + lnkrText.innerHTML);
                         lnkrSmbl = "../img/" + MapLinkrMgrCtrl.getLinkrMgrData().mapLinkrBtnImage + ".png";
                         lnkrSymbol.src = lnkrSmbl;
                         console.log("refresh Linker Symbol with " + lnkrSymbol.src);
+                    } catch (err) {
+                        lnkrText.innerHTML = "Expand";
+                        lnkrSmbl = "../img/Expand.png";
                     }
                 }
+            }
+            // function refreshLinker() {
+            //     var lnkrText = document.getElementById("idLinkerText"),
+            //         lnkrSymbol = document.getElementById("idLinkerSymbol"),
+            //         lnkrTxt,
+            //         lnkrSmbl;
+            //     if (lnkrSymbol && lnkrText) {
+            //         lnkrTxt =  MapLinkrMgrCtrl.getLinkrMgrData().ExpandPlug;
+            //         lnkrText.innerHTML = lnkrTxt;
+            //         console.log("refresh Linker Text with " + lnkrText.innerHTML);
+            //         lnkrSmbl = "../img/" + MapLinkrMgrCtrl.getLinkrMgrData().mapLinkrBtnImage + ".png";
+            //         lnkrSymbol.src = lnkrSmbl;
+            //         console.log("refresh Linker Symbol with " + lnkrSymbol.src);
+            //     }
+            // }
 
-                function invalidateCurrentMapTypeConfigured() {
-                    curMapTypeInitialized = false;
+            function invalidateCurrentMapTypeConfigured() {
+                curMapTypeInitialized = false;
+            }
+            selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
+
+            function setupMapHoster(mapHoster, aMap) {
+                // var
+                //     popmapString = "click me for map " + mapHoster.getMapNumber(),
+                //     contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>";
+                    // compiledMsg = $compile(contentString)($scope);
+                // mapStartup.configure(configMapNumber, mapOptions);
+
+                $scope.mapHosterInstance = mapHoster;
+                console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
+                console.log("Try accessor " + mapStartup.getMapNumber());
+                // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
+                MapInstanceService.setMapHosterInstance(mapHoster.getMapNumber(), mapHoster);
+                // mapHoster.addPopup(compiledMsg[0], centerCoord);
+            }
+            function connectQuery() {
+                var googmph,
+                    mapLinkrBounds,
+                    searchBounds,
+                    position,
+                    center,
+                    googleCenter,
+                    gmap,
+                    mapOptions,
+                    pacinput,
+                    queryPlaces = {},
+                    service;
+
+                googmph = CurrentMapTypeService.getSpecificMapType('google');
+
+                mapLinkrBounds = mlconfig.getBounds();
+                searchBounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng({'lat' : mapLinkrBounds.lly, 'lng' : mapLinkrBounds.llx}),
+                    new google.maps.LatLng({'lat' : mapLinkrBounds.ury, 'lng' : mapLinkrBounds.urx})
+                );
+                position = mlconfig.getPosition();
+                center = {'lat' : position.lat, 'lng' : position.lon};
+                googleCenter = new google.maps.LatLng(position.lat, position.lon);
+                gmap = googmph.getMap();
+                utils.showLoading();
+                if (!gmap) {
+                    mapOptions = {
+                        center : googleCenter,
+                        zoom : 15,
+                        mapTypeId : google.maps.MapTypeId.ROADMAP
+                    };
+                    gmap = new google.maps.Map(document.getElementById("hiddenmap_canvas"), mapOptions);
                 }
-                selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
 
-                function setupMapHoster(mapHoster, aMap) {
-                    var
-                        popmapString = "click me for map " + mapHoster.getMapNumber(),
-                        contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>",
-                        compiledMsg = $compile(contentString)($scope);
-                    // mapStartup.configure(configMapNumber, mapOptions);
+                // placesFromSearch = searchBox.getPlaces();
 
-                    $scope.mapHosterInstance = mapHoster;
-                    console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
-                    console.log("Try accessor " + mapStartup.getMapNumber());
-                    // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
-                    MapInstanceService.setMapHosterInstance(mapHoster.getMapNumber(), mapHoster);
-                    // mapHoster.addPopup(compiledMsg[0], centerCoord);
+                pacinput = document.getElementById('pac-input');
+                queryPlaces.bounds = searchBounds;
+                queryPlaces.query = pacinput.value;
+                queryPlaces.location = center;
+                // mlconfig.setQuery(queryPlaces.query);
+
+                service = new google.maps.places.PlacesService(gmap);
+                if (queryPlaces.query !== '') {
+                    service.textSearch(queryPlaces, placesQueryCallback);
                 }
-                function setupQueryListener() {
-                    var
-                        cnvs, //  = utils.getElemById(whichCanvas),
-                        curMapType = CurrentMapTypeService.getMapTypeKey(),
-                        fnLink,
-                        pacinput,
-                        pacinputParent,
-                        pacinputElement,
-                        template = ' \
-                            <div id="gmsearch" \
-                                class="gmsearchclass" \
-                                style="width: 28em; margin-left: 7em; margin-right : 2em;"> \
-                                <input id="pac-input" \
-                                    class="gmsearchcontrols" className="controls" \
-                                    type="text" onclick="cancelBubble=true;" onmousemove="event.stopPropagation();" \
-                                    onmousedown="event.stopPropagation();" onmouseup="event.stopPropagation();" \
-                                    placeholder="Search Google Places"  \
-                                    ng-class="{\'gmsposition-rel\' : !gsearch.isGoogle, \'gmsposition-abs\' : gsearch.isGoogle}" \
-                                    ng-model="gsearch.query" \
-                                    ng-change="queryChanged()" auto-focus > \
-                            </div>';
-                    // curMapType = CurrentMapTypeService.getMapTypeKey(),
-                    if (curMapType === 'google') {
-                        $scope.gsearch.isGoogle = true;
-                    } else {
-                        $scope.gsearch.isGoogle = false;
-                        if (curMapType === 'arcgis') {
-                            whichCanvas = 'map' + mapStartup.getMapNumber() + '_root'; // 'map_canvas_root';
-                            // whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
-                            pacinputElement = document.getElementById('pac-input');
-                            if (pacinputElement) {
-                                pacinputParent = pacinputElement.parentElement;
-                                pacinputParent.removeChild(pacinputElement);
-                            }
+            }
+
+            function setupQueryListener() {
+                var
+                    cnvs, //  = utils.getElemById(whichCanvas),
+                    curMapType = CurrentMapTypeService.getMapTypeKey(),
+                    fnLink,
+                    pacinput,
+                    pacinputParent,
+                    pacinputElement,
+                    template = ' \
+                        <div id="gmsearch" \
+                            class="gmsearchclass" \
+                            style="width: 28em; margin-left: 7em; margin-right : 2em;"> \
+                            <input id="pac-input" \
+                                class="gmsearchcontrols" className="controls" \
+                                type="text" onclick="cancelBubble=true;" onmousemove="event.stopPropagation();" \
+                                onmousedown="event.stopPropagation();" onmouseup="event.stopPropagation();" \
+                                placeholder="Search Google Places"  \
+                                ng-class="{\'gmsposition-rel\' : !gsearch.isGoogle, \'gmsposition-abs\' : gsearch.isGoogle}" \
+                                ng-model="gsearch.query" \
+                                ng-change="queryChanged()" auto-focus > \
+                        </div>';
+                // curMapType = CurrentMapTypeService.getMapTypeKey(),
+                if (curMapType === 'google') {
+                    $scope.gsearch.isGoogle = true;
+                } else {
+                    $scope.gsearch.isGoogle = false;
+                    if (curMapType === 'arcgis') {
+                        whichCanvas = 'map' + mapStartup.getMapNumber() + '_root'; // 'map_canvas_root';
+                        // whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
+                        pacinputElement = document.getElementById('pac-input');
+                        if (pacinputElement) {
+                            pacinputParent = pacinputElement.parentElement;
+                            pacinputParent.removeChild(pacinputElement);
                         }
                     }
-
-                    whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
-                    pacinput = document.getElementById('pac-input');
-                    if (!pacinput) {
-                        pacinput = angular.element(template);
-                        cnvs = utils.getElemById(whichCanvas);
-                        cnvs.append(pacinput);
-                        fnLink = $compile(pacinput);
-                        fnLink($scope);
-                    }
-
-                    $scope.safeApply();
-
-                    setTimeout(function () {
-                        searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input'));
-                        if (searchInput) {
-                            // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
-                            searchInput.value = '';
-                            searchBox = new google.maps.places.SearchBox(searchInput);
-
-                            google.maps.event.addListener(searchBox, 'places_changed', function () {
-                                console.log("MapCtrl 'places_changed' listener");
-                                connectQuery();
-                                searchInput.blur();
-                                setTimeout(function () {
-                                    searchInput.value = '';
-                                }, 10);
-                            });
-                        }
-                    }, 500);
                 }
 
-                selfMethods.setupQueryListener = setupQueryListener;
+                whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
+                pacinput = document.getElementById('pac-input');
+                if (!pacinput) {
+                    pacinput = angular.element(template);
+                    cnvs = utils.getElemById(whichCanvas);
+                    cnvs.append(pacinput);
+                    fnLink = $compile(pacinput);
+                    fnLink($scope);
+                }
 
-                $scope.$on('minmaxDirtyEvent', function (event, args) {
-                    refreshMinMax();
+                $scope.safeApply();
+
+                setTimeout(function () {
+                    searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input'));
+                    if (searchInput) {
+                        // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
+                        searchInput.value = '';
+                        searchBox = new google.maps.places.SearchBox(searchInput);
+
+                        google.maps.event.addListener(searchBox, 'places_changed', function () {
+                            console.log("MapCtrl 'places_changed' listener");
+                            connectQuery();
+                            searchInput.blur();
+                            setTimeout(function () {
+                                searchInput.value = '';
+                            }, 10);
+                        });
+                    }
+                }, 500);
+            }
+
+            selfMethods.setupQueryListener = setupQueryListener;
+
+            function refreshMinMax() {
+                var minMaxText = document.getElementById("idMinMaxText"),
+                    minMaxSymbol = document.getElementById("idMinMaxSymbol");
+                if (minMaxText && minMaxSymbol) {
+                    minMaxText.innerHTML = SiteViewService.getSiteExpansion();
+                    console.log("refresh MinMax Text with " + minMaxText.innerHTML);
+                    minMaxSymbol.src = "../img/" + SiteViewService.getMinMaxSymbol() + ".png";
+                    console.log("refresh MinMax Symbol with " + minMaxSymbol.src);
+                }
+            }
+
+            $scope.$on('minmaxDirtyEvent', function (event, args) {
+                refreshMinMax();
+            });
+
+            $scope.queryChanged = function () {
+                queryForNewDisplay = $scope.gsearch.query;
+                if ($scope.gsearch.query.includes(13)) {
+                    mlconfig.setQuery($scope.gsearch.query);
+                    if (queryForSameDisplay === "") {
+                        queryForSameDisplay = queryForNewDisplay;
+                    }
+                }
+            };
+
+            $scope.showDestDialog = function (callback, details, info) {
+                console.log("showDestDialog for currentMapSystem " + $scope.currentMapSystem.title);
+                $scope.preserveState();
+
+                $scope.data.mapType = $scope.currentMapSystem.maptype;
+                $scope.data.icon = $scope.currentMapSystem.imgSrc;
+                $scope.data.query = $scope.gsearch.query;
+                $scope.data.callback = callback;
+                if (info) {
+                    $scope.data.icon = info.icon;
+                    $scope.data.title = info.title;
+                    $scope.data.snippet = info.snippet;
+                    $scope.data.mapType = info.mapType;
+                    $scope.data.id = info.id;
+                }
+
+                modalInstance = $uibModal.open({
+                    templateUrl : '/templates/DestSelectDlgGen.html',   // .jade will be appended
+                    controller : 'DestWndSetupCtrl',
+                    backdrop : true,
+                    animation : false,
+                    animate : 'none',
+                    windowClass : 'no-animation-modal',
+                    uibModalAnimationClass : 'none',
+
+                    resolve : {
+                        data: function () {
+                            return $scope.data;
+                        }
+                    }
                 });
 
-                $scope.queryChanged = function () {
-                    queryForNewDisplay = $scope.gsearch.query;
-                    if ($scope.gsearch.query.includes(13)) {
-                        MLConfig.setQuery($scope.gsearch.query);
-                        if (queryForSameDisplay === "") {
-                            queryForSameDisplay = queryForNewDisplay;
-                        }
+                modalInstance.result.then(function (info) {
+                    $scope.updateState(info.dstSel);
+                    $scope.data.callback(info);
+                    $uibModalStack.dismissAll("go away please");
+                }, function () {
+                    console.log('Modal dismissed at: ' + new Date());
+                    $scope.restoreState();
+                });
+
+            };
+        }
+
+        function initialize(mapNo, mapType, setupMapHoster) {
+            var
+                // mapHoster,
+                centerCoord,
+                mapOptions = null,
+                mapNumber = mapNo,
+                mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
+                configMapNumber = mapConfig.getMapId(),
+                popmapString = "click me for map " + configMapNumber,
+                contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>",
+                compiledMsg = $compile(contentString)($scope);
+
+            console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
+            console.log("initialize MapCtrl with map id " + mapNo);
+            curMapTypeInitialized = true;
+            console.log("curMapTypeInitialized is " + curMapTypeInitialized);
+            centerCoord = { lat: 41.888996, lng: -87.623294};
+            mapOptions = {
+                center: centerCoord,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            if (mapType === 'google') {
+                mapStartup = new StartupGoogle.StartupGoogle(mapNumber, mapConfig);
+            } else if (mapType === 'leaflet') {
+                mapStartup = new StartupLeaflet.StartupLeaflet(mapNumber, mapConfig);
+            } else {
+                mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber, mapConfig, setupMapHoster);
+            }
+            // mapStartups.push(mapStartup);
+            // setTimeout(function() {
+            mapStartup.configure(configMapNumber, mapOptions);
+            //     mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
+            //     $scope.mapHosterInstance = mapHoster;
+            //     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
+            //     console.log("Try accessor " + mapStartup.getMapNumber());
+            //     // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
+            //     MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
+            //     mapHoster.addPopup(compiledMsg[0], centerCoord);
+            //   }, 1000);
+        }
+          // google.maps.event.addDomListener(window, 'load', initialize);
+        $scope.startMap = function (mapNumber, mapType) {
+            initialize(mapNumber, mapType);
+        };
+
+        $scope.clickTest = function () {
+            alert('infowindow with ng-click on map ' + outerMapNumber);
+        };
+        // initialize();
+        $scope.$on('invalidateCurrentMapTypeConfigured', function () {
+            invalidateCurrentMapTypeConfigured();
+        });
+
+
+
+        function placesQueryCallback(placesFromSearch, status) {
+            var googmph,
+                curMapType = "no map",
+                placesSearchResults,
+                onAcceptDestination;
+
+            console.log('status is ' + status);
+            utils.hideLoading();
+
+            onAcceptDestination = function (info) {
+                var sourceMapType,
+                    evtSvc = $scope.PusherEventHandlerService,
+                    newSelectedWebMapId,
+                    destWnd;
+
+
+                if (info) {
+                    sourceMapType = info.mapType;
+                    destWnd = info.dstSel;
+                }
+                newSelectedWebMapId = "NoId";
+
+                if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
+                    if (mlconfig.isNameChannelAccepted() === false) {
+
+                        evtSvc.addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
+                        evtSvc.addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
+
+                        PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
+                            mlconfig.getUserName(), WindowStarter.openNewDisplay,
+                            {
+                                'destination' : destWnd,
+                                'currentMapHolder' : sourceMapType,
+                                'newWindowId' : newSelectedWebMapId,
+                                'query' : queryForNewDisplay
+                            });
+                        queryForNewDisplay = "";
+                    } else {
+                        WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
+                            mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
+                        queryForNewDisplay = "";
                     }
 
-                    $scope.showDestDialog = function (callback, details, info) {
-                      console.log("showDestDialog for currentMapSystem " + $scope.currentMapSystem.title);
-                      $scope.preserveState();
+                } else {  //(destWnd == "Same Window")
+                    googmph = CurrentMapTypeService.getSpecificMapType('google');
+                    googmph.placeMarkers(placesSearchResults);
+                    mlconfig.setQuery(queryForNewDisplay);
+                    queryForSameDisplay = queryForNewDisplay;
+                }
+            };
 
-                      $scope.data.mapType = $scope.currentMapSystem.maptype;
-                      $scope.data.icon = $scope.currentMapSystem.imgSrc;
-                      $scope.data.query = $scope.gsearch.query;
-                      $scope.data.callback = callback;
-                      if (info) {
-                        $scope.data.icon = info.icon;
-                        $scope.data.title = info.title;
-                        $scope.data.snippet = info.snippet;
-                        $scope.data.mapType = info.mapType;
-                        $scope.data.id = info.id;
-                      }
+            if (placesFromSearch && placesFromSearch.length > 0) {
+                placesSearchResults = placesFromSearch;
 
-                      modalInstance = $uibModal.open({
-                        templateUrl : '/templates/DestSelectDlgGen.html',   // .jade will be appended
-                        controller : 'DestWndSetupCtrl',
-                        backdrop : true,
-                        animation : false,
-                        animate : 'none',
-                        windowClass : 'no-animation-modal',
-                        uibModalAnimationClass : 'none',
 
-                        resolve : {
-                          data: function () {
-                            return $scope.data;
-                          }
-                        }
-                      });
+                $scope.subsetDestinations(placesFromSearch);
 
-                      modalInstance.result.then(function (info) {
-                        $scope.updateState(info.dstSel);
-                        $scope.data.callback(info);
-                        $uibModalStack.dismissAll("go away please");
-                      }, function () {
-                        console.log('Modal dismissed at: ' + new Date());
-                        $scope.restoreState();
-                      });
+                gmQSvc = $scope.GoogleQueryService;
+                scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
+                $scope.showDestDialog(
+                    onAcceptDestination,
+                    scope,
+                    {
+                        'id' : null,
+                        'title' : searchInput.value,
+                        'snippet' : 'No snippet available',
+                        'icon' : 'img/googlemap.png',
+                        'mapType' : CurrentMapTypeService.getCurrentMapType()
+                    }
+                );
+            } else {
+                console.log('searchBox.getPlaces() still returned no results');
+            }
+        }
 
+        $scope.subsetDestinations = function (placesFromSearch) {
+            var curMapType = CurrentMapTypeService.getMapTypeKey(),
+                googmph = CurrentMapTypeService.getSpecificMapType('google');
+
+            if (curMapType === 'google') {
+                if (placesFromSearch) {
+                    googmph.setPlacesFromSearch(placesFromSearch);
+                }
+                $scope.destSelections[0].showing = 'destination-option-showing';
+            } else {
+                $scope.destSelections[0].showing = 'destination-option-hidden';
+                $scope.data.dstSel = $scope.destSelections[2].option;
+            }
+        };
+
+        function placeCustomControls() {
+            function stopLintUnusedComplaints(lnkr, minmaxr) {
+                console.log("stopLintUnusedComplaints");
+            }
+            if (document.getElementById("linkerDirectiveId") === null) {
+
+                var contextScope = $scope,
+                    curMapType = CurrentMapTypeService.getMapTypeKey(),
+                    // whichCanvas = 'map' + mapStartup.getMapNumber() + '_root', // 'map_canvas_root';
+                    whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber(),
+                    cnvs = utils.getElemById(whichCanvas),
+                    templateLnkr = ' \
+                        <div id="linkerDirectiveId" class="lnkrclass"> \
+                        <label id="idLinkerText" class="lnkmaxcontrol_label lnkcontrol_margin"  \
+                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                        </label> \
+                        <img id="idLinkerSymbol" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
+                           style="cursor:url(../img/LinkerCursor.png) 9 9,auto;" > \
+                        </div>',
+
+                    templateMinMaxr = ' \
+                        <div id="mapmaximizerDirectiveId" class="mnmxclass" > \
+                        <label id="idMinMaxText" class="lnkmaxcontrol_label maxcontrol_margin" \
+                            style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                        </label> \
+                        <img id="idMinMaxSymbol" class="lnkmaxcontrol_symbol maxcontrol_margin" \
+                             style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                        </div>',
+                    lnkr1 = angular.element(templateLnkr),
+                    lnkr = cnvs.append(lnkr1),
+
+                    minmaxr1 = angular.element(templateMinMaxr),
+                    minmaxr = cnvs.append(minmaxr1),
+
+                    lnkrdiv,
+                    mnmxdiv,
+                    lnkrText,
+                    lnkrSymbol,
+                    refreshDelay;
+                stopLintUnusedComplaints(lnkr, minmaxr);
+
+                setTimeout(function () {
+                    lnkrdiv = document.getElementsByClassName('lnkrclass')[0];
+                    lnkrdiv.addEventListener('click', function (event) {
+                        console.log('lnkr[0].onclick   display LinkerEvent');
+                        event.stopPropagation();
+
+                        LinkrSvc.showLinkr();
+                    });
+                    mnmxdiv = document.getElementsByClassName('mnmxclass')[0];
+
+                    mnmxdiv.addEventListener('click', function (event) {
+                        console.log('minmaxr[0].onclick   mapMaximizerEvent');
+                        event.stopPropagation();
+                        contextScope.$emit('mapMaximizerEvent');
+                        contextScope.$apply();
+                        refreshMinMax();
+                    });
+                }, 200);
+
+
+                lnkrText = document.getElementById("idLinkerText");
+                lnkrSymbol = document.getElementById("idLinkerSymbol");
+                refreshDelay = 500;
+                if (lnkrSymbol && lnkrText) {
+                    refreshDelay = 10;
+                }
+                setTimeout(function () {
+                    refreshLinker();
+                    refreshMinMax();
+                }, refreshDelay);
+            }
+            // else {
+            //     refreshDelay = 500;
+            //     setTimeout(function () {
+            //         setupQueryListener();
+            //         refreshLinker();
+            //         refreshMinMax();
+            //     }, refreshDelay);
+            // }
+            // connectQuery();
+        }
+
+        // function placeCustomControls() {
+        //     console.log("MapCtrl.placeCustomControls");
+        // }
+        selfMethods.placeCustomControls = placeCustomControls;
+
+        // $scope.gsearchVisible = 'inline-block';
+        // if (gmquery !== '') {
+        //     $scope.gsearch = {'query' : gmquery};  // was read from url when opening new window
+        // } else {
+        //     $scope.gsearch = {'query' : 'SearcherBox'};
+        // }
+
+        console.debug(selfMethods);
+
+        $scope.gsearchVisible = 'inline-block';
+        whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+        $scope.selectedDestination = CurrentMapTypeService.getMapTypeKey() === 'google' ? 'Same Window' : 'New Pop-up Window';
+        $scope.updateState($scope.selectedDestination);
+
+        if (gmquery !== '') {
+            $scope.gsearch = {'query' : gmquery};  // was read from url when opening new window
+        } else {
+            $scope.gsearch = {'query' : 'SearcherBox'};
+        }
+
+        currentMapType = CurrentMapTypeService.getCurrentMapType();
+
+        stup = currentMapType.start();
+        console.debug(stup);
+
+        tmpltName = $routeParams.id;
+        console.log(tmpltName);
+
+        function configureCurrentMapType(mapOptions) {
+            currentMapType = CurrentMapTypeService.getMapStartup();
+            currentMapType.config(null, mapOptions);
+            $scope.map = currentMapType.getMap();
+            // $scope.map.width = mapSize['medium'];
+            // $scope.MapWdth = mapSize['small'];
+            $scope.isMapExpanded = false;
+            console.debug($scope.map);
+            curMapTypeInitialized = true;
+        }
+
+        selfMethods.configureCurrentMapType = configureCurrentMapType;
+      }
+
+      ]);
+
+        function MapCtrlMobile($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
+                    CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
+            var watchOptions,
+                watch;
+            console.log("In mobile MapCtrl controller fire away");
+
+            function initialize() {
+                console.log("In initialize MOBILE");
+                var mapOptions = {
+                        center: new google.maps.LatLng(37.422858, -122.085065),
+                        zoom: 15,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    },
+                    options = {
+                        timeout: 20000,
+                        maximumAge: 0,
+                        enableHighAccuracy: true
                     };
-                  };
+                $ionicLoading.show({
+                    template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+                });
 
-                  function initialize(mapNo, mapType) {
-                      var
-                          // mapHoster,
-                          centerCoord,
-                          mapOptions = null,
-                          mapNumber = mapNo,
-                          mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
-                          configMapNumber = mapConfig.getMapId(),
-                          popmapString = "click me for map " + configMapNumber,
-                          contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>",
-                          compiledMsg = $compile(contentString)($scope);
+                function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+                    $ionicLoading.hide();
+                }
+                // window.setPageTitle();
+                // $rootScope.$on('$stateChangeSuccess', function (event) {
+                // window.setPageTitle();
+                //     console.debug(event);
+                // });
 
-                      console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
-                      console.log("initialize MapCtrl with map id " + mapNo);
-                      curMapTypeInitialized = true;
-                      console.log("curMapTypeInitialized is " + curMapTypeInitialized);
-                      centerCoord = { lat: 41.888996, lng: -87.623294};
-                      mapOptions = {
-                          center: centerCoord,
-                          zoom: 16,
-                          mapTypeId: google.maps.MapTypeId.ROADMAP
-                      };
-                      if (mapType === 'google') {
-                          mapStartup = new StartupGoogle.StartupGoogle(mapNumber, mapConfig);
-                      } else if(mapType === 'leaflet') {
-                          mapStartup = new StartupLeaflet.StartupLeaflet(mapNumber, mapConfig);
-                      } else {
-                          mapStartup = new StartupArcGIS.StartupArcGIS(mapNumber, mapConfig, setupMapHoster);
-                      }
-                      // mapStartups.push(mapStartup);
-                      // setTimeout(function() {
-                      mapStartup.configure(configMapNumber, mapOptions);
-                      //     mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
-                      //     $scope.mapHosterInstance = mapHoster;
-                      //     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
-                      //     console.log("Try accessor " + mapStartup.getMapNumber());
-                      //     // console.log("Leaving MapCtrl initialize with mapHoster map no. " + mapHoster.getMapNumber());
-                      //     MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
-                      //     mapHoster.addPopup(compiledMsg[0], centerCoord);
-                      //   }, 1000);
-                  }
-                  // google.maps.event.addDomListener(window, 'load', initialize);
-                  $scope.startMap = function (mapNumber, mapType) {
-                      initialize(mapNumber, mapType);
-                  };
+                $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
+                    console.log("in $cordovaGeolocation.getCurrentPosition callback");
+                    // var latLng = new google.maps.LatLng(33.5432, -112.075)
+                    var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    mapOptions = {
+                        center: latLng,
+                        zoom: 15,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    console.log("ready to create/show Map in callback");
+                    console.log("center; " + mapOptions.center.lng() + ", " + mapOptions.center.lat());
+                    $ionicLoading.hide();
+                    mlmap = utils.showMap(mapOptions);
+                    // $scope.map = new google.maps.Map(document.getElementById("mapdiv"), mapOptions);
 
-                  $scope.clickTest = function () {
-                      alert('infowindow with ng-click on map ' + outerMapNumber);
-                  };
-                  // initialize();
-                  $scope.$on('invalidateCurrentMapTypeConfigured', function () {
-                      invalidateCurrentMapTypeConfigured();
-                  });
+                }, function (error) {
+                    console.log("Could not get location from $cordovaGeolocation.getCurrentPosition");
+                    alert("Could not get location");
+                    if (navigator.geolocation) {
+                        console.log("ready to getCurrentPosition from google navigator");
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            console.log("in navigator getCurrentPosition callback");
 
-                  function refreshLinker() {
-                      var lnkrText = document.getElementById("idLinkerText"),
-                          lnkrSymbol = document.getElementById("idLinkerSymbol"),
-                          lnkrTxt,
-                          lnkrSmbl;
-                      if (lnkrSymbol && lnkrText) {
-                          try {
-                              lnkrTxt =  MapLinkrMgrCtrl.getLinkrMgrData().ExpandPlug;
-                              lnkrText.innerHTML = lnkrTxt;
-                              console.log("refresh Linker Text with " + lnkrText.innerHTML);
-                              lnkrSmbl = "../img/" + MapLinkrMgrCtrl.getLinkrMgrData().mapLinkrBtnImage + ".png";
-                              lnkrSymbol.src = lnkrSmbl;
-                              console.log("refresh Linker Symbol with " + lnkrSymbol.src);
-                          } catch(err) {
-                              lnkrText.innerHTML = "Expand";
-                              lnkrSmbl = "../img/Expand.png";
-                          }
-                      }
-                  }
+                            mapOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                            console.log("mapOptions.center " + mapOptions.center.lng() + ", " + mapOptions.center.lat());
+                            console.debug(mapOptions);
+                            // mlmap = utils.showMap(mapOptions);
+                            mlmap = configureCurrentMapType(mapOptions);
+                            $ionicLoading.hide();
+                        },
+                            function () {
+                                console.log("error in navigator.geolocation.getCurrentPosition");
+                                $ionicLoading.hide();
+                                handleLocationError(true, infoWindow, mlmap.getCenter());
+                            });
+                        $ionicLoading.hide();
+                    } else {
+                        console.log("Fall thru to default map display");
+                        $ionicLoading.hide();
+                        mlmap = utils.showMap(mapOptions);
+                        console.debug(error);
+                    }
+                    $ionicLoading.hide();
+                    console.log("fell thru navigator.geolocation.getCurrentPosition");
+                    initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
+                        CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService);
+                });
 
-                  function placesQueryCallback(placesFromSearch, status) {
-                      var googmph,
-                          curMapType = "no map",
-                          placesSearchResults,
-                          onAcceptDestination;
+                watchOptions = {
+                    timeout: 3000,
+                    enableHighAccuracy: true
+                };
+                watch = $cordovaGeolocation.watchPosition(watchOptions);
 
-                      console.log('status is ' + status);
-                      utils.hideLoading();
+                watch.then(
+                    null,
 
-                      onAcceptDestination = function (info) {
-                          var sourceMapType,
-                              evtSvc = $scope.PusherEventHandlerService,
-                              newSelectedWebMapId,
-                              destWnd;
+                    function (err) {
+                        console.log(err);
+                    },
 
+                    function (position) {
+                        var lat = position.coords.latitude,
+                            long = position.coords.longitude;
 
-                          if (info) {
-                              sourceMapType = info.mapType;
-                              destWnd = info.dstSel;
-                          }
-                          newSelectedWebMapId = "NoId";
+                        'position - lat {0}, lon{1}'.format(lat, long);
+                        mlmap.setCenter(position);
+                        utils.geoLocate(position, mlmap, "Changed positions");
+                    }
+                );
 
-                          if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
-                              if (MLConfig.isNameChannelAccepted() === false) {
+                watch.clearWatch();
 
-                                  evtSvc.addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
-                                  evtSvc.addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
+                function toPluginPosition(lat, lng) {
+                    return new plugin.google.maps.LatLng(lat, lng);
+                }
 
-                                  PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
-                                      MLConfig.getUserName(), WindowStarter.openNewDisplay,
-                                      {
-                                          'destination' : destWnd,
-                                          'currentMapHolder' : sourceMapType,
-                                          'newWindowId' : newSelectedWebMapId,
-                                          'query' : queryForNewDisplay
-                                      });
-                                  queryForNewDisplay = "";
-                              } else {
-                                  WindowStarter.openNewDisplay(MLConfig.masherChannel(false),
-                                      MLConfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
-                                  queryForNewDisplay = "";
-                              }
+                // mapdiv = document.getElementById("mapdiv");
 
-                          } else {  //(destWnd == "Same Window")
-                              googmph = CurrentMapTypeService.getSpecificMapType('google');
-                              googmph.placeMarkers(placesSearchResults);
-                              MLConfig.setQuery(queryForNewDisplay);
-                              queryForSameDisplay = queryForNewDisplay;
-                          }
-                      };
-
-                      if (placesFromSearch && placesFromSearch.length > 0) {
-                          placesSearchResults = placesFromSearch;
-
-
-                          $scope.subsetDestinations(placesFromSearch);
-
-                          gmQSvc = $scope.GoogleQueryService;
-                          scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
-                          $scope.showDestDialog(
-                              onAcceptDestination,
-                              scope,
-                              {
-                                  'id' : null,
-                                  'title' : searchInput.value,
-                                  'snippet' : 'No snippet available',
-                                  'icon' : 'img/googlemap.png',
-                                  'mapType' : CurrentMapTypeService.getCurrentMapType()
-                              }
-                          );
-                      } else {
-                          console.log('searchBox.getPlaces() still returned no results');
-                      }
-                  }
-
-                  $scope.subsetDestinations = function (placesFromSearch) {
-                      var curMapType = CurrentMapTypeService.getMapTypeKey(),
-                          googmph = CurrentMapTypeService.getSpecificMapType('google');
-
-                      if (curMapType === 'google') {
-                          if (placesFromSearch) {
-                              googmph.setPlacesFromSearch(placesFromSearch);
-                          }
-                          $scope.destSelections[0].showing = 'destination-option-showing';
-                      } else {
-                          $scope.destSelections[0].showing = 'destination-option-hidden';
-                          $scope.data.dstSel = $scope.destSelections[2].option;
-                      }
-                  };
-
-                  function connectQuery () {
-                      var googmph,
-                          mapLinkrBounds,
-                          searchBounds,
-                          position,
-                          center,
-                          googleCenter,
-                          gmap,
-                          mapOptions,
-                          pacinput,
-                          queryPlaces = {},
-                          outerMapNumber = MapInstanceService.getSlideCount() - 1,
-                          mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
-                          service;
-
-                      googmph = CurrentMapTypeService.getSpecificMapType('google');
-
-                      mapLinkrBounds = mlconfig.getBounds();
-                      searchBounds = new google.maps.LatLngBounds(
-                          new google.maps.LatLng({'lat' : mapLinkrBounds.lly, 'lng' : mapLinkrBounds.llx}),
-                          new google.maps.LatLng({'lat' : mapLinkrBounds.ury, 'lng' : mapLinkrBounds.urx})
-                      );
-                      position = mlconfig.getPosition();
-                      center = {'lat' : position.lat, 'lng' : position.lon};
-                      googleCenter = new google.maps.LatLng(position.lat, position.lon);
-                      gmap = googmph.getMap();
-                      utils.showLoading();
-                      if (!gmap) {
-                          mapOptions = {
-                              center : googleCenter,
-                              zoom : 15,
-                              mapTypeId : google.maps.MapTypeId.ROADMAP
-                          };
-                          gmap = new google.maps.Map(document.getElementById("hiddenmap_canvas"), mapOptions);
-                      }
-
-                      // placesFromSearch = searchBox.getPlaces();
-
-                      pacinput = document.getElementById('pac-input');
-                      queryPlaces.bounds = searchBounds;
-                      queryPlaces.query = pacinput.value;
-                      queryPlaces.location = center;
-                      // MLConfig.setQuery(queryPlaces.query);
-
-                      service = new google.maps.places.PlacesService(gmap);
-                      if (queryPlaces.query !== '') {
-                          service.textSearch(queryPlaces, placesQueryCallback);
-                      }
-                  };
-
-                  function refreshMinMax() {
-                      var minMaxText = document.getElementById("idMinMaxText"),
-                          minMaxSymbol = document.getElementById("idMinMaxSymbol");
-                      if (minMaxText && minMaxSymbol) {
-                          minMaxText.innerHTML = SiteViewService.getSiteExpansion();
-                          console.log("refresh MinMax Text with " + minMaxText.innerHTML);
-                          minMaxSymbol.src = "../img/" + SiteViewService.getMinMaxSymbol() + ".png";
-                          console.log("refresh MinMax Symbol with " + minMaxSymbol.src);
-                      }
-                  }
-
-                  function placeCustomControls() {
-                      function stopLintUnusedComplaints(lnkr, minmaxr) {
-                          console.log("stopLintUnusedComplaints");
-                      }
-                      if (document.getElementById("linkerDirectiveId") === null) {
-
-                          var contextScope = $scope,
-                              curMapType = CurrentMapTypeService.getMapTypeKey(),
-                              // whichCanvas = 'map' + mapStartup.getMapNumber() + '_root', // 'map_canvas_root';
-                              whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber(),
-                              cnvs = utils.getElemById(whichCanvas),
-                              templateLnkr = ' \
-                                  <div id="linkerDirectiveId" class="lnkrclass"> \
-                                  <label id="idLinkerText" class="lnkmaxcontrol_label lnkcontrol_margin"  \
-                                  style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                                  </label> \
-                                  <img id="idLinkerSymbol" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
-                                     style="cursor:url(../img/LinkerCursor.png) 9 9,auto;" > \
-                                  </div>',
-
-                              templateMinMaxr = ' \
-                                  <div id="mapmaximizerDirectiveId" class="mnmxclass" > \
-                                  <label id="idMinMaxText" class="lnkmaxcontrol_label maxcontrol_margin" \
-                                      style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                                  </label> \
-                                  <img id="idMinMaxSymbol" class="lnkmaxcontrol_symbol maxcontrol_margin" \
-                                       style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                                  </div>',
-                              lnkr1 = angular.element(templateLnkr),
-                              lnkr = cnvs.append(lnkr1),
-
-                              minmaxr1 = angular.element(templateMinMaxr),
-                              minmaxr = cnvs.append(minmaxr1),
-
-                              lnkrdiv,
-                              mnmxdiv,
-                              lnkrText,
-                              lnkrSymbol,
-                              refreshDelay;
-                          stopLintUnusedComplaints(lnkr, minmaxr);
-
-                          setTimeout(function () {
-                              lnkrdiv = document.getElementsByClassName('lnkrclass')[0];
-                              lnkrdiv.addEventListener('click', function (event) {
-                                  console.log('lnkr[0].onclick   display LinkerEvent');
-                                  event.stopPropagation();
-
-                                  LinkrSvc.showLinkr();
-                              });
-                              mnmxdiv = document.getElementsByClassName('mnmxclass')[0];
-
-                              mnmxdiv.addEventListener('click', function (event) {
-                                  console.log('minmaxr[0].onclick   mapMaximizerEvent');
-                                  event.stopPropagation();
-                                  contextScope.$emit('mapMaximizerEvent');
-                                  contextScope.$apply();
-                                  refreshMinMax();
-                              });
-                          }, 200);
-
-
-                          lnkrText = document.getElementById("idLinkerText");
-                          lnkrSymbol = document.getElementById("idLinkerSymbol");
-                          refreshDelay = 500;
-                          if (lnkrSymbol && lnkrText) {
-                              refreshDelay = 10;
-                          }
-                          setTimeout(function () {
-                              refreshLinker();
-                              refreshMinMax();
-                          }, refreshDelay);
-                      }
-                      // else {
-                      //     refreshDelay = 500;
-                      //     setTimeout(function () {
-                      //         setupQueryListener();
-                      //         refreshLinker();
-                      //         refreshMinMax();
-                      //     }, refreshDelay);
-                      // }
-                      // connectQuery();
-                  }
-
-                  // function placeCustomControls() {
-                  //     console.log("MapCtrl.placeCustomControls");
-                  // }
-                  selfMethods.placeCustomControls = placeCustomControls;
-
-                  // $scope.gsearchVisible = 'inline-block';
-                  // if (gmquery !== '') {
-                  //     $scope.gsearch = {'query' : gmquery};  // was read from url when opening new window
-                  // } else {
-                  //     $scope.gsearch = {'query' : 'SearcherBox'};
-                  // }
-
-                  console.debug(selfMethods);
-
-                  $scope.gsearchVisible = 'inline-block';
-                  whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
-                  $scope.selectedDestination = CurrentMapTypeService.getMapTypeKey() === 'google' ? 'Same Window' : 'New Pop-up Window';
-                  $scope.updateState($scope.selectedDestination);
-
-                  if (gmquery !== '') {
-                      $scope.gsearch = {'query' : gmquery};  // was read from url when opening new window
-                  } else {
-                      $scope.gsearch = {'query' : 'SearcherBox'};
-                  }
-
-                  currentMapType = CurrentMapTypeService.getCurrentMapType();
-
-                  stup = currentMapType.start();
-                  console.debug(stup);
-
-                  tmpltName = $routeParams.id;
-                  console.log(tmpltName);
-
-                  function configureCurrentMapType(mapOptions) {
-                      currentMapType = CurrentMapTypeService.getMapStartup();
-                      currentMapType.config(null, mapOptions);
-                      $scope.map = currentMapType.getMap();
-                      // $scope.map.width = mapSize['medium'];
-                      // $scope.MapWdth = mapSize['small'];
-                      $scope.isMapExpanded = false;
-                      console.debug($scope.map);
-                      curMapTypeInitialized = true;
-                  }
-
-                  selfMethods.configureCurrentMapType = configureCurrentMapType;
-              }
-
-          ]);
+                // Invoking Map using Google Map SDK v2 by dubcanada
+                // mlmap = plugin.google.maps.Map.getMap(mapdiv, {
+                //     'camera': {
+                //         'latLng': toPluginPosition(-19.9178713, -43.9603117),
+                //         'zoom': 10
+                //     }
+                // });
+            }
+            selfMethods.initialize = initialize;
+            $ionicPlatform.ready(initialize);
+            // console.log("addEventListener for deviceready after wait 5000");
+            // setTimeout(function () {
+            //     document.addEventListener("deviceready", initialize);
+            //     console.log("wait 5000");
+            // }, 5000);
+        }
 
         function MapCtrlBrowser($scope, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
                     CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
@@ -724,18 +857,6 @@
                     'GoogleQueryService', 'SiteViewService', MapCtrlBrowser]);
 
                       console.log("ready to create MapCtrl");
-        app.controller('MapCtrl', [
-            '$scope',
-            '$compile',
-            'MapInstanceService',
-            'LinkrService',
-            'CurrentMapTypeService',
-            'PusherEventHandlerService',
-            'GoogleQueryService',
-            'SiteViewService',
-            function ($scope, $compile, MapInstanceService, LinkrService,
-                CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
-            }
             return MapCtrl;
         }
 

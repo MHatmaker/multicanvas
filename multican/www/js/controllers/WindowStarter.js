@@ -4,11 +4,11 @@
 (function () {
     "use strict";
     console.log("ready to require stuff in WindowStarter");
-    require(["lib/utils", 'angular']);
+    require(["libs/utils"]);
 
     define([
-        'lib/utils',
-        'lib/MLConfig',
+        'libs/utils',
+        'libs/MLConfig',
         'controllers/PopupBlockerCtrl'
     ], function (utils, MLConfig) {
 

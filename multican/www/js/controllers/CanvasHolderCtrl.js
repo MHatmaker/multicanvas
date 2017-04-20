@@ -9,10 +9,11 @@
     define([
         'app',
         'libs/MLConfig',
+        'controllers/MapCtrl',
         'services/CanvasService',
         'services/MapInstanceService'
         // 'controllers/CarouselCtrl'
-    ], function (app, MLConfig) {
+    ], function (app, MLConfig, MapCtrl) {
 
         console.log("ready to create CanvasHolderCtrl");
         app.controller('CanvasHolderCtrl', [

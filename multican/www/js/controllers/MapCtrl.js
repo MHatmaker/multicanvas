@@ -390,7 +390,6 @@
 
             selfMethods.setupQueryListener = setupQueryListener;
 
-
             $scope.$on('minmaxDirtyEvent', function (event, args) {
                 refreshMinMax();
             });
@@ -447,7 +446,66 @@
                 });
 
             };
-        }
+            $scope.startMap = function (mapNumber, mapType) {
+                initialize(mapNumber, mapType);
+            };
+
+            $scope.clickTest = function () {
+                alert('infowindow with ng-click on map ' + outerMapNumber);
+            };
+            // initialize();
+            $scope.$on('invalidateCurrentMapTypeConfigured', function () {
+                invalidateCurrentMapTypeConfigured();
+            });
+            $scope.subsetDestinations = function (placesFromSearch) {
+                var curMapType = CurrentMapTypeService.getMapTypeKey(),
+                    googmph = CurrentMapTypeService.getSpecificMapType('google');
+
+                if (curMapType === 'google') {
+                    if (placesFromSearch) {
+                        googmph.setPlacesFromSearch(placesFromSearch);
+                    }
+                    $scope.destSelections[0].showing = 'destination-option-showing';
+                } else {
+                    $scope.destSelections[0].showing = 'destination-option-hidden';
+                    $scope.data.dstSel = $scope.destSelections[2].option;
+                }
+            };
+            console.debug(selfMethods);
+
+            $scope.gsearchVisible = 'inline-block';
+            whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+            $scope.selectedDestination = CurrentMapTypeService.getMapTypeKey() === 'google' ? 'Same Window' : 'New Pop-up Window';
+            $scope.updateState($scope.selectedDestination);
+
+            if (gmquery !== '') {
+                $scope.gsearch = {'query' : gmquery};  // was read from url when opening new window
+            } else {
+                $scope.gsearch = {'query' : 'SearcherBox'};
+            }
+
+            currentMapType = CurrentMapTypeService.getCurrentMapType();
+
+            stup = currentMapType.start();
+            console.debug(stup);
+
+            tmpltName = $routeParams.id;
+            console.log(tmpltName);
+
+            function configureCurrentMapType(mapOptions) {
+                currentMapType = CurrentMapTypeService.getMapStartup();
+                currentMapType.config(null, mapOptions);
+                $scope.map = currentMapType.getMap();
+                // $scope.map.width = mapSize['medium'];
+                // $scope.MapWdth = mapSize['small'];
+                $scope.isMapExpanded = false;
+                console.debug($scope.map);
+                curMapTypeInitialized = true;
+            }
+
+        selfMethods.configureCurrentMapType = configureCurrentMapType;
+
+        };
 
         function initialize(mapNo, mapType, setupMapHoster) {
             var
@@ -492,35 +550,6 @@
             //   }, 1000);
         }
           // google.maps.event.addDomListener(window, 'load', initialize);
-        $scope.startMap = function (mapNumber, mapType) {
-            initialize(mapNumber, mapType);
-        };
-
-        $scope.clickTest = function () {
-            alert('infowindow with ng-click on map ' + outerMapNumber);
-        };
-        // initialize();
-        $scope.$on('invalidateCurrentMapTypeConfigured', function () {
-            invalidateCurrentMapTypeConfigured();
-        });
-
-
-
-
-        $scope.subsetDestinations = function (placesFromSearch) {
-            var curMapType = CurrentMapTypeService.getMapTypeKey(),
-                googmph = CurrentMapTypeService.getSpecificMapType('google');
-
-            if (curMapType === 'google') {
-                if (placesFromSearch) {
-                    googmph.setPlacesFromSearch(placesFromSearch);
-                }
-                $scope.destSelections[0].showing = 'destination-option-showing';
-            } else {
-                $scope.destSelections[0].showing = 'destination-option-hidden';
-                $scope.data.dstSel = $scope.destSelections[2].option;
-            }
-        };
 
         function placeCustomControls() {
             function stopLintUnusedComplaints(lnkr, minmaxr) {
@@ -615,45 +644,13 @@
         //     $scope.gsearch = {'query' : 'SearcherBox'};
         // }
 
-        console.debug(selfMethods);
 
-        $scope.gsearchVisible = 'inline-block';
-        whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
-        $scope.selectedDestination = CurrentMapTypeService.getMapTypeKey() === 'google' ? 'Same Window' : 'New Pop-up Window';
-        $scope.updateState($scope.selectedDestination);
-
-        if (gmquery !== '') {
-            $scope.gsearch = {'query' : gmquery};  // was read from url when opening new window
-        } else {
-            $scope.gsearch = {'query' : 'SearcherBox'};
-        }
-
-        currentMapType = CurrentMapTypeService.getCurrentMapType();
-
-        stup = currentMapType.start();
-        console.debug(stup);
-
-        tmpltName = $routeParams.id;
-        console.log(tmpltName);
-
-        function configureCurrentMapType(mapOptions) {
-            currentMapType = CurrentMapTypeService.getMapStartup();
-            currentMapType.config(null, mapOptions);
-            $scope.map = currentMapType.getMap();
-            // $scope.map.width = mapSize['medium'];
-            // $scope.MapWdth = mapSize['small'];
-            $scope.isMapExpanded = false;
-            console.debug($scope.map);
-            curMapTypeInitialized = true;
-        }
-
-        selfMethods.configureCurrentMapType = configureCurrentMapType;
-
-        function MapCtrlMobile($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
+        function MapCtrlMobile($scopeArg, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
                     CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
             var watchOptions,
                 watch;
             console.log("In mobile MapCtrl controller fire away");
+            $scope = $scopeArg;
 
             function initialize() {
                 console.log("In initialize MOBILE");
@@ -781,9 +778,10 @@
             // }, 5000);
         }
 
-        function MapCtrlBrowser($scope, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
+        function MapCtrlBrowser($scopeArg, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
                     CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
             console.log("in MapCtrlBrowser");
+            $scope = $scopeArg;
 
             function initialize() {
                 console.log("MapCtrl.initialize NOT MOBILE");
@@ -845,6 +843,11 @@
             if (selfMethods.setupQueryListener) {
                 selfMethods.setupQueryListener();
             }
+        }
+
+        function configureCurrentMapType(mapOptions) {
+            console.log("configureCurrentMapType");
+            selfMethods.configureCurrentMapType(mapOptions);
         }
 
         function init(App, isMob) {

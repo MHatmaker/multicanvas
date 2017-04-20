@@ -1,4 +1,4 @@
-/*global define, angular, console, require*/
+/*global define, angular, console, require, ionic*/
 
 // define('angular', function () {
 //     "use strict";
@@ -11,20 +11,22 @@
 define([
     // 'ionic',
     'angularBootstrap',
-    'dojo/domReady!'
-], function () {
+    'dojo/domReady!',
+    'controllers/MapCtrl',
+    'controllers/MapLinkrMgrCtrl'
+], function (bs, dr, MapCtrlArg, MapLinkrMgrCtrlArg) {
     'use strict';
 
     // the app with its used plugins
     console.log("create module");
-    var
+    var modules = [],
+        dependencies = ['ui.router', 'ionic'],
         isMobile = typeof ionic !== 'undefined' && (ionic.Platform.is("ios") || ionic.Platform.is("android")),
-        app = angular.module('app', [
-        'ionic',
-        'ui.bootstrap'
-        // 'doowb.angular-pusher'
-    ]);
-    console.log("ready to create MapDirective");
+        MapCtrl = MapCtrlArg,
+        MapLinkrMgrCtrl = MapLinkrMgrCtrlArg,
+        app;
+
+
     require(['services/MapInstanceService',
         'services/PusherEventHandlerService',
         'services/CurrentMapTypeService',
@@ -39,9 +41,33 @@ define([
         'libs/MapHosterGoogle',
         'libs/MapHosterArcGIS',
         'libs/MapHosterLeaflet',
-        'services/CanvasService'
-    ]);
+        'services/CanvasService',
+        'controllers/MapLinkrMgrCtrl'
+        ]);
+    if (isMobile) {
+        dependencies.push('ngCordova');
+    }
+    app = angular.module('app', dependencies.concat(modules))
+
+        .config(['$locationProvider', '$compileProvider', '$urlRouterProvider', '$stateProvider',
+            function ($locationProvider, $compileProvider, $urlRouterProvider, $stateProvider) {
+                $locationProvider.html5Mode({
+                    enabled: true,
+                    requireBase: false
+                }); // enable html5 mode
+                // other pieces of code.
+                $stateProvider.state('map', {
+                    url: '/',
+                    templateUrl: 'templates/dashboard.html',
+                    controller: 'MapCtrl'
+                });
+
+                $urlRouterProvider.otherwise("/");
+            }
+            ]);
         // require(['libs/MLConfig']);
         // return the app so you can require it in other components
+    MapLinkrMgrCtrl.start();
+    MapCtrl.start(app, isMobile);
     return app;
 });

@@ -13,7 +13,7 @@
         'services/CanvasService',
         'services/MapInstanceService'
         // 'controllers/CarouselCtrl'
-    ], function (app, MLConfig, MapCtrl) {
+    ], function (app, MLConfig) {
 
         console.log("ready to create CanvasHolderCtrl");
         app.controller('CanvasHolderCtrl', [

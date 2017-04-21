@@ -645,8 +645,8 @@
         // }
 
 
-        function MapCtrlMobile($scopeArg, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
-                    CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
+        function MapCtrlMobile($scopeArg, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack,
+                    LinkrSvc, MapInstanceService, CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
             var watchOptions,
                 watch;
             console.log("In mobile MapCtrl controller fire away");
@@ -726,7 +726,7 @@
                     }
                     $ionicLoading.hide();
                     console.log("fell thru navigator.geolocation.getCurrentPosition");
-                    initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
+                    initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                         CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService);
                 });
 
@@ -856,7 +856,7 @@
             if (isMob) {
                 MapCtrl = App.controller('MapCtrl', ['$scope', '$cordovaGeolocation',
                     '$ionicLoading', '$ionicPlatform', '$routeParams', '$compile', '$uibModal', '$uibModalStack',
-                    'LinkrService', 'CurrentMapTypeService', 'PusherEventHandlerService',
+                    'MapInstanceService', 'LinkrService', 'CurrentMapTypeService', 'PusherEventHandlerService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlMobile]);
             } else {
                 MapCtrl = App.controller('MapCtrl', ['$scope',

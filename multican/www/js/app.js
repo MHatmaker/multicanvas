@@ -20,8 +20,9 @@ define([
     // the app with its used plugins
     console.log("create module");
     var modules = [],
-        dependencies = ['ui.router', 'ionic'],
-        isMobile = typeof ionic !== 'undefined' && (ionic.Platform.is("ios") || ionic.Platform.is("android")),
+        dependencies = ['ui.router', 'ionic', 'ngRoute', 'ui.bootstrap', 'ngTouch', 'ngAnimate', 'ui.grid', 'ui.grid.expandable',
+                    'ui.grid.selection', 'ui.grid.pinning', 'ngResource'],
+        isMobile = (ionic !== 'undefined') && (ionic.Platform.is("ios") || ionic.Platform.is("android")),
         MapCtrl = MapCtrlArg,
         MapLinkrMgrCtrl = MapLinkrMgrCtrlArg,
         app;

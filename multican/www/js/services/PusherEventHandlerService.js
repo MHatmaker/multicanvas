@@ -1,8 +1,7 @@
 /*global define, console*/
 
 define([
-    'app'
-], function (app) {
+], function () {
     'use strict';
 
     console.log("ready to create PusherEventHandlerService");
@@ -12,7 +11,7 @@ define([
             'client-MapClickEvent' : null,
             'client-NewMapPosition' : null
         },
-        app = angular.module('app');
+        app = angular.module('mapModule');
     app.service("PusherEventHandlerService", [
         function () {
             this.getEventDct = function () {

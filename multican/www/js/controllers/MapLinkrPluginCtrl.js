@@ -74,7 +74,7 @@
 
         function init() {
             console.log('MapLinkrPluginCtrl init');
-            var mpApp = angular.module('app');
+            var mpApp = angular.module('mapModule');
 
             mpApp.controller('MapLinkrPluginCtrl',  ['$scope', '$uibModalInstance', 'data', MapLinkrPluginCtrl]);
 

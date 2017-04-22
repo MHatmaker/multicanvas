@@ -1,15 +1,14 @@
 /*global define, console*/
 
 define([
-    'app'
-], function (app) {
+], function () {
     'use strict';
 
     console.log("ready to create MapInstanceService");
     var slideCount = 0,
         isFirstInstance = true,
         currentSlideNumber = 0,
-        app = angular.module('app');
+        app = angular.module('mapModule');
     app.service('MapInstanceService', [
         function () {
             var configInstances = {};

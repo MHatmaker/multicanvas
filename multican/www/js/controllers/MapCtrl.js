@@ -850,8 +850,9 @@
             selfMethods.configureCurrentMapType(mapOptions);
         }
 
-        function init(App, isMob) {
+        function init(isMob) {
             console.log('MapCtrl outer init');
+            var App = angular.module('mapModule');
 
             if (isMob) {
                 MapCtrl = App.controller('MapCtrl', ['$scope', '$cordovaGeolocation',

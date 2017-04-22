@@ -19,8 +19,9 @@
         }
 
 
-        function init(App) {
+        function init() {
             console.log('PopupBlockerCtrl init');
+            var App = angular.module('mapModule');
 
             App.controller('PopupBlockerCtrl',  ['$scope', '$uibModalInstance', 'data', PopupBlockerCtrl]);
 

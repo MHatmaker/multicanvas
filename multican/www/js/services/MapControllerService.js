@@ -1,14 +1,11 @@
 /*global require, define, console, document*/
 
-// require(['libs/MultiCanvas']);
-
 define([
-    'app',
     'controllers/MapCtrl'
-], function (app, MapCtrl) {
+], function (MapCtrl) {
     'use strict';
     var
-        app = angular.module('app');
+        app = angular.module('mapModule');
 
     console.log("ready to create MapControllerService");
     app.factory('MapControllerService', function () {

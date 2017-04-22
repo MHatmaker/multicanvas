@@ -1,13 +1,11 @@
 /*global require, define, console, document, angular*/
 
-// require(['libs/MultiCanvas']);
 
 define([
-    'app'
-], function (app) {
+], function () {
     'use strict';
     var googleQueryDct = {},
-        app = angular.module('app');
+        app = angular.module('mapModule');
 
     app.factory("GoogleQueryService", function ($rootScope) {
 

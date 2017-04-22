@@ -3,17 +3,16 @@
 
 define(
     [
-        'app'
     ],
-    function (app) {
+    function () {
         'use strict';
         var
-            app = angular.module('app');
+            app = angular.module('mapModule');
 
         console.log("ready to create InjectorService");
 
         app.factory("InjectorSvc", function () {
-            var injector = angular.injector(['app']),
+            var injector = angular.injector(['mapModule']),
                 getInjector = function () {
                     return injector;
                 };

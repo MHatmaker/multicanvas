@@ -123,7 +123,8 @@
             }
         }
 
-        function init(App) {
+        function init() {
+            var App = angular.module('mapModule');
             console.log('PositionViewCtrl init');
             App.controller('PositionViewCtrl', ['$scope', PositionViewCtrl]);
             return PositionViewCtrl;

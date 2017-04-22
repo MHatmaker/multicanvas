@@ -1,13 +1,10 @@
 /*global require, define, console, document*/
 
-// require(['libs/MultiCanvas']);
-
 define([
-    'app'
 ], function (app) {
     'use strict';
     var
-        app = angular.module('app');
+        app = angular.module('mapModule');
     app.value('linkrScopes', {
         lnkrscope : null,
         addScope : function (s) {

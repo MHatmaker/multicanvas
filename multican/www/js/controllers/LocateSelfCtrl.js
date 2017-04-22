@@ -55,8 +55,9 @@
             map = mp;
         }
 
-        function init(App) {
+        function init() {
             console.log('LocateSelfCtrl init');
+            var App = angular.module('mapModule');
 
             App.controller('LocateSelfCtrl',  ['$scope', 'CurrentMapTypeService', 'LinkrService', LocateSelfCtrl]);
 

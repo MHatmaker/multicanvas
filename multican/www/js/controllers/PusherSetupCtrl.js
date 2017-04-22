@@ -94,7 +94,7 @@
                 // pusher = new Pusher(APP_KEY);
                 pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://adce9204.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://ecd66ff1.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                       key: APP_KEY,
                       secret: APP_SECRET,
@@ -378,8 +378,9 @@
             return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
         }
 
-        function init(App) {
+        function init() {
             console.log('PusherSetup init');
+            var App = angular.module('mapModule');
             // alert("areWeInitialized ?");
             // alert(areWeInitialized);
             // if (areWeInitialized == true) {

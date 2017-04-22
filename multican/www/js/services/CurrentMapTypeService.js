@@ -2,17 +2,16 @@
 /*jslint es5: true*/
 
 define([
-    'app',
     'libs/StartupGoogle',
     'libs/StartupArcGIS',
     'libs/StartupLeaflet',
     'libs/MapHosterGoogle',
     'libs/MapHosterArcGIS',
     'libs/MapHosterLeaflet'
-], function (app, StartupGoogle, StartupArcGIS, StartupLeaflet, MapHosterGoogle, MapHosterArcGIS, MapHosterLeaflet) {
+], function (StartupGoogle, StartupArcGIS, StartupLeaflet, MapHosterGoogle, MapHosterArcGIS, MapHosterLeaflet) {
     'use strict';
     var
-        app = angular.module('app');
+        app = angular.module('mapModule');
 
     app.value('mapsvcScopes', {
         scopes : [],

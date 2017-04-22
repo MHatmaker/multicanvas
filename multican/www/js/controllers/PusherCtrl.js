@@ -33,8 +33,9 @@
 
         }
 
-        function init(App) {
+        function init() {
             console.log('PusherCtrl init');
+            var App = angular.module('mapModule');
 
             App.controller('PusherCtrl',  ['$scope', '$uibModalInstance', 'data', PusherCtrl]);
 

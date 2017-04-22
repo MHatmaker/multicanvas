@@ -9,9 +9,9 @@
 
     console.log('CarouselCtrl setup');
     define([
-        'app',
-    ], function (app) {
+    ], function () {
         console.log("ready to create CarouselCtrl");
+        var app = angular.module('mapModule');
         app.controller('CarouselCtrl', ['$scope', 'MapInstanceService',
             function ($scope, MapInstanceService) {
                 var

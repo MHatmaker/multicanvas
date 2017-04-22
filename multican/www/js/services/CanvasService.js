@@ -3,14 +3,13 @@
 // require(['libs/MultiCanvas']);
 
 define([
-    'app',
     'libs/MultiCanvas'
-], function (app, MultiCanvas) {
+], function (MultiCanvas) {
     'use strict';
 
     console.log("ready to create CanvasService");
     var
-        app = angular.module('app');
+        app = angular.module('mapModule');
     app.service('CanvasService', [
         function () {
             var canvases = [];

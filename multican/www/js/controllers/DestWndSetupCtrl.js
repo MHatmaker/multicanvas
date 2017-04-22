@@ -51,8 +51,9 @@
             }; // end hitEnter
         }
 
-        function init(App) {
+        function init() {
             console.log('DestWndSetupCtrl init');
+            var App = angular.module('mapModule');
 
             if (selfdict.areWeInitialized === false) {
                 selfdict.areWeInitialized = true;

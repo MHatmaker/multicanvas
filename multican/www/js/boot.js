@@ -6,8 +6,9 @@ console.log("bootstrap outer wrapper");
     console.log("bootstrap setup method");
 // requires routes, config, run they implicit requiring the app
     define([
-        'libs/PusherConfig'
-    ], function (PusherConfig) {
+        'libs/PusherConfig',
+        'controllers/ControllerStarter'
+    ], function (PusherConfig, ControllerStarter) {
         function init(portalForSearch) {
             var modules = [],
                 dependencies = ['ui.router', 'ionic', 'ngRoute', 'ui.bootstrap', 'ngTouch', 'ngAnimate', 'ui.grid', 'ui.grid.expandable',
@@ -19,7 +20,7 @@ console.log("bootstrap outer wrapper");
             if (isMobile) {
                 dependencies.push('ngCordova');
             }
-            app = angular.module('app', dependencies.concat(modules))
+            app = angular.module('mapModule', dependencies.concat(modules))
 
                 .config(['$locationProvider', '$compileProvider', '$urlRouterProvider', '$stateProvider',
                     function ($locationProvider, $compileProvider, $urlRouterProvider, $stateProvider) {
@@ -37,34 +38,34 @@ console.log("bootstrap outer wrapper");
                         $urlRouterProvider.otherwise("/");
                     }
                     ]);
+            // ControllerStarter.start(mapModule, portalForSearch, isMobile);
             console.log('wait for onload to bootstrap');
             //  PusherSetupCtrl.getInstance().start(angular.module('app'));
-            // MapLinkrMgrCtrl.start();
+            ControllerStarter.start(app, portalForSearch, isMobile);
             angular.element(document).ready(function () {
-                localApp = angular.module('app');
+                require([
+                    'services/MapInstanceService',
+                    'services/PusherEventHandlerService',
+                    'services/CurrentMapTypeService',
+                    'services/MapControllerService',
+                    'services/InjectorService',
+                    'services/LinkrService',
+                    'services/SiteViewService',
+                    'services/GoogleQueryService',
+                    'libs/StartupGoogle',
+                    'libs/StartupArcGIS',
+                    'libs/StartupLeaflet',
+                    'libs/MapHosterGoogle',
+                    'libs/MapHosterArcGIS',
+                    'libs/MapHosterLeaflet',
+                    'services/CanvasService'
+                ]);
+                localApp = angular.module('mapModule');
                 console.debug(localApp);
-                angular.bootstrap(document.body, ['app']);
+                angular.bootstrap(document, ['mapModule']);
                 var $inj = angular.element(document.body).injector();
                 PusherConfig.getInstance().setInjector($inj);
             });
-            require([
-                'js/boot',
-                'services/MapInstanceService',
-                'services/PusherEventHandlerService',
-                'services/CurrentMapTypeService',
-                'services/MapControllerService',
-                'services/InjectorService',
-                'services/LinkrService',
-                'services/SiteViewService',
-                'services/GoogleQueryService',
-                'libs/StartupGoogle',
-                'libs/StartupArcGIS',
-                'libs/StartupLeaflet',
-                'libs/MapHosterGoogle',
-                'libs/MapHosterArcGIS',
-                'libs/MapHosterLeaflet',
-                'services/CanvasService'
-            ]);
             // window.onload = function () {
             //   console.log('ready to bootstrap');
             //   angular.bootstrap(document, ['app']);

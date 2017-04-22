@@ -5,11 +5,11 @@
 /*jslint browser: true*/
 
 define([
-    'app',
     'services/MapInstanceService',
     'controllers/MapCtrl'
-], function (app) {
+], function () {
     'use strict';
+    var app = angular.module('mapModule');
 
     console.log("ready to create MapDirective");
     app.directive('mapdirective', ['$compile', 'MapInstanceService', function ($compile, mapInstanceService) {

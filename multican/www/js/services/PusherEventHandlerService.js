@@ -11,7 +11,8 @@ define([
             'client-MapXtntEvent' : null,
             'client-MapClickEvent' : null,
             'client-NewMapPosition' : null
-        };
+        },
+        app = angular.module('app');
     app.service("PusherEventHandlerService", [
         function () {
             this.getEventDct = function () {

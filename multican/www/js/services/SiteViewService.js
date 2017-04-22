@@ -6,6 +6,8 @@ define([
     'app'
 ], function (app) {
     'use strict';
+    var
+        app = angular.module('app');
 
     app.factory("SiteViewService", function () {
         var ExpandSite = "Max Map",

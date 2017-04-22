@@ -11,6 +11,8 @@ define([
     'libs/MapHosterLeaflet'
 ], function (app, StartupGoogle, StartupArcGIS, StartupLeaflet, MapHosterGoogle, MapHosterArcGIS, MapHosterLeaflet) {
     'use strict';
+    var
+        app = angular.module('app');
 
     app.value('mapsvcScopes', {
         scopes : [],

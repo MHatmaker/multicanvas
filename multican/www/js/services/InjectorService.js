@@ -7,6 +7,8 @@ define(
     ],
     function (app) {
         'use strict';
+        var
+            app = angular.module('app');
 
         console.log("ready to create InjectorService");
 

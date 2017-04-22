@@ -9,6 +9,8 @@ define([
     'use strict';
 
     console.log("ready to create CanvasService");
+    var
+        app = angular.module('app');
     app.service('CanvasService', [
         function () {
             var canvases = [];

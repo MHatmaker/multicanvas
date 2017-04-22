@@ -43,6 +43,7 @@ require({
   // ]
 });
 
+
 var dojoConfig = {
     baseUrl: 'js',
     async: true,
@@ -59,3 +60,4 @@ var dojoConfig = {
         // }]
 
 };
+require(['app']);

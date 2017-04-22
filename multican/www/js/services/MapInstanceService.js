@@ -8,7 +8,8 @@ define([
     console.log("ready to create MapInstanceService");
     var slideCount = 0,
         isFirstInstance = true,
-        currentSlideNumber = 0;
+        currentSlideNumber = 0,
+        app = angular.module('app');
     app.service('MapInstanceService', [
         function () {
             var configInstances = {};

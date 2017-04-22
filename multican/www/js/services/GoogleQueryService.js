@@ -6,7 +6,8 @@ define([
     'app'
 ], function (app) {
     'use strict';
-    var googleQueryDct = {};
+    var googleQueryDct = {},
+        app = angular.module('app');
 
     app.factory("GoogleQueryService", function ($rootScope) {
 

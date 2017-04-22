@@ -6,7 +6,8 @@ define([
     'app'
 ], function (app) {
     'use strict';
-
+    var
+        app = angular.module('app');
     app.value('linkrScopes', {
         lnkrscope : null,
         addScope : function (s) {

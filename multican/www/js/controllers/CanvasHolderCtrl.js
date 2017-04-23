@@ -9,13 +9,14 @@
     define([
         'app',
         'libs/MLConfig',
-        'controllers/MapCtrl',
-        'services/CanvasService',
-        'services/MapInstanceService'
+        'controllers/MapCtrl'
+        // 'services/CanvasService',
+        // 'services/MapInstanceService'
         // 'controllers/CarouselCtrl'
-    ], function (app, MLConfig) {
+    ], function (MLConfig) {
 
         console.log("ready to create CanvasHolderCtrl");
+        var app = angular.module('mapModule');
         app.controller('CanvasHolderCtrl', [
             '$scope',
             'CanvasService',

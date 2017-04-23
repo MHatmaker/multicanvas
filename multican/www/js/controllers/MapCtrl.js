@@ -10,7 +10,6 @@
 
     console.log('MapCtrl setup');
     define([
-        'app',
         'esri/map',
         'controllers/DestWndSetupCtrl',
         'libs/StartupGoogle',
@@ -20,7 +19,7 @@
         'controllers/PusherSetupCtrl',
         'controllers/MapLinkrMgrCtrl',
         'controllers/WindowStarter'
-    ], function (app, Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg) {
+    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg) {
         var selfMethods = {},
             MapInstanceService,
             CurrentMapTypeService,

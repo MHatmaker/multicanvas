@@ -11,8 +11,8 @@ console.log("bootstrap outer wrapper");
     ], function (PusherConfig, ControllerStarter) {
         function init(portalForSearch) {
             var modules = [],
-                dependencies = ['ui.router', 'ionic', 'ngRoute', 'ui.bootstrap', 'ngTouch', 'ngAnimate', 'ui.grid', 'ui.grid.expandable',
-                            'ui.grid.selection', 'ui.grid.pinning', 'ngResource'],
+                dependencies = ['ui.router', 'ionic', 'ui.bootstrap', 'ngAnimate', 'ui.grid', 'ui.grid.expandable',
+                            'ui.grid.selection', 'ui.grid.pinning', 'ngResource', 'ngRoute'],
                 isMobile = (ionic !== 'undefined') && (ionic.Platform.is("ios") || ionic.Platform.is("android")),
                 localApp,
                 app;
@@ -20,10 +20,11 @@ console.log("bootstrap outer wrapper");
             if (isMobile) {
                 dependencies.push('ngCordova');
             }
+            console.debug(dependencies.concat(modules));
             app = angular.module('mapModule', dependencies.concat(modules))
 
-                .config(['$locationProvider', '$compileProvider', '$urlRouterProvider', '$stateProvider',
-                    function ($locationProvider, $compileProvider, $urlRouterProvider, $stateProvider) {
+                .config(['$routeProvider', '$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider',
+                    function ($routeProvider, $locationProvider,  $urlRouterProvider, $stateProvider) {  // $compileProvider,
                         $locationProvider.html5Mode({
                             enabled: true,
                             requireBase: false
@@ -38,6 +39,7 @@ console.log("bootstrap outer wrapper");
                         $urlRouterProvider.otherwise("/");
                     }
                     ]);
+
             // ControllerStarter.start(mapModule, portalForSearch, isMobile);
             console.log('wait for onload to bootstrap');
             //  PusherSetupCtrl.getInstance().start(angular.module('app'));
@@ -52,13 +54,13 @@ console.log("bootstrap outer wrapper");
                     'services/LinkrService',
                     'services/SiteViewService',
                     'services/GoogleQueryService',
+                    'services/CanvasService',
                     'libs/StartupGoogle',
                     'libs/StartupArcGIS',
                     'libs/StartupLeaflet',
                     'libs/MapHosterGoogle',
                     'libs/MapHosterArcGIS',
-                    'libs/MapHosterLeaflet',
-                    'services/CanvasService'
+                    'libs/MapHosterLeaflet'
                 ]);
                 localApp = angular.module('mapModule');
                 console.debug(localApp);
@@ -70,9 +72,6 @@ console.log("bootstrap outer wrapper");
             //   console.log('ready to bootstrap');
             //   angular.bootstrap(document, ['app']);
             // }
-            return {
-                start : init
-            };
         }
         return {
             start : init

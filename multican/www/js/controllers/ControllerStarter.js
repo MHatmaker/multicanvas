@@ -6,6 +6,7 @@
 
     console.log('ControllerStarter setup');
     define([
+        'controllers/CanvasHolderCtrl',
         'controllers/PositionViewCtrl',
         'controllers/MapCtrl',
         'controllers/MapLinkrPluginCtrl',

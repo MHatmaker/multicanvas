@@ -103,6 +103,9 @@
             MapInstanceService = MapInstanceSvc;
             outerMapNumber = MapInstanceService.getSlideCount();
             mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
+            if (!mlconfig) {
+                return;
+            }
             gmquery = mlconfig.query();
 
             whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';

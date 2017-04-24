@@ -20,13 +20,14 @@
         'controllers/ShareCtrl',
         'controllers/PopupBlockerCtrl',
         'controllers/LocateSelfCtrl',
+        'controllers/CarouselCtrl',
         'libs/GeoCoder',
         'libs/MLConfig'
     ],
         function (
-            PositionViewCtrl, MapCtrl, MapLinkrPluginCtrl, MapLinkrMgrCtrl,
+            CanvasHolderCtrl, PositionViewCtrl, MapCtrl, MapLinkrPluginCtrl, MapLinkrMgrCtrl,
             SearcherCtrlGrp, SearcherCtrlMap, PusherSetupCtrl, PusherCtrl, DestWndSetupCtrl,
-            TransmitNewUrlCtrl, ShareCtrl, PopupBlockerCtrl, LocateSelfCtrl, GeoCoder, MLConfig
+            TransmitNewUrlCtrl, ShareCtrl, PopupBlockerCtrl, LocateSelfCtrl, CarouselCtrl, GeoCoder, MLConfig
         ) {
             console.log('ControllerStarter define');
 
@@ -99,6 +100,8 @@
                 LocateSelfCtrl.start();
 
                 MapCtrl.start(isMobile);
+                CanvasHolderCtrl.start();
+                CarouselCtrl.start();
                 // GeoCoder.start(App, $http);
 
 

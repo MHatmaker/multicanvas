@@ -7,9 +7,8 @@
     console.log('MapLinkrMgrCtrl setup');
     var selfMethods = {};
     define([
-        'app',
         'controllers/MapLinkrPluginCtrl'
-    ], function (app, MapLinkrPluginCtrl) {
+    ], function (MapLinkrPluginCtrl) {
         console.log('MapLinkrMgrCtrl define');
 
         function MapLinkrMgrCtrl($scope, $rootScope, $uibModal, linkrSvc) {

@@ -12,8 +12,7 @@
         'libs/MLConfig',
         'libs/PusherConfig',
         'controllers/PusherCtrl'
-    ], function (MLConfig, PusherConfig, PusherCtrl) { //}, pusherCtrl) {
-        console.log('PusherSetupCtrl define');
+    ], function (MLConfig, PusherConfig, PusherCtrl) {        console.log('PusherSetupCtrl define');
 
         var selfdict = {
             'scope' : null,
@@ -94,7 +93,7 @@
                 // pusher = new Pusher(APP_KEY);
                 pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://ecd66ff1.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://71d2606d.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                       key: APP_KEY,
                       secret: APP_SECRET,

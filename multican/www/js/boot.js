@@ -21,6 +21,7 @@ console.log("bootstrap outer wrapper");
                 dependencies.push('ngCordova');
             }
             console.debug(dependencies.concat(modules));
+            console.log("ready to create module mapModule");
             app = angular.module('mapModule', dependencies.concat(modules))
 
                 .config(['$routeProvider', '$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider',
@@ -41,7 +42,7 @@ console.log("bootstrap outer wrapper");
                     ]);
 
             // ControllerStarter.start(mapModule, portalForSearch, isMobile);
-            console.log('wait for onload to bootstrap');
+            console.log('mapModule created ... wait for onload to bootstrap');
             //  PusherSetupCtrl.getInstance().start(angular.module('app'));
             ControllerStarter.start(app, portalForSearch, isMobile);
             angular.element(document).ready(function () {

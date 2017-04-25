@@ -18,8 +18,9 @@
         'libs/utils',
         'controllers/PusherSetupCtrl',
         'controllers/MapLinkrMgrCtrl',
-        'controllers/WindowStarter'
-    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg) {
+        'controllers/WindowStarter',
+        'libs/MLConfig'
+    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg, MLConfig) {
         var selfMethods = {},
             MapInstanceService,
             CurrentMapTypeService,
@@ -85,7 +86,7 @@
             }
         }
 
-        function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, LinkrSvcArg, MapInstanceSvc,
+        function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
                     CurrentMapTypeSvc, PusherEventHandlerService, GoogleQueryService, SiteViewServiceArg) {
 
             $scope = scope;
@@ -104,7 +105,8 @@
             outerMapNumber = MapInstanceService.getSlideCount();
             mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
             if (!mlconfig) {
-                return;
+                mlconfig = new MLConfig.MLConfig(outerMapNumber);
+                MapInstanceService.addConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
             }
             gmquery = mlconfig.query();
 
@@ -780,7 +782,7 @@
             // }, 5000);
         }
 
-        function MapCtrlBrowser($scopeArg, $routeParams, $compile, $uibModal, $uibModalStack, LinkrSvc,
+        function MapCtrlBrowser($scopeArg, $routeParams, $compile, $uibModal, $uibModalStack,MapInstanceService,  LinkrSvc,
                     CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
             console.log("in MapCtrlBrowser");
             $scope = $scopeArg;

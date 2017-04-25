@@ -61,7 +61,8 @@ console.log("bootstrap outer wrapper");
                     'libs/StartupLeaflet',
                     'libs/MapHosterGoogle',
                     'libs/MapHosterArcGIS',
-                    'libs/MapHosterLeaflet'
+                    'libs/MapHosterLeaflet',
+                    'controllers/MapDirective'
                 ]);
                 localApp = angular.module('mapModule');
                 console.debug(localApp);

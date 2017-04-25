@@ -722,7 +722,7 @@
                     // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                     // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                     // gBnds = new google.maps.LatLngBounds(ll, ur);
-                    qtext = mlconfig.guery();
+                    qtext = mlconfig.query();
                     if (qtext && qtext !== "") {
                         queryPlaces.bounds = gBnds;
                         queryPlaces.query = qtext;

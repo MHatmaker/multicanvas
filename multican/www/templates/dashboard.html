@@ -1,3 +1,16 @@
+
+<script type="text/ng-template" id="accordion-template.html">
+  <div class="panel {{panelClass || 'panel-default'}}">
+    <div class="panel-heading">
+      <h4 style="font-size: 1.35em; font-weight: 600; color: #0202d8;" class="panel-title">
+        <div href="href" tabindex="0" ng-click="toggleOpen()" uib-accordion-transclude="heading" class="accordion-toggle"><span style="width: 100%;"><img ng-class="{'accdionchevron-down': isOpen, 'accdionchevron-right': !isOpen}" class="accdionchevron-right"/><span ng-class="{'text-muted': isDisabled}"></span>{{heading}}</span></div>
+      </h4>
+    </div>
+    <div uib-collapse="!isOpen" class="panel-collapse collapse">
+      <div style="text-align: left; font-size=1.0em;" ng-transclude="ng-transclude" class="panel-body"></div>
+    </div>
+  </div>
+</script>
 <ion-view view-title="Dashboard">
     <ion-content style="height: 550px; width: 380px;">
         <div id='canvasholder' ng-controller='CanvasHolderCtrl' onmousedown="return false">
@@ -16,15 +29,18 @@
                                 <span class="offscreen">Next</span>
                             </button>
                         </div>
-                        <div class="col-md-1 col-xs-1">
-                            <button class="chevron-next" ng-click="onMapLinkrClicked()">
-                                <span class="offscreen">MapLinkr</span>
+                        <div ng-controller="MapLinkrMgrCtrl">
+                            <button type "button="type "button" style="padding: 2px" ng-click="onMapLinkrClicked()"
+                                class="btn btn-labeled btn-primary">
+                                <span style="padding: 2px" class="btn-label">{{mldata.mapLinkrBtnText}}
+                                    <i ng-class="{'fa-expand': !mldata.isOpen, 'fa-compress': mldata.isOpen}" class="fa fa-expand fa-lg"></i>
+                                </span>
                             </button>
                         </div>
                     </div>
 
                     <ol class="MapContainer" style="height: {{mapcolheight}}px; width: {{mapcolWidth}}px;"></ol>
-                    <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:512px; top:256px; z-index:100;"/>
+                    <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:512px; top:256px; z-index:100;" />
                 </div>
             </div class="row">
             <button id="addcanbtnG" ng-click="addCanvas('google')" value="Add Google Map" class="btn col-md-3 col-xs-5">Add Google Map</button>

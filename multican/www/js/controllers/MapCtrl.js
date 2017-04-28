@@ -19,14 +19,16 @@
         'controllers/PusherSetupCtrl',
         'controllers/MapLinkrMgrCtrl',
         'controllers/WindowStarter',
+        'controllers/CanvasHolderCtrl',
         'libs/MLConfig'
-    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg, MLConfig) {
+    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, MLConfig) {
         var selfMethods = {},
             MapInstanceService,
             CurrentMapTypeService,
             SiteViewService,
             LinkrSvc,
             WindowStarter = WindowStarterArg,
+            CanvasHolderCtrl = CanvasHolderCtrlArg,
             outerMapNumber,
             mlconfig,
             gmquery,
@@ -498,13 +500,15 @@
 
             function configureCurrentMapType(mapOptions) {
                 currentMapType = CurrentMapTypeService.getMapStartup();
-                currentMapType.config(null, mapOptions);
-                $scope.map = currentMapType.getMap();
-                // $scope.map.width = mapSize['medium'];
-                // $scope.MapWdth = mapSize['small'];
-                $scope.isMapExpanded = false;
-                console.debug($scope.map);
-                curMapTypeInitialized = true;
+                if (currentMapType.configure) {
+                    currentMapType.configure(null, mapOptions);
+                    $scope.map = currentMapType.getMap();
+                    // $scope.map.width = mapSize['medium'];
+                    // $scope.MapWdth = mapSize['small'];
+                    $scope.isMapExpanded = false;
+                    console.debug($scope.map);
+                    curMapTypeInitialized = true;
+                }
             }
 
         selfMethods.configureCurrentMapType = configureCurrentMapType;
@@ -786,10 +790,12 @@
                     CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
             console.log("in MapCtrlBrowser");
             $scope = $scopeArg;
+            var firstMap = null;
 
             function initialize() {
                 console.log("MapCtrl.initialize NOT MOBILE");
-                var mapOptions = {
+                var mapConfig,
+                    mapOptions = {
                     center: new google.maps.LatLng(37.422858, -122.085065),
                     zoom: 15,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -808,6 +814,13 @@
                         console.log("getCurrentPosition");
 
                         mapOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        /// mapConfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
+                        if (!mlconfig) {
+                            mlconfig = new MLConfig.MLConfig(outerMapNumber);
+                            MapInstanceService.addConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
+                        }
+                        mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
+                        firstMap = CanvasHolderCtrl.addCanvas('google');
                         // mlmap = utils.showMap(mapOptions);
                         mlmap = configureCurrentMapType(mapOptions);
                     },

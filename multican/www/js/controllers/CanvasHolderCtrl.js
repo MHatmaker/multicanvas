@@ -7,14 +7,15 @@
     console.log('CanvasHolderCtrl setup');
     // require(['libs/MLConfig']);
     define([
-        'libs/MLConfig',
-        'controllers/MapCtrl'
+        'libs/MLConfig'
         // 'services/CanvasService',
         // 'services/MapInstanceService'
         // 'controllers/CarouselCtrl'
     ], function (MLConfig) {
 
         console.log('CanvasHolderCtrl define');
+        var selfMethods = {};
+        var isInstantiated = false;
 
         function CanvasHolderCtrl($scope, $rootScope, $uibModal, LinkrService, MapInstanceService, CanvasService) {
             console.log("ready to create CanvasHolderCtrl");
@@ -65,6 +66,7 @@
                     currentMapInstance.centerOnMe();
                 };
             };
+            selfMethods['addCanvas'] = $scope.addCanvas;
 
             $scope.removeCanvas = function (clickedItem) {
                 console.log("removeCanvas");
@@ -89,21 +91,29 @@
 
 
         }
+        function addCanvas() {
+            selfMethods.addCanvas('google');
+        }
+        CanvasHolderCtrl.prototype.addCanvas = function () {
+            selfMethods.addCanvas('google');
+        }
         function init() {
             console.log('CanvasHolderCtrl init');
-            var locApp = angular.module('mapModule');
+            if (! isInstantiated) {
+                var locApp = angular.module('mapModule');
 
-            locApp.controller('CanvasHolderCtrl',  ['$scope', '$rootScope', '$uibModal', 'LinkrService', 'MapInstanceService', 'CanvasService', CanvasHolderCtrl]);
-            // angular.bootstrap(document.getElementById('year'), ['example']);
-
-            return CanvasHolderCtrl;
+                locApp.controller('CanvasHolderCtrl',  ['$scope', '$rootScope', '$uibModal', 'LinkrService', 'MapInstanceService', 'CanvasService', CanvasHolderCtrl]);
+                // angular.bootstrap(document.getElementById('year'), ['example']);
+                isInstantiated = true;
+            } else {
+                return {addCanvas : addCanvas};
+            }
+            return {addCanvas : addCanvas};
         }
 
         return {
-            start: init
+            start: init,
+            addCanvas: addCanvas
         };
     });
-    // return {
-    //     start: init
-    // };
 }());

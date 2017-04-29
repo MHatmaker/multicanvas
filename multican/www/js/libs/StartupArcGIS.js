@@ -17,15 +17,7 @@
         'libs/MLConfig',
         'libs/PusherConfig',
         'libs/utils',
-        // 'services/PusherEventHandlerService',
-        // 'services/CurrentMapTypeService',
-        // 'services/MapControllerService',
-        //'esri'
         'esri/map'
-        // 'esri/WebMap',
-        // 'esri/views/MapView',
-        // 'dojo/promise/all'
-        // 'dojo/domReady!'
     ], function (MapHosterArcGIS, PusherSetupCtrl, MLConfig, PusherConfig, utils, esrimap) { // WebMap, MapView, all) { // PusherSetupCtrl, MLConfig, utils, esri, WebMap, MapView, all) {
         console.log('StartupArcGIS define');
         var
@@ -364,9 +356,9 @@
                         mapTypeSvc = $inj.get('CurrentMapTypeService');
                         curmph = mapTypeSvc.getSelectedMapType();
 
-                        evtSvc = $inj.get('PusherEventHandlerService');
-                        evtSvc.addEvent('client-MapXtntEvent', curmph.retrievedBounds);
-                        evtSvc.addEvent('client-MapClickEvent', curmph.retrievedClick);
+                        // evtSvc = $inj.get('PusherEventHandlerService');
+                        // evtSvc.addEvent('client-MapXtntEvent', curmph.retrievedBounds);
+                        // evtSvc.addEvent('client-MapClickEvent', curmph.retrievedClick);
 
                         openNewDisplay = function (channel, userName) {
                             url = "?id=" + newSelectedWebMapId + curmph.getGlobalsForUrl() +
@@ -421,8 +413,8 @@
 
                             initializePostProc(newSelectedWebMapId);
 
-                            $inj = self.mlconfig.getInjector();
-                            evtSvc = $inj.get('PusherEventHandlerService');
+                            // $inj = self.mlconfig.getInjector();
+                            // evtSvc = $inj.get('PusherEventHandlerService');
                             CurrentMapTypeService = $inj.get('CurrentMapTypeService');
                             CurrentMapTypeService.setCurrentMapType('arcgis');
                             // evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);

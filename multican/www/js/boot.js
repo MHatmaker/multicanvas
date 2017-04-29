@@ -48,7 +48,6 @@ console.log("bootstrap outer wrapper");
             angular.element(document).ready(function () {
                 require([
                     'services/MapInstanceService',
-                    'services/PusherEventHandlerService',
                     'services/CurrentMapTypeService',
                     'services/MapControllerService',
                     'services/InjectorService',
@@ -56,6 +55,7 @@ console.log("bootstrap outer wrapper");
                     'services/SiteViewService',
                     'services/GoogleQueryService',
                     'services/CanvasService',
+                    'libs/PusherEventHandler',
                     'libs/StartupGoogle',
                     'libs/StartupArcGIS',
                     'libs/StartupLeaflet',

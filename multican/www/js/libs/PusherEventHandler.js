@@ -4,7 +4,7 @@
     define([
     ], function () {
 
-        console.log("ready to create PusherEventHandlerService");
+        console.log("ready to create PusherEventHandler");
         function PusherEventHandler() {
             this.eventDct = {
                 'client-MapXtntEvent' : null,
@@ -24,6 +24,6 @@
         PusherEventHandler.prototype.getEventDct = function (evt) {
             return this.eventDct[evt];
         };
+        return {PusherEventHandler: PusherEventHandler}
     });
-
 }());

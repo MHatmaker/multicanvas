@@ -49,7 +49,8 @@
                 mrkr,
                 CustomControl = null,
                 queryListenerLoaded = false,
-                mlconfig;
+                mlconfig,
+                pusherEvtHandler;
 
             function showLoading() {
                 utils.showLoading();
@@ -461,9 +462,7 @@
             }
 
             function getEventDictionary() {
-                var $inj = mlconfig.getInjector(),
-                    evtSvc = $inj.get('PusherEventHandlerService'),
-                    eventDct = evtSvc.getEventDct();
+                var eventDct = pusherEvtHandler.getEventDct();
                 return eventDct;
             }
 
@@ -474,17 +473,12 @@
             }
 
             function setPusherClient(pusher, channel) {
-                var $inj = mlconfig.getInjector(),
-                    evtSvc = $inj.get('PusherEventHandlerService'),
-                    evtDct = evtSvc.getEventDct(),
+                var evtDct = pusherEvtHandler.getEventDct(),
                     key;
                 selfPusherDetails.pusher = pusher;
                 selfPusherDetails.channel = channel;
                 mlconfig.setChannel(channel);
 
-                $inj = mlconfig.getInjector();
-                evtSvc = $inj.get('PusherEventHandlerService');
-                evtDct = evtSvc.getEventDct();
                 for (key in evtDct) {
                     if (evtDct.hasOwnProperty(key)) {
                         pusher.subscribe(key, evtDct[key]);

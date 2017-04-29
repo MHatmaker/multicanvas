@@ -11,9 +11,10 @@
         'controllers/PositionViewCtrl',
         'libs/utils',
         'libs/MLConfig',
+        'libs/PusherEventHandler',
         'controllers/PusherSetupCtrl',
         'controllers/LocateSelfCtrl'
-    ], function (PositionViewCtrl, utils, MLConfig, PusherSetupCtrl, LocateSelfCtrl) {
+    ], function (PositionViewCtrl, utils, MLConfig, PusherEventHandler, PusherSetupCtrl, LocateSelfCtrl) {
 
         var
             hostName = "MapHosterGoogle",
@@ -48,7 +49,8 @@
             },
             placesFromSearch = [],
             markers = [],
-            mlconfig;
+            mlconfig,
+            pusherEvtHandler;
 
         // MLConfig.showConfigDetails('MapHosterGoogle - startup');
         function updateGlobals(msg, cntrx, cntry, zm) {
@@ -323,6 +325,92 @@
             utils.hideLoading(error);
         }
 
+        function retrievedBoundsInternal(xj) {
+            console.log("Back in retrievedBounds");
+            var zm = xj.zoom,
+                tmpLon,
+                tmpLat,
+                tmpZm,
+                cntr,
+                gBnds,
+                qtext,
+                service,
+                cmp = compareExtents("retrievedBounds", {'zoom' : zm, 'lon' : xj.lon, 'lat' : xj.lat});
+                // view = xj.lon + ", " + xj.lat + " : " + zm + " " + scale2Level[zm].scale;
+                // document.getElementById("mppos").innerHTML = view;
+            if (cmp === false) {
+                tmpLon = cntrxG;
+                tmpLat = cntryG;
+                tmpZm = zmG;
+
+                updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
+                userZoom = false;
+                cntr = new google.maps.LatLng(xj.lat, xj.lon);
+                // userZoom = true;
+                if (xj.action === 'pan') {
+                    if (tmpZm !== zm) {
+                        mphmap.setZoom(zm);
+                    }
+                    mphmap.setCenter(cntr);
+
+                    gBnds = mphmap.getBounds();
+                    console.debug(gBnds);
+                    // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
+                    // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
+                    // gBnds = new google.maps.LatLngBounds(ll, ur);
+                    qtext = mlconfig.query();
+                    if (qtext && qtext !== "") {
+                        queryPlaces.bounds = gBnds;
+                        queryPlaces.query = qtext;
+                        queryPlaces.location = mphmap.getCenter();
+                        service = new google.maps.places.PlacesService(mphmap);
+                        service.textSearch(queryPlaces, placesQueryCallback);
+                    }
+                } else {
+                    if (tmpLon !== xj.lon || tmpLat !== xj.lat) {
+                        mphmap.setCenter(cntr);
+                    }
+                    mphmap.setZoom(zm);
+                }
+                userZoom = true;
+            }
+        }
+
+        function retrievedClick(clickPt) {
+            var fixedLL = utils.toFixed(clickPt.x, clickPt.y, 6),
+                content,
+                popPt,
+                btnShare;
+            console.log("Back in retrievedClick - with click at " +  clickPt.x + ", " + clickPt.y);
+            // latlng = L.latLng(clickPt.y, clickPt.x, clickPt.y);
+            // $inj = mlconfig.getInjector();
+            // linkrSvc = $inj.get('LinkrService');
+            // linkrSvc.hideLinkr();
+
+            popPt = new google.maps.LatLng(clickPt.y, clickPt.x);
+            content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
+            if (clickPt.title) {
+                content += '<br>' + clickPt.title;
+            }
+            if (clickPt.address) {
+                content += '<br>' + clickPt.address;
+            }
+            if (popDetails !== null && clickPt.referrerId !== mlconfig.getUserId()) {
+                popDetails.infoWnd.close();
+                popDetails.infoMarker.setMap(null);
+            }
+            if (clickPt.referrerId !== mlconfig.getUserId()) {
+                popDetails = markerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
+                popDetails.infoWnd.open(mphmap, popDetails.infoMarker);
+
+                btnShare = document.getElementsByClassName('sharebutton')[0];
+                if (btnShare) {
+                    console.debug(btnShare);
+                    btnShare.style.visibility = 'hidden';
+                }
+            }
+        }
+
         function configureMap(gMap, mapNumber, mapOptions, goooogle, googPlaces, config) {
             mlconfig = config;
             mphmap = gMap;
@@ -586,6 +674,7 @@
             }
 
 
+
             function onMapClick(e) {
                 var popPt = e.latLng,
                     fixedLL = utils.toFixed(popPt.lng(), popPt.lat(), 6),
@@ -615,6 +704,10 @@
                 onMapClick(event);
             });
 
+            pusherEvtHandler = new PusherEventHandler.PusherEventHandler();
+
+            pusherEvtHandler.addEvent('client-MapXtntEvent', retrievedBoundsInternal);
+            pusherEvtHandler.addEvent('client-MapClickEvent',  retrievedClick);
             /*
             function createBounds() {
                 var createdBounds = new google.maps.LatLngBounds(),
@@ -640,41 +733,6 @@
         }
         */
 
-        function retrievedClick(clickPt) {
-            var fixedLL = utils.toFixed(clickPt.x, clickPt.y, 6),
-                content,
-                popPt,
-                btnShare;
-            console.log("Back in retrievedClick - with click at " +  clickPt.x + ", " + clickPt.y);
-            // latlng = L.latLng(clickPt.y, clickPt.x, clickPt.y);
-            // $inj = mlconfig.getInjector();
-            // linkrSvc = $inj.get('LinkrService');
-            // linkrSvc.hideLinkr();
-
-            popPt = new google.maps.LatLng(clickPt.y, clickPt.x);
-            content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
-            if (clickPt.title) {
-                content += '<br>' + clickPt.title;
-            }
-            if (clickPt.address) {
-                content += '<br>' + clickPt.address;
-            }
-            if (popDetails !== null && clickPt.referrerId !== mlconfig.getUserId()) {
-                popDetails.infoWnd.close();
-                popDetails.infoMarker.setMap(null);
-            }
-            if (clickPt.referrerId !== mlconfig.getUserId()) {
-                popDetails = markerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
-                popDetails.infoWnd.open(mphmap, popDetails.infoMarker);
-
-                btnShare = document.getElementsByClassName('sharebutton')[0];
-                if (btnShare) {
-                    console.debug(btnShare);
-                    btnShare.style.visibility = 'hidden';
-                }
-            }
-        }
-
         function getMapHosterName() {
             return "hostName is " + hostName;
         }
@@ -684,62 +742,9 @@
         }
 
         function getEventDictionary() {
-            var $inj = mlconfig.getInjector(),
-                evtSvc = $inj.get('PusherEventHandlerService'),
-                eventDct = evtSvc.getEventDct();
+            var eventDct = pusherEvtHandler.getEventDct();
             return eventDct;
         }
-        function retrievedBoundsInternal(xj) {
-            console.log("Back in retrievedBounds");
-            var zm = xj.zoom,
-                tmpLon,
-                tmpLat,
-                tmpZm,
-                cntr,
-                gBnds,
-                qtext,
-                service,
-                cmp = compareExtents("retrievedBounds", {'zoom' : zm, 'lon' : xj.lon, 'lat' : xj.lat});
-                // view = xj.lon + ", " + xj.lat + " : " + zm + " " + scale2Level[zm].scale;
-                // document.getElementById("mppos").innerHTML = view;
-            if (cmp === false) {
-                tmpLon = cntrxG;
-                tmpLat = cntryG;
-                tmpZm = zmG;
-
-                updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
-                userZoom = false;
-                cntr = new google.maps.LatLng(xj.lat, xj.lon);
-                // userZoom = true;
-                if (xj.action === 'pan') {
-                    if (tmpZm !== zm) {
-                        mphmap.setZoom(zm);
-                    }
-                    mphmap.setCenter(cntr);
-
-                    gBnds = mphmap.getBounds();
-                    console.debug(gBnds);
-                    // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
-                    // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
-                    // gBnds = new google.maps.LatLngBounds(ll, ur);
-                    qtext = mlconfig.query();
-                    if (qtext && qtext !== "") {
-                        queryPlaces.bounds = gBnds;
-                        queryPlaces.query = qtext;
-                        queryPlaces.location = mphmap.getCenter();
-                        service = new google.maps.places.PlacesService(mphmap);
-                        service.textSearch(queryPlaces, placesQueryCallback);
-                    }
-                } else {
-                    if (tmpLon !== xj.lon || tmpLat !== xj.lat) {
-                        mphmap.setCenter(cntr);
-                    }
-                    mphmap.setZoom(zm);
-                }
-                userZoom = true;
-            }
-        }
-
 /*
         function getBoundsZoomLevel(bounds) {
             var GLOBE_HEIGHT = 256, // Height of a google map that displays the entire world when zoomed all the way out
@@ -804,9 +809,7 @@
         // MapHosterGoogle.prototype.setPusherClient = function (pusher, channel)
         function setPusherClient(pusher, channel) {
 
-            var $inj = mlconfig.getInjector(),
-                evtSvc = $inj.get('PusherEventHandlerService'),
-                evtDct = evtSvc.getEventDct(),
+            var evtDct = pusherEvtHandler.getEventDct(),
                 key;
             for (key in evtDct) {
                 if (evtDct.hasOwnProperty(key)) {

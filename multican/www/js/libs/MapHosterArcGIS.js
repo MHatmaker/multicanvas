@@ -35,7 +35,8 @@
                 channel : null,
                 pusher : null
             },
-            mlconfig = null;
+            mlconfig = null,
+            pusherEvtHandler;
 
         function getMap() {
             return mphmap;
@@ -158,16 +159,13 @@
             mlconfig.setUserName(name);
         }
         function getEventDictionary() {
-            var $inj = mlconfig.getInjector(),
-                evtSvc = $inj.get('PusherEventHandlerService'),
-                eventDct = evtSvc.getEventDct();
+            var eventDct = pusherEvtHandler.getEventDct();
             return eventDct;
         }
+
         function setPusherClient(pusher, channel) {
             console.log("MapHosterArcGIS setPusherClient, selfPusherDetails.pusher " +  selfPusherDetails.pusher);
-            var $inj = mlconfig.getInjector(),
-                evtSvc = $inj.get('PusherEventHandlerService'),
-                evtDct = evtSvc.getEventDct(),
+            var evtDct = pusherEvtHandler.getEventDct(),
                 key;
 
             if (selfPusherDetails.pusher === null) {
@@ -175,9 +173,6 @@
                 selfPusherDetails.channel = channel;
                 PusherConfig.getInstance().setChannel(channel);
 
-                $inj = mlconfig.getInjector();
-                evtSvc = $inj.get('PusherEventHandlerService');
-                evtDct = evtSvc.getEventDct();
                 for (key in evtDct) {
                     if (evtDct.hasOwnProperty(key)) {
                         pusher.subscribe(key, evtDct[key]);

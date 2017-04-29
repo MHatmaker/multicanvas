@@ -77,9 +77,9 @@
                         self.mapHoster.config(self.gMap, self.mapNumber, mapOptions, google, google.maps.places, self.mlconfig);
 
                         $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
-                        evtSvc = $inj.get('PusherEventHandlerService');
-                        evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
-                        evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
+                        // evtSvc = $inj.get('PusherEventHandlerService');
+                        // evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
+                        // evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
                         mapInstanceSvc = $inj.get('MapInstanceService');
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
 

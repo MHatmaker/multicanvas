@@ -89,7 +89,7 @@
         }
 
         function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
-                    CurrentMapTypeSvc, PusherEventHandlerService, GoogleQueryService, SiteViewServiceArg) {
+                    CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg) {
 
             $scope = scope;
             $compile = compileArg;
@@ -126,7 +126,7 @@
                 whichCanvas = $scope.currentMapSystem.maptype === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
             });
 
-            $scope.PusherEventHandlerService = PusherEventHandlerService;
+            // $scope.PusherEventHandlerService = PusherEventHandlerService;
             $scope.GoogleQueryService = GoogleQueryService;
             $scope.mapheight = 450;
             $scope.mapwidth = 380;
@@ -214,7 +214,7 @@
 
                 onAcceptDestination = function (info) {
                     var sourceMapType,
-                        evtSvc = $scope.PusherEventHandlerService,
+                        evtSvc = $scope.mapHosterInstance,
                         newSelectedWebMapId,
                         destWnd;
 
@@ -511,9 +511,9 @@
                 }
             }
 
-        selfMethods.configureCurrentMapType = configureCurrentMapType;
+            selfMethods.configureCurrentMapType = configureCurrentMapType;
 
-        };
+        }
 
         function initialize(mapNo, mapType, setupMapHoster) {
             var
@@ -654,7 +654,7 @@
 
 
         function MapCtrlMobile($scopeArg, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack,
-                    LinkrSvc, MapInstanceService, CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
+                    LinkrSvc, MapInstanceService, CurrentMapTypeService, GoogleQueryService, SiteViewService) {
             var watchOptions,
                 watch;
             console.log("In mobile MapCtrl controller fire away");
@@ -735,7 +735,7 @@
                     $ionicLoading.hide();
                     console.log("fell thru navigator.geolocation.getCurrentPosition");
                     initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
-                        CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService);
+                        CurrentMapTypeService, GoogleQueryService, SiteViewService);
                 });
 
                 watchOptions = {
@@ -786,8 +786,8 @@
             // }, 5000);
         }
 
-        function MapCtrlBrowser($scopeArg, $routeParams, $compile, $uibModal, $uibModalStack,MapInstanceService,  LinkrSvc,
-                    CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService) {
+        function MapCtrlBrowser($scopeArg, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
+                    CurrentMapTypeService, GoogleQueryService, SiteViewService) {
             console.log("in MapCtrlBrowser");
             $scope = $scopeArg;
             var firstMap = null;
@@ -796,10 +796,10 @@
                 console.log("MapCtrl.initialize NOT MOBILE");
                 var mapConfig,
                     mapOptions = {
-                    center: new google.maps.LatLng(37.422858, -122.085065),
-                    zoom: 15,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                };
+                        center: new google.maps.LatLng(37.422858, -122.085065),
+                        zoom: 15,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
 
                 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
                     infoWindow.setPosition(pos);
@@ -836,7 +836,7 @@
             // selfMethods.initialize = initialize;
             initialize();
             initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
-                        CurrentMapTypeService, PusherEventHandlerService, GoogleQueryService, SiteViewService);
+                        CurrentMapTypeService, GoogleQueryService, SiteViewService);
             // google.maps.event.addDomListener(document.getElementById('mapdiv'), 'load', function () {
             //     console.log("addDomListener window load callback");
             //     initialize();
@@ -874,12 +874,12 @@
             if (isMob) {
                 MapCtrl = App.controller('MapCtrl', ['$scope', '$cordovaGeolocation',
                     '$ionicLoading', '$ionicPlatform', '$routeParams', '$compile', '$uibModal', '$uibModalStack',
-                    'MapInstanceService', 'LinkrService', 'CurrentMapTypeService', 'PusherEventHandlerService',
+                    'MapInstanceService', 'LinkrService', 'CurrentMapTypeService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlMobile]);
             } else {
                 MapCtrl = App.controller('MapCtrl', ['$scope',
                     '$routeParams', '$compile', '$uibModal', '$uibModalStack', 'MapInstanceService',
-                    'LinkrService', 'CurrentMapTypeService', 'PusherEventHandlerService',
+                    'LinkrService', 'CurrentMapTypeService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlBrowser]);
 
                 console.log("ready to create MapCtrl");

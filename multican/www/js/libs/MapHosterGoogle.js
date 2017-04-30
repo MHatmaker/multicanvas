@@ -19,6 +19,7 @@
         var
             hostName = "MapHosterGoogle",
             mphmap,
+            mapNumber,
             google,
             mapReady = true,
             scale2Level = [],
@@ -286,6 +287,7 @@
         }
 
         function setBounds(action) {
+            console.log("MapHosterGoogle setBounds with  " + pusherEvtHandler.getMapNumber());
             if (mapReady === true) {
                 // runs this code after you finishing the zoom
                 var xtExt = extractBounds(action),
@@ -295,9 +297,9 @@
                     qtext,
                     gBnds;
                 console.log("extracted bounds " + xtntJsonStr);
-                cmp = compareExtents("setBounds", xtExt);
+                cmp = compareExtents("MapHosterGoogle " + mlconfig.getMapNumber() + " setBounds", xtExt);
                 if (cmp === false) {
-                    console.log("MapHoster setBounds pusher send to channel " + selfPusherDetails.channel);
+                    console.log("MapHoster Google setBounds " + mlconfig.getMapNumber() + " pusher send to channel " + selfPusherDetails.channel);
                     if (selfPusherDetails.pusher) {
                         selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapXtntEvent', xtExt);
                     }
@@ -326,7 +328,7 @@
         }
 
         function retrievedBoundsInternal(xj) {
-            console.log("Back in retrievedBounds");
+            console.log("Back in MapHosterGoogle " + mlconfig.getMapNumber() + " retrievedBounds");
             var zm = xj.zoom,
                 tmpLon,
                 tmpLat,
@@ -411,10 +413,12 @@
             }
         }
 
-        function configureMap(gMap, mapNumber, mapOptions, goooogle, googPlaces, config) {
+        function configureMap(gMap, mapNo, mapOptions, goooogle, googPlaces, config) {
+            console.log("MapHosterGoogle configureMap");
             mlconfig = config;
             mphmap = gMap;
             google = goooogle;
+            mapNumber = mapNo;
             geoCoder = new google.maps.Geocoder();
             var
                 firstCntr,
@@ -432,9 +436,9 @@
                 updateGlobals("init with qlon, qlat", qlon, qlat, qzoom);
             } else {
                 if (mapOptions) {
-                    updateGlobals("init with passed in mapOptions", mapOptions.center.lng(), mapOptions.center.lat(), mapOptions.zoom);
+                    updateGlobals("MapHosterGoogle init with passed in mapOptions", mapOptions.center.lng(), mapOptions.center.lat(), mapOptions.zoom);
                 } else {
-                    updateGlobals("init with hard-coded values", -87.623294, 41.888996,  13);
+                    updateGlobals("MapHosterGoogle init with hard-coded values", -87.623294, 41.888996,  13);
                 }
             }
             firstCntr = new google.maps.LatLng(cntryG, cntrxG);
@@ -443,7 +447,7 @@
             LocateSelfCtrl.setMap(goooogle, mphmap);
 
             // updateGlobals("init", -0.09, 51.50, 13, 0.0);
-            showGlobals("Prior to new Map");
+            showGlobals("MapHosterGoogle - Prior to new Map");
             // google.maps.event.addListener(mphmap, 'end', gotDragEnd);
 
             // Maybe it will work at this point!!!
@@ -704,7 +708,8 @@
                 onMapClick(event);
             });
 
-            pusherEvtHandler = new PusherEventHandler.PusherEventHandler();
+            pusherEvtHandler = new PusherEventHandler.PusherEventHandler(mlconfig.getMapNumber());
+            console.log("Add pusher event handler for MapHosterGoogle " + mlconfig.getMapNumber());
 
             pusherEvtHandler.addEvent('client-MapXtntEvent', retrievedBoundsInternal);
             pusherEvtHandler.addEvent('client-MapClickEvent',  retrievedClick);
@@ -809,6 +814,7 @@
         // MapHosterGoogle.prototype.setPusherClient = function (pusher, channel)
         function setPusherClient(pusher, channel) {
 
+            console.log("Ready to subscribe MapHosterGoogle " + mlconfig.getMapNumber());
             var evtDct = pusherEvtHandler.getEventDct(),
                 key;
             for (key in evtDct) {

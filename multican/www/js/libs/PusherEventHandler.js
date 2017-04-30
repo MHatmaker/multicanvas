@@ -5,12 +5,13 @@
     ], function () {
 
         console.log("ready to create PusherEventHandler");
-        function PusherEventHandler() {
+        function PusherEventHandler(mapNo) {
             this.eventDct = {
                 'client-MapXtntEvent' : null,
                 'client-MapClickEvent' : null,
                 'client-NewMapPosition' : null
             };
+            this.mapNumber = mapNo;
         }
 
         PusherEventHandler.prototype.getEventDct = function () {
@@ -21,8 +22,12 @@
             this.eventDct[evt] = handler;
         };
 
-        PusherEventHandler.prototype.getEventDct = function (evt) {
-            return this.eventDct[evt];
+        PusherEventHandler.prototype.getEventDct = function () {
+            return this.eventDct;
+        };
+
+        PusherEventHandler.prototype.getMapNumber = function () {
+            return this.mapNumber;
         };
         return {PusherEventHandler: PusherEventHandler}
     });

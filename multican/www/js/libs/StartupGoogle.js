@@ -92,8 +92,7 @@
                                 'client-NewMapPosition' : self.mapHoster.retrievedNewPosition
                             },
                             self.pusherChannel,
-                            self.mlconfig.getUserName(),
-                            self.mlconfig.getMapNumber(),
+                            self.mlconfig,
                             function (channel, userName) {
                                 self.mlconfig.setUserName(userName);
                             }

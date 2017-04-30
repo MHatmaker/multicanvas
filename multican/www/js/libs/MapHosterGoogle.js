@@ -907,6 +907,10 @@
             console.log("empty removeEventListeners block in MapHosterGoogle");
         }
 
+        function getPusherEventHandler () {
+            return pusherEvtHandler;
+        }
+
         function init() {
             return {
                 start: init,
@@ -918,6 +922,7 @@
                 getGlobalsForUrl: getGlobalsForUrl,
                 getCenter : getCenter,
                 getEventDictionary : getEventDictionary,
+                getPusherEventHandler: getPusherEventHandler,
                 publishPosition : publishPosition,
                 removeEventListeners : removeEventListeners,
                 getMapHosterName : getMapHosterName,
@@ -941,6 +946,7 @@
             getGlobalsForUrl: getGlobalsForUrl,
             getCenter : getCenter,
             getEventDictionary : getEventDictionary,
+            getPusherEventHandler: getPusherEventHandler,
             publishPosition : publishPosition,
             removeEventListeners : removeEventListeners,
             getMapHosterName : getMapHosterName,

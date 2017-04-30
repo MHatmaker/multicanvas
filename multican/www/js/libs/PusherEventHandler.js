@@ -29,6 +29,11 @@
         PusherEventHandler.prototype.getMapNumber = function () {
             return this.mapNumber;
         };
-        return {PusherEventHandler: PusherEventHandler}
+
+        PusherEventHandler.prototype.getHandler = function (evt) {
+            return this.eventDct[evt];
+        };
+
+        return {PusherEventHandler: PusherEventHandler};
     });
 }());

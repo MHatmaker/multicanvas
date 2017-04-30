@@ -532,6 +532,10 @@
             return pos;
         }
 
+        function getPusherEventHandler () {
+            return pusherEvtHandler;
+        }
+
         function init() {
             console.log('MapHosterArcGIS init');
             return {
@@ -546,6 +550,7 @@
                 retrievedNewPosition: retrievedNewPosition,
                 setUserName: setUserName,
                 getEventDictionary: getEventDictionary,
+                getPusherEventHandler: getPusherEventHandler,
                 getGlobalsForUrl: getGlobalsForUrl,
                 getGlobalPositionComponents: getGlobalPositionComponents,
                 getCenter: getCenter
@@ -568,6 +573,7 @@
             retrievedNewPosition: retrievedNewPosition,
             setUserName: setUserName,
             getEventDictionary: getEventDictionary,
+            getPusherEventHandler: getPusherEventHandler,
             getGlobalsForUrl: getGlobalsForUrl,
             getGlobalPositionComponents: getGlobalPositionComponents,
             getCenter: getCenter

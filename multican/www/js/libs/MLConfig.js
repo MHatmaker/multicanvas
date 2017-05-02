@@ -3,7 +3,6 @@
 define(function () {
     "use strict";
     console.log("entering MLConfig");
-    var instance;
 
     function init(ndx) {
         console.log("MLConfig ctor");
@@ -18,7 +17,6 @@ define(function () {
         }
 
         var
-            self = this,
             details = {
                 mapId : ndx,
                 mapHosterInstance : null,
@@ -31,7 +29,7 @@ define(function () {
                 nameChannelAccepted : false,
                 userName: 'defaultuser',
                 search: '/',
-                startupView : {'summaryShowing' : true, 'websiteDisplayMode' : true},
+                startupView : {'summaryShowing' : true, 'websiteDisplayMode' : true}
             },
 
             setMapId = function (id) {
@@ -42,19 +40,19 @@ define(function () {
             getMapId = function () {
                 return details.mapId;
             },
-            setMapNumber = function(mapNo) {
+            setMapNumber = function (mapNo) {
                 details.mapNumber = mapNo;
             },
-            getMapNumber = function() {
+            getMapNumber = function () {
                 return details.mapNumber;
             },
             masherChannel = function (newWindow) {
                 // alert(getParameterByName('channel'));
                 // alert(details.masherChannel);
-                return newWindow ? getParameterByName('channel', self.details) : self.details.masherChannel;
+                return newWindow ? getParameterByName('channel', details) : details.masherChannel;
             },
             getChannelFromUrl = function () {
-                details.masherChannel = getParameterByName('channel', self.details);
+                details.masherChannel = getParameterByName('channel', details);
                 details.masherChannelInitialized = true;
                 return details.masherChannel;
             },
@@ -98,7 +96,7 @@ define(function () {
                 return details.userName;
             },
             getUserNameFromUrl = function () {
-                details.userName = getParameterByName('userName', self.details);
+                details.userName = getParameterByName('userName', details);
                 return details.userName;
             },
             setUserName = function (name) {
@@ -110,7 +108,7 @@ define(function () {
             setUserId = function (id) {
                 details.userId = id;
             },
-            testUrlArgs = function (args) {
+            testUrlArgs = function () {
                 var rslt = getParameterByName('id', details);
                 // alert("getParameterByName('id') = " + rslt);
                 // alert(rslt.length);
@@ -122,11 +120,6 @@ define(function () {
                 return rslt.length !== 0;
             },
 
-            masherChannel = function (newWindow) {
-                // alert(getParameterByName('channel'));
-                // alert(details.masherChannel);
-                return newWindow ? getParameterByName('channel') : details.masherChannel;
-            },
             setPosition = function (position) {
                 details.lon = position.lon;
                 details.lat = position.lat;
@@ -180,7 +173,7 @@ define(function () {
                         "lat : " + details.lat + "\n" +
                         "zoom : " + details.zoom +
                         "startupView.summaryShowing : " + details.startupView.summaryShowing + ", startupView.websiteDisplayMode : " + details.startupView.websiteDisplayMode
-                )
+                );
             };
 
 
@@ -188,6 +181,8 @@ define(function () {
         return {
             setMapId: setMapId,
             getMapId: getMapId,
+            getUserId: getUserId,
+            setUserId: setUserId,
             setMapNumber: setMapNumber,
             getMapNumber: getMapNumber,
             setMapHosterInstance: setMapHosterInstance,
@@ -214,8 +209,7 @@ define(function () {
             getStartupView: getStartupView,
             setStartupView: setStartupView,
             query: query,
-            getQueryFromUrl: getQueryFromUrl,
-            masherChannel: masherChannel
+            getQueryFromUrl: getQueryFromUrl
         };
     }
 

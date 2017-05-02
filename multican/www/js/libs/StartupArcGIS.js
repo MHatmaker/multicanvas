@@ -110,6 +110,7 @@
                             // placeCustomControls();
                             self.mapHoster = new MapHosterArcGIS.start();
                             self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
+                            self.mlconfig.setMapHosterInstance = self.mapHoster;
                             placeCustomControls();
                             setupQueryListener();
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
@@ -127,14 +128,8 @@
                             pusherChannel = self.mlconfig.masherChannel(false);
 
                             pusher = PusherSetupCtrl.createPusherClient(
-                                {
-                                    'client-MapXtntEvent' : self.mapHoster.retrievedBounds,
-                                    'client-MapClickEvent' : self.mapHoster.retrievedClick,
-                                    'client-NewMapPosition' : self.mapHoster.retrievedNewPosition
-                                },
                                 pusherChannel,
-                                self.mlconfig.getUserName(),
-                                self.mlconfig.getMapId(),
+                                self.mlconfig,
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
                                     console.log("It was a side effect of the createPusherClient:PusherClient process");
@@ -150,16 +145,11 @@
                             // mapTypeSvc = $inj.get('CurrentMapTypeService');
                             // curmph = mapTypeSvc.getSelectedMapType();
                             // console.log('selected map type is ' + curmph);
+                            self.mlconfig.setMapHosterInstance = self.mapHoster;
                             pusherChannel = self.mlconfig.masherChannel(false);
                             pusher = PusherSetupCtrl.createPusherClient(
-                                {
-                                    'client-MapXtntEvent' : self.mapHoster.retrievedBounds,
-                                    'client-MapClickEvent' : self.mapHoster.retrievedClick,
-                                    'client-NewMapPosition' : self.mapHoster.retrievedNewPosition
-                                },
                                 pusherChannel,
-                                self.mlconfig.getUserName(),
-                                self.mlconfig.getMapId(),
+                                self.mlconfig,
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
                                     console.log("It was a side effect of the createPusherClient:PusherClient process");

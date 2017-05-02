@@ -44,7 +44,8 @@ define([
                 return configInstances["cfg" + ndx].currentSlideNumber;
             };
             this.setMapHosterInstance = function (ndx, inst) {
-                configInstances["cfg" + ndx].setMapHosterInstance(inst);
+                var cfgndx = "cfg" + ndx;
+                configInstances[cfgndx].setMapHosterInstance(inst);
             };
             this.getMapHosterInstance = function (ndx) {
                 return configInstances["cfg" + ndx].getMapHosterInstance();

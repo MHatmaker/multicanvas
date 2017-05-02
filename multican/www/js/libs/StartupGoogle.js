@@ -75,6 +75,7 @@
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
                         self.mapHoster = new MapHosterGoogle.start();
                         self.mapHoster.config(self.gMap, self.mapNumber, mapOptions, google, google.maps.places, self.mlconfig);
+                        self.mlconfig.setMapHosterInstance(self.mapHoster);
 
                         $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
                         // evtSvc = $inj.get('PusherEventHandlerService');
@@ -86,16 +87,12 @@
                         self.pusherChannel = self.mlconfig.masherChannel(false);
                         console.debug(self.pusherChannel);
                         self.pusher = PusherSetupCtrl.createPusherClient(
-                            {
-                                'client-MapXtntEvent' : self.mapHoster.retrievedBounds,
-                                'client-MapClickEvent' : self.mapHoster.retrievedClick,
-                                'client-NewMapPosition' : self.mapHoster.retrievedNewPosition
-                            },
                             self.pusherChannel,
                             self.mlconfig,
                             function (channel, userName) {
                                 self.mlconfig.setUserName(userName);
-                            }
+                            },
+                            null
                         );
                         if (!self.pusher) {
                             console.log("failed to create Pusher in StartupGoogle");

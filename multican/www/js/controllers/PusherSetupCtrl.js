@@ -25,6 +25,7 @@
             'userName' : '',
             'isInstantiated' : false,
             'serverUrl' : 'http://linkr622-arcadian.rhcloud.com/',
+            'clients' : {},
             displayPusherDialog : null
         },
             selfMethods = {},
@@ -86,7 +87,7 @@
                 // pusher = new Pusher(APP_KEY);
                 pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://c41c2d6f.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://6fc4e721.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,
@@ -364,11 +365,11 @@
         // function setupPusherClient(eventDct, userName, cbfn, nfo) {
         //     return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
         // }
-        function createPusherClient (pusherChannel, mlconfig, cbfn, nfo) {
+        function createPusherClient(pusherChannel, mlconfig, cbfn, nfo) {
             return selfMethods.createPusherClient(pusherChannel, mlconfig, cbfn, nfo);
         }
-        function setPusherClient (eventDct, userName, cbfn, nfo) {
-            return selfMethods.setPusherClient()
+        function setupPusherClient(eventDct, userName, cbfn, nfo) {
+            return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
         }
 
         function init() {
@@ -390,7 +391,8 @@
             return PusherSetupCtrl;
         }
 
-        return { start: init, setupPusherClient : setupPusherClient,
+        return { start: init,
+                  setupPusherClient : setupPusherClient,
                   createPusherClient : createPusherClient,
                   isInitialized : isInitialized,
                   isInstantiated : isInstantiated};

@@ -91,7 +91,6 @@
                             // $inj,
                             // mapTypeSvc,
                             currentPusher,
-                            pusherChannel,
                             currentChannel;
 
                         /* Scalebar refuses to appear on map.  It appears outside the map on a bordering control.
@@ -337,7 +336,6 @@
                         var curmph = MapHosterArcGIS,
                             $inj,
                             mapTypeSvc,
-                            evtSvc,
                             url,
                             baseUrl,
                             openNewDisplay;
@@ -375,7 +373,7 @@
                         };
 
                         if (PusherConfig.isNameChannelAccepted() === false) {
-                            PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
+                            PusherSetupCtrl.setupPusherClient(self.mlconfig.getMapHosterInstance().getPusherEventHandler(),
                                 self.mlconfig.getUserName(), openNewDisplay,
                                     {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId});
                         } else {
@@ -384,10 +382,8 @@
                     },
 
                     initialize = function (newSelectedWebMapId, destDetails, selectedMapTitle, referringMph) {
-                        var curmph = MapHosterArcGIS,
-                            displayDestination = destDetails.dstSel,
+                        var displayDestination = destDetails.dstSel,
                             $inj,
-                            evtSvc,
                             CurrentMapTypeService;
                         /*
                         This branch should only be encountered after a DestinationSelectorEvent in the AGO group/map search process.
@@ -403,7 +399,7 @@
 
                             initializePostProc(newSelectedWebMapId);
 
-                            // $inj = self.mlconfig.getInjector();
+                            $inj = self.mlconfig.getInjector();
                             // evtSvc = $inj.get('PusherEventHandlerService');
                             CurrentMapTypeService = $inj.get('CurrentMapTypeService');
                             CurrentMapTypeService.setCurrentMapType('arcgis');

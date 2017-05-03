@@ -127,6 +127,7 @@
                 }),
 
                 showSomething = function () {
+                    var triggered;
                     if (selfPusherDetails.pusher) {
                         var fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6),
                             referrerId = mlconfig.getUserId(),
@@ -135,7 +136,9 @@
                                 "referrerId" : referrerId, "referrerName" : referrerName,
                                 'address' : marker.address, 'title' : marker.title };
                         console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                        selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
+                        triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
+                        console.log("triggered?");
+                        console.log(triggered);
                     }
                 };
 
@@ -815,13 +818,13 @@
         function setPusherClient(pusher, channel) {
 
             console.log("Ready to subscribe MapHosterGoogle " + mlconfig.getMapNumber());
-            var evtDct = pusherEvtHandler.getEventDct(),
-                key;
-            for (key in evtDct) {
-                if (evtDct.hasOwnProperty(key)) {
-                    pusher.subscribe(key, evtDct[key]);
-                }
-            }
+            // var evtDct = pusherEvtHandler.getEventDct(),
+            //     key;
+            // for (key in evtDct) {
+            //     if (evtDct.hasOwnProperty(key)) {
+            //         pusher.subscribe(key, evtDct[key]);
+            //     }
+            // }
             selfPusherDetails.pusher = pusher;
             selfPusherDetails.channel = channel;
             mlconfig.setChannel(channel);

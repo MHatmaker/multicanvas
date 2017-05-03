@@ -42,6 +42,8 @@
             selfdict.pusher = null;
             selfdict.isInitialized = areWeInitialized = false;
             selfdict.clients = {};
+            selfdict.eventHandlers = {};
+            var handler;
 
 
             $scope.showDialog = selfdict.scope.showDialog = false;
@@ -80,7 +82,7 @@
                 // pusher = new Pusher(APP_KEY);
                 selfdict.pusher = pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://d7913f25.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://ce90856b.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,
@@ -97,6 +99,7 @@
                         console.log("Oh-Noooo!, my Pusher connection failed");
                     }
                 });
+                console.log("Pusher subscribe to channel " + selfdict.CHANNEL);
                 channelBind = pusher.subscribe(selfdict.CHANNEL);
 
                 /*
@@ -124,9 +127,17 @@
                 });
 
                 console.log("BIND to client-MapXtntEvent");
+
                 channelBind.bind('client-MapXtntEvent', function (frame) {
                     console.log('frame is', frame);
-                    eventDct['client-MapXtntEvent'](frame);
+                    var handler,
+                        obj;
+                    for (handler in selfdict.eventHandlers) {
+                        if (selfdict.eventHandlers.hasOwnProperty(handler)) {
+                            obj = selfdict.eventHandlers[handler];
+                            obj.eventDct['client-MapXtntEvent'](frame);
+                        }
+                    }
                     console.log("back from boundsRetriever");
                 });
 
@@ -145,10 +156,9 @@
                 });
             }
 
-            function PusherClient(evtDct, channel, uname, mph, cbfn) {
+            function PusherClient(evtDct, channel, clientName, mph, cbfn) {
                 var mapHoster = mph,
-                    callbackfunction = cbfn,
-                    userName = uname;
+                    callbackfunction = cbfn;
 
                 // allMapTypes = serv.getMapTypes();
                 // mptLength = allMapTypes.length;
@@ -164,6 +174,7 @@
                 //         maptypeobj.setUserName(selfdict.userName);
                 //     }
                 // }
+                selfdict.eventHandlers[clientName] = mph.getPusherEventHandler();
 
                 mapHoster.setPusherClient(selfdict.pusher, channel);
                 //maptypeobj.setUserName(selfdict.userName);
@@ -177,10 +188,10 @@
 
 
                 if (selfdict.info) {
-                    callbackfunction(channel, userName,
+                    callbackfunction(channel, clientName,
                         selfdict.info.destination, selfdict.info.currentMapHolder, selfdict.info.newWindowId, selfdict.info.query);
                 } else {
-                    callbackfunction(channel, userName, null);
+                    callbackfunction(channel, clientName, null);
                 }
             }
 
@@ -314,7 +325,7 @@
                 }
                 selfdict.callbackFunction = cbfn;
                 selfdict.info = nfo;
-                selfdict.clients[clientName] = new PusherClient(angular.copy(selfdict.eventDct), selfdict.CHANNEL, mlconfig.getUserName(), mlconfig.getMapHosterInstance(), cbfn);
+                selfdict.clients[clientName] = new PusherClient(angular.copy(selfdict.eventDct), selfdict.CHANNEL, clientName, mlconfig.getMapHosterInstance(), cbfn);
                 return selfdict.clients[clientName];
             };
             selfMethods.createPusherClient = createPusherClient;

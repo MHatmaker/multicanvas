@@ -19,7 +19,6 @@
         var
             hostName = "MapHosterGoogle",
             mphmap,
-            mapNumber,
             google,
             mapReady = true,
             scale2Level = [],
@@ -38,7 +37,7 @@
             searchFiredFromUrl = false,
 
             selfPusherDetails = {
-                channel : null,
+                channelName : null,
                 pusher : null
             },
             popDetails = null,
@@ -127,16 +126,20 @@
                 }),
 
                 showSomething = function () {
-                    var triggered;
+                    var triggered,
+                        fixedLL,
+                        referrerId,
+                        referrerName,
+                        pushLL;
                     if (selfPusherDetails.pusher) {
-                        var fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6),
-                            referrerId = mlconfig.getUserId(),
-                            referrerName = mlconfig.getUserName(),
-                            pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
-                                "referrerId" : referrerId, "referrerName" : referrerName,
-                                'address' : marker.address, 'title' : marker.title };
+                        fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6);
+                        referrerId = mlconfig.getUserId();
+                        referrerName = mlconfig.getUserName();
+                        pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
+                            "referrerId" : referrerId, "referrerName" : referrerName,
+                            'address' : marker.address, 'title' : marker.title };
                         console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                        triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
+                        triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
                         console.log("triggered?");
                         console.log(triggered);
                     }
@@ -298,13 +301,16 @@
                     cmp,
                     service,
                     qtext,
-                    gBnds;
+                    gBnds,
+                    triggered;
                 console.log("extracted bounds " + xtntJsonStr);
                 cmp = compareExtents("MapHosterGoogle " + mlconfig.getMapNumber() + " setBounds", xtExt);
                 if (cmp === false) {
-                    console.log("MapHoster Google setBounds " + mlconfig.getMapNumber() + " pusher send to channel " + selfPusherDetails.channel);
+                    console.log("MapHoster Google setBounds " + mlconfig.getMapNumber() + " pusher send to channel " + selfPusherDetails.channelName);
                     if (selfPusherDetails.pusher) {
-                        selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapXtntEvent', xtExt);
+                        triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
+                        console.log("triggered?");
+                        console.log(triggered);
                     }
                     updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
 
@@ -421,7 +427,6 @@
             mlconfig = config;
             mphmap = gMap;
             google = goooogle;
-            mapNumber = mapNo;
             geoCoder = new google.maps.Geocoder();
             var
                 firstCntr,
@@ -676,7 +681,7 @@
                     // var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                         // "referrerId" : referrerId, "referrerName" : referrerName };
                     // console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                    // selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
+                    // selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
                 // }
             }
 
@@ -826,7 +831,7 @@
             //     }
             // }
             selfPusherDetails.pusher = pusher;
-            selfPusherDetails.channel = channel;
+            selfPusherDetails.channelName = channel;
             mlconfig.setChannel(channel);
             console.log("reset MapHosterGoogle setPusherClient, selfPusherDetails.pusher " +  selfPusherDetails.pusher);
         }
@@ -875,7 +880,7 @@
                 console.log('After adding gmQuery');
                 console.debug(pos.search);
 
-                selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-NewMapPosition', pos);
+                selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-NewMapPosition', pos);
             }
 
         }
@@ -910,7 +915,7 @@
             console.log("empty removeEventListeners block in MapHosterGoogle");
         }
 
-        function getPusherEventHandler () {
+        function getPusherEventHandler() {
             return pusherEvtHandler;
         }
 

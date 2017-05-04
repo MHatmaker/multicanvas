@@ -55,6 +55,9 @@ define(function () {
                 // alert(details.masherChannel);
                 return newWindow ? getParameterByName('channel') : details.masherChannel;
             },
+            getPusherChannel : function () {
+                return details.masherChannel;
+            },
             setInjector : function (inj) {
                 details.nginj = inj;
             },
@@ -65,9 +68,9 @@ define(function () {
     }
     return {
         getInstance : function () {
-            // if (!instance) {
+            if (!instance) {
                 instance = init();
-            // }
+            }
             return instance;
         }
     };

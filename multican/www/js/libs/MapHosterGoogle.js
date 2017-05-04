@@ -312,6 +312,7 @@
                         console.log("triggered?");
                         console.log(triggered);
                     }
+                    PusherSetupCtrl.publishPanEvent(xtExt);
                     updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
 
                     gBnds = mphmap.getBounds();

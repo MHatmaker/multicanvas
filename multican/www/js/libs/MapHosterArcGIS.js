@@ -169,7 +169,7 @@
             var evtDct = pusherEvtHandler.getEventDct(),
                 key;
 
-            console.log("Ready to subscribe MapHosterGoogle " + mlconfig.getMapNumber());
+            console.log("Ready to subscribe MapHosterArcGIS " + mlconfig.getMapNumber());
             if (selfPusherDetails.pusher === null) {
                 selfPusherDetails.pusher = pusher;
                 selfPusherDetails.channel = channel;

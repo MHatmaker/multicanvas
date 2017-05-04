@@ -815,10 +815,11 @@
 
                         mapOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         /// mapConfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
-                        if (!mlconfig) {
-                            mlconfig = new MLConfig.MLConfig(outerMapNumber);
-                            MapInstanceService.addConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
-                        }
+                        // if (!mlconfig) {
+                        //     mlconfig = new MLConfig.MLConfig(outerMapNumber);
+                        //     MapInstanceService.addConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
+                        // }
+                        mlconfig = new MLConfig.MLConfig(outerMapNumber);
                         mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
                         firstMap = CanvasHolderCtrl.addCanvas('google');
                         // mlmap = utils.showMap(mapOptions);

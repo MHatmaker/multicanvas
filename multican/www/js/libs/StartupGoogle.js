@@ -84,10 +84,7 @@
                         mapInstanceSvc = $inj.get('MapInstanceService');
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
 
-                        self.pusherChannel = self.mlconfig.masherChannel(false);
-                        console.debug(self.pusherChannel);
                         self.pusher = PusherSetupCtrl.createPusherClient(
-                            self.pusherChannel,
                             self.mlconfig,
                             function (channel, userName) {
                                 self.mlconfig.setUserName(userName);

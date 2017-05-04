@@ -43,8 +43,6 @@
             selfdict.isInitialized = areWeInitialized = false;
             selfdict.clients = {};
             selfdict.eventHandlers = {};
-            var handler;
-
 
             $scope.showDialog = selfdict.scope.showDialog = false;
             $scope.data = {
@@ -82,7 +80,7 @@
                 // pusher = new Pusher(APP_KEY);
                 selfdict.pusher = pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://ce90856b.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://7acbdf1e.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,
@@ -114,14 +112,14 @@
 
                 channelBind.bind('client-NewUrlEvent', function (frame) {
                     console.log('frame is', frame);
-                    eventDct['client-NewUrlEvent'](frame);
+                    // eventDct['client-NewUrlEvent'](frame);
                     console.log("back from NewUrlEvent");
                 });
 
                 channelBind.bind('client-NewMapPosition', function (frame) {
                     console.log('frame is', frame);
-                    handler = mapHoster.getPusherEventHandler().getHandler('client-NewMapPosition');
-                    handler(frame);
+                    // handler = mapHoster.getPusherEventHandler().getHandler('client-NewMapPosition');
+                    // handler(frame);
                     // selfdict.eventDct['client-NewMapPosition'](frame);
                     console.log("back from NewMapPosition Event");
                 });
@@ -130,11 +128,11 @@
 
                 channelBind.bind('client-MapXtntEvent', function (frame) {
                     console.log('frame is', frame);
-                    var handler,
+                    var handlerkey,
                         obj;
-                    for (handler in selfdict.eventHandlers) {
-                        if (selfdict.eventHandlers.hasOwnProperty(handler)) {
-                            obj = selfdict.eventHandlers[handler];
+                    for (handlerkey in selfdict.eventHandlers) {
+                        if (selfdict.eventHandlers.hasOwnProperty(handlerkey)) {
+                            obj = selfdict.eventHandlers[handlerkey];
                             obj.eventDct['client-MapXtntEvent'](frame);
                         }
                     }
@@ -143,7 +141,7 @@
 
                 channelBind.bind('client-MapClickEvent', function (frame) {
                     console.log('frame is', frame);
-                    eventDct['client-MapClickEvent'](frame);
+                    // eventDct['client-MapClickEvent'](frame);
                     console.log("back from clickRetriever");
                 });
 
@@ -302,22 +300,16 @@
                 }
             };
 
-            createPusherClient = function (pusherChannel, mlconfig, cbfn, nfo) {
+            createPusherClient = function (mlconfig, cbfn, nfo) {
                 console.log("PusherSetupCtrl.createPusherClient");
                 var mapHoster = mlconfig.getMapHosterInstance(),
                     pusher,
                     clientName = mlconfig.getUserName() + mlconfig.getMapNumber();
 
                 if (!selfdict.pusher) {
-                    pusher = new PusherChannel(pusherChannel);
+                    pusher = new PusherChannel(PusherConfig.getInstance().getPusherChannel());
                 }
-                selfdict.CHANNEL = pusherChannel;
-                selfdict.eventDct =
-                    {
-                        'client-MapXtntEvent' : mapHoster.retrievedBounds,
-                        'client-MapClickEvent' : mapHoster.retrievedClick,
-                        'client-NewMapPosition' : mapHoster.retrievedNewPosition
-                    };
+                selfdict.CHANNEL = PusherConfig.getInstance().getPusherChannel();
                 selfdict.userName = mlconfig.getUserName();
                 selfdict.mapNumber = mlconfig.getMapNumber();
                 if (selfdict.scope) {
@@ -325,7 +317,9 @@
                 }
                 selfdict.callbackFunction = cbfn;
                 selfdict.info = nfo;
-                selfdict.clients[clientName] = new PusherClient(angular.copy(selfdict.eventDct), selfdict.CHANNEL, clientName, mlconfig.getMapHosterInstance(), cbfn);
+                console.log("createPusherClient for map " + clientName);
+                selfdict.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), selfdict.CHANNEL, clientName, mapHoster, cbfn);
+                // selfdict.clients[clientName] = new PusherClient(angular.copy(mapHoster.getEventDictionary()), selfdict.CHANNEL, clientName, mapHoster, cbfn);
                 return selfdict.clients[clientName];
             };
             selfMethods.createPusherClient = createPusherClient;
@@ -365,6 +359,18 @@
         //     return selfMethods.PusherClient(eventDct, channel, userName, cbfn);
         // }
 
+
+        function publishPanEvent(frame) {
+            console.log('frame is', frame);
+            var handler,
+                obj;
+            for (handler in selfdict.eventHandlers) {
+                if (selfdict.eventHandlers.hasOwnProperty(handler)) {
+                    obj = selfdict.eventHandlers[handler];
+                    obj.eventDct['client-MapXtntEvent'](frame);
+                }
+            }
+        }
         function isInstantiated() {
             return selfMethods.isInstantiated;
         }
@@ -376,8 +382,8 @@
         // function setupPusherClient(eventDct, userName, cbfn, nfo) {
         //     return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
         // }
-        function createPusherClient(pusherChannel, mlconfig, cbfn, nfo) {
-            return selfMethods.createPusherClient(pusherChannel, mlconfig, cbfn, nfo);
+        function createPusherClient(mlconfig, cbfn, nfo) {
+            return selfMethods.createPusherClient(mlconfig, cbfn, nfo);
         }
         function setupPusherClient(eventDct, userName, cbfn, nfo) {
             return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
@@ -403,6 +409,7 @@
         }
 
         return { start: init,
+                  publishPanEvent : publishPanEvent,
                   setupPusherClient : setupPusherClient,
                   createPusherClient : createPusherClient,
                   isInstantiated : isInstantiated};

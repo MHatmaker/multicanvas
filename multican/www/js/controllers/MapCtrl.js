@@ -523,6 +523,7 @@
                 mapNumber = mapNo,
                 mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 configMapNumber = mapConfig.getMapId(),
+                pos = mapConfig.getPosition(),
                 popmapString = "click me for map " + configMapNumber,
                 contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>",
                 compiledMsg = $compile(contentString)($scope);
@@ -532,10 +533,10 @@
             console.log(compiledMsg);
             curMapTypeInitialized = true;
             console.log("curMapTypeInitialized is " + curMapTypeInitialized);
-            centerCoord = { lat: 41.888996, lng: -87.623294};
+            centerCoord = { lat: pos.lat, lng: pos.lon};
             mapOptions = {
                 center: centerCoord,
-                zoom: 16,
+                zoom: pos.zoom,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             if (mapType === 'google') {
@@ -660,7 +661,7 @@
             console.log("In mobile MapCtrl controller fire away");
             $scope = $scopeArg;
 
-            function initialize() {
+            function initializeLocation() {
                 console.log("In initialize MOBILE");
                 var
                     mapOptions = {
@@ -792,7 +793,7 @@
             $scope = $scopeArg;
             var firstMap = null;
 
-            function initialize() {
+            function initializeLocation() {
                 console.log("MapCtrl.initialize NOT MOBILE");
                 var mapConfig,
                     mapOptions = {
@@ -820,8 +821,12 @@
                         //     MapInstanceService.addConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
                         // }
                         mlconfig = new MLConfig.MLConfig(outerMapNumber);
-                        mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
+                        mlconfig.setMapType('google');
+                        mlconfig.setPosition({'lon' : position.coords.longitude, "lat" : position.coords.latitude, "zoom" : 15});
+                        MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig);
                         firstMap = CanvasHolderCtrl.addCanvas('google');
+                        initialize(0, 'google');
+                        // mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
                         // mlmap = utils.showMap(mapOptions);
                         mlmap = configureCurrentMapType(mapOptions);
                     },
@@ -835,7 +840,7 @@
                 }
             }
             // selfMethods.initialize = initialize;
-            initialize();
+            initializeLocation();
             initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                         CurrentMapTypeService, GoogleQueryService, SiteViewService);
             // google.maps.event.addDomListener(document.getElementById('mapdiv'), 'load', function () {

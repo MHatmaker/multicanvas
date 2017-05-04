@@ -19,6 +19,7 @@ define(function () {
         var
             details = {
                 mapId : ndx,
+                mapType : 'google',
                 mapHosterInstance : null,
                 mapNumber: null,
                 mapHoster : null,
@@ -39,6 +40,12 @@ define(function () {
             },
             getMapId = function () {
                 return details.mapId;
+            },
+            setMapType = function (type) {
+                details.mapType = type;
+            },
+            getMapType = function () {
+                return details.mapType;
             },
             setMapNumber = function (mapNo) {
                 details.mapNumber = mapNo;
@@ -126,7 +133,7 @@ define(function () {
                 details.zoom = position.zoom;
             },
             getPosition = function () {
-                return {"webmapId" : details.webmapId, "lon" : details.lon, "lat" : details.lat, "zoom" : details.zoom};
+                return {"webmapId" : details.webmapId, "mapType" : details.mapType, "lon" : details.lon, "lat" : details.lat, "zoom" : details.zoom};
             },
 
             query = function () {
@@ -181,6 +188,8 @@ define(function () {
         return {
             setMapId: setMapId,
             getMapId: getMapId,
+            getMapType: getMapType,
+            setMapType: setMapType,
             getUserId: getUserId,
             setUserId: setUserId,
             setMapNumber: setMapNumber,

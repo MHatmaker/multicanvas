@@ -80,7 +80,7 @@
                 // pusher = new Pusher(APP_KEY);
                 selfdict.pusher = pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://7acbdf1e.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://c5dd6b08.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,

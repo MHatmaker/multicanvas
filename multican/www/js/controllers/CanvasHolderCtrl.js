@@ -28,8 +28,9 @@
                     mapDctv,
                     parentDiv,
                     mlConfig = new MLConfig.MLConfig(currIndex);
-                MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
-
+                if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
+                    MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
+                }
                 newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
                 mapDctv = document.createElement('mapdirective');
                 parentDiv = newCanvasItem;

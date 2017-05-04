@@ -34,6 +34,14 @@ define([
             this.getConfigInstanceForMap = function (ndx) {
                 return configInstances["cfg" + ndx];
             };
+            this.hasConfigInstanceForMap = function (ndx) {
+                var instname = 'cfg' + ndx,
+                    test = configInstances[instname] === null;
+                console.log('hasConfigInstanceForMap for ' + instname);
+                console.log("test " + test);
+
+                return (configInstances['cfg' + ndx]) ? true : false;
+            };
             this.setCurrentSlide = function (ndx) {
                 currentSlideNumber = ndx;
             };

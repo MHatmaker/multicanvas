@@ -27,8 +27,10 @@
                     newCanvasItem,
                     mapDctv,
                     parentDiv,
-                    mlConfig = new MLConfig.MLConfig(currIndex);
+                    mlConfig = new MLConfig.MLConfig(currIndex),
+                    prevConfig;
                 if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
+                    mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex-1).getPosition());
                     MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                 }
                 newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);

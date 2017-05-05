@@ -54,6 +54,7 @@ define([
             this.setMapHosterInstance = function (ndx, inst) {
                 var cfgndx = "cfg" + ndx;
                 configInstances[cfgndx].setMapHosterInstance(inst);
+                // this.incrementMapNumber();
             };
             this.getMapHosterInstance = function (ndx) {
                 return configInstances["cfg" + ndx].getMapHosterInstance();

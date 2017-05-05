@@ -825,7 +825,7 @@
                         mlconfig.setPosition({'lon' : position.coords.longitude, "lat" : position.coords.latitude, "zoom" : 15});
                         MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig);
                         firstMap = CanvasHolderCtrl.addCanvas('google');
-                        initialize(0, 'google');
+                        // initialize(0, 'google');
                         // mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
                         // mlmap = utils.showMap(mapOptions);
                         mlmap = configureCurrentMapType(mapOptions);

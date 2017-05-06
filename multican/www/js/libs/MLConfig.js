@@ -136,6 +136,9 @@ define(function () {
                 return {"webmapId" : details.webmapId, "mapType" : details.mapType, "lon" : details.lon, "lat" : details.lat, "zoom" : details.zoom};
             },
 
+            setQuery = function (q) {
+                details.query = q;
+            },
             query = function () {
                 return getParameterByName('gmquery', details);
             },
@@ -218,6 +221,7 @@ define(function () {
             getStartupView: getStartupView,
             setStartupView: setStartupView,
             query: query,
+            setQuery: setQuery,
             getQueryFromUrl: getQueryFromUrl
         };
     }

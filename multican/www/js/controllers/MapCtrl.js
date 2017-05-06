@@ -50,6 +50,8 @@
             $compile,
             $routeParams,
             stup,
+            firstMap = true,
+            commonInitialized = false,
             mapStartup;
 
         function invalidateCurrentMapTypeConfigured() {
@@ -228,10 +230,10 @@
                     if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
                         if (mlconfig.isNameChannelAccepted() === false) {
 
-                            evtSvc.addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
-                            evtSvc.addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
+                            mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
+                            mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
 
-                            PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
+                            PusherSetupCtrl.setupPusherClient(mlconfig.getMapHosterInstance().getPusherEventHandler().getEventDct(),
                                 mlconfig.getUserName(), WindowStarter.openNewDisplay,
                                 {
                                     'destination' : destWnd,
@@ -477,7 +479,6 @@
                     $scope.data.dstSel = $scope.destSelections[2].option;
                 }
             };
-            console.debug(selfMethods);
 
             $scope.gsearchVisible = 'inline-block';
             whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
@@ -490,13 +491,12 @@
                 $scope.gsearch = {'query' : 'SearcherBox'};
             }
 
-            currentMapType = CurrentMapTypeService.getCurrentMapType();
-
-            stup = currentMapType.start();
-            console.debug(stup);
+            // currentMapType = CurrentMapTypeService.getCurrentMapType();
+            //
+            // stup = currentMapType.start();
 
             tmpltName = $routeParams.id;
-            console.log(tmpltName);
+            console.log("$routeParams.id is " + tmpltName);
 
             function configureCurrentMapType(mapOptions) {
                 currentMapType = CurrentMapTypeService.getMapStartup();
@@ -512,7 +512,7 @@
             }
 
             selfMethods.configureCurrentMapType = configureCurrentMapType;
-
+            commonInitialized = true;
         }
 
         function initialize(mapNo, mapType, setupMapHoster) {
@@ -791,7 +791,6 @@
                     CurrentMapTypeService, GoogleQueryService, SiteViewService) {
             console.log("in MapCtrlBrowser");
             $scope = $scopeArg;
-            var firstMap = null;
 
             function initializeLocation() {
                 console.log("MapCtrl.initialize NOT MOBILE");
@@ -809,10 +808,11 @@
                             'Error: Your browser doesn\'t support geolocation.');
                 }
 
-                if (navigator.geolocation) {
+                if (firstMap === true && navigator.geolocation) {
                     console.log("ready to getCurrentPosition");
                     navigator.geolocation.getCurrentPosition(function (position) {
                         console.log("getCurrentPosition");
+                        console.log("at " + position.coords.latitude + ", "  + position.coords.longitude);
 
                         mapOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         /// mapConfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
@@ -824,7 +824,9 @@
                         mlconfig.setMapType('google');
                         mlconfig.setPosition({'lon' : position.coords.longitude, "lat" : position.coords.latitude, "zoom" : 15});
                         MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig);
-                        firstMap = CanvasHolderCtrl.addCanvas('google');
+                        console.log("MapCtrl will now call CanvasHolderCtrl.addCanvas");
+                        CanvasHolderCtrl.addCanvas('google');
+                        firstMap = false;
                         // initialize(0, 'google');
                         // mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
                         // mlmap = utils.showMap(mapOptions);
@@ -840,9 +842,13 @@
                 }
             }
             // selfMethods.initialize = initialize;
-            initializeLocation();
-            initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
-                        CurrentMapTypeService, GoogleQueryService, SiteViewService);
+            if (firstMap === true) {
+                initializeLocation();
+                if (commonInitialized === false) {
+                    initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
+                                CurrentMapTypeService, GoogleQueryService, SiteViewService);
+                    }
+            }
             // google.maps.event.addDomListener(document.getElementById('mapdiv'), 'load', function () {
             //     console.log("addDomListener window load callback");
             //     initialize();

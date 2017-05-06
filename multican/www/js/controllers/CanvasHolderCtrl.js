@@ -27,9 +27,10 @@
                     newCanvasItem,
                     mapDctv,
                     parentDiv,
-                    mlConfig = new MLConfig.MLConfig(currIndex),
+                    mlConfig,
                     prevConfig;
                 if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
+                    mlConfig = new MLConfig.MLConfig(currIndex);
                     mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex-1).getPosition());
                     MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                 }
@@ -42,7 +43,7 @@
                 angular.element(mapDctv).injector().invoke(function ($compile) {
                     var scope = angular.element(mapDctv).scope();
                     $compile(mapDctv)(scope);
-                    console.log("compiled mapDctv with map id " + currIndex);
+                    console.log("CanvasHolderCtrl compiled mapDctv with map id " + currIndex);
                     console.debug(scope);
                     setTimeout(function () {
                         // currIndex = MapInstanceService.getSlideCount();
@@ -108,8 +109,6 @@
                 locApp.controller('CanvasHolderCtrl',  ['$scope', '$rootScope', '$uibModal', 'LinkrService', 'MapInstanceService', 'CanvasService', CanvasHolderCtrl]);
                 // angular.bootstrap(document.getElementById('year'), ['example']);
                 isInstantiated = true;
-            } else {
-                return {addCanvas : addCanvas};
             }
             return {addCanvas : addCanvas};
         }

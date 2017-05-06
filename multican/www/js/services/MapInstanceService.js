@@ -1,4 +1,4 @@
-/*global define, console*/
+/*global define, console, angular*/
 
 define([
 ], function () {
@@ -58,6 +58,9 @@ define([
             };
             this.getMapHosterInstance = function (ndx) {
                 return configInstances["cfg" + ndx].getMapHosterInstance();
+            };
+            this.getMapHosterInstanceForCurrentSlide = function () {
+                return this.getMapHosterInstance(currentSlideNumber);
             };
         }
     ]);

@@ -431,10 +431,10 @@
             geoCoder = new google.maps.Geocoder();
             var
                 firstCntr,
-                qlat,
-                qlon,
-                qzoom,
-                initZoom = 15,
+                qlat = 41.888996,
+                qlon = -87.623294,
+                qzoom = 15,
+                initZoom = mapOptions.zoom,
                 listener;
 
             if (mlconfig.testUrlArgs()) {
@@ -445,9 +445,9 @@
                 updateGlobals("init with qlon, qlat", qlon, qlat, qzoom);
             } else {
                 if (mapOptions) {
-                    updateGlobals("MapHosterGoogle init with passed in mapOptions", mapOptions.center.lng(), mapOptions.center.lat(), mapOptions.zoom);
+                    updateGlobals("MapHosterGoogle init with passed in mapOptions", mapOptions.center.lng(), mapOptions.center.lat(), initZoom);
                 } else {
-                    updateGlobals("MapHosterGoogle init with hard-coded values", -87.623294, 41.888996,  13);
+                    updateGlobals("MapHosterGoogle init with hard-coded values", qlon, qlat, initZoom);
                 }
             }
             firstCntr = new google.maps.LatLng(cntryG, cntrxG);

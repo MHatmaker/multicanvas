@@ -80,7 +80,7 @@
                 // pusher = new Pusher(APP_KEY);
                 selfdict.pusher = pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://bdb7b02e.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: 'http://bfdc9a45.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,
@@ -212,7 +212,8 @@
             };
 
             $scope.onAcceptChannel = function () {
-                var pusher;
+                var pusher,
+                    clientName = mlconfig.getUserName() + mlconfig.getMapNumber();
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
                 selfdict.CHANNEL = $scope.data.privateChannelMashover;

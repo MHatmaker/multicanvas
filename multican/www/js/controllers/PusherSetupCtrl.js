@@ -371,7 +371,7 @@
             for (handler in selfdict.eventHandlers) {
                 if (selfdict.eventHandlers.hasOwnProperty(handler)) {
                     obj = selfdict.eventHandlers[handler];
-                    console.log("publish pan event for map " + selfdict.eventHandlers[handler].getMapNumber());
+                    console.log("publish pan event to map " + selfdict.eventHandlers[handler].getMapNumber());
                     obj.eventDct['client-MapXtntEvent'](frame);
                 }
             }

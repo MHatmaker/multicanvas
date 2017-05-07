@@ -73,7 +73,7 @@
 
                         self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapGoogleLocOpts);
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
-                        self.mapHoster = new MapHosterGoogle.start();
+                        self.mapHoster = new MapHosterGoogle.MapHosterGoogle();
                         self.mapHoster.config(self.gMap, self.mapNumber, mapGoogleLocOpts, google, google.maps.places, self.mlconfig);
                         self.mlconfig.setMapHosterInstance(self.mapHoster);
 

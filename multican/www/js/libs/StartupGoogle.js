@@ -38,13 +38,13 @@
                         return self.mapHoster;
                     },
 
-                    configure = function (newMapId, mapOpts) {
+                    configure = function (newMapId, mapLocOpts) {
                         var $inj,
                             evtSvc,
                             mapInstanceSvc,
                             centerLatLng,
                             initZoom,
-                            mapOptions = {};
+                            mapGoogleLocOpts = {};
                             // qlat,
                             // qlon,
                             // bnds,
@@ -56,25 +56,25 @@
                         window.loading = dojo.byId("loadingImg");
                         utils.showLoading();
                         // var centerLatLng = new google.maps.LatLng(41.8, -87.7);
-                        centerLatLng = new google.maps.LatLng(mapOpts.center.lat, mapOpts.center.lng);
-                        initZoom = mapOpts.zoom;
+                        centerLatLng = new google.maps.LatLng(mapLocOpts.center.lat, mapLocOpts.center.lng);
+                        initZoom = mapLocOpts.zoom;
 
-                        // if (mapOpts) {
-                        //     centerLatLng = mapOpts.center;
-                        //     initZoom = mapOpts.zoom;
+                        // if (mapLocOpts) {
+                        //     centerLatLng = mapLocOpts.center;
+                        //     initZoom = mapLocOpts.zoom;
                         // }
 
-                        mapOptions = {
+                        mapGoogleLocOpts = {
                             center: centerLatLng, //new google.maps.LatLng(41.8, -87.7),
                             // center: new google.maps.LatLng(51.50, -0.09),
                             zoom: initZoom,
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         };
 
-                        self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapOptions);
+                        self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapGoogleLocOpts);
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
                         self.mapHoster = new MapHosterGoogle.start();
-                        self.mapHoster.config(self.gMap, self.mapNumber, mapOptions, google, google.maps.places, self.mlconfig);
+                        self.mapHoster.config(self.gMap, self.mapNumber, mapGoogleLocOpts, google, google.maps.places, self.mlconfig);
                         self.mlconfig.setMapHosterInstance(self.mapHoster);
 
                         $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);

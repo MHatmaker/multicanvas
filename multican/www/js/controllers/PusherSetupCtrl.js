@@ -6,7 +6,10 @@
     "use strict";
 
     console.log('PusherSetup setup');
-    var areWeInitialized = false;
+    var areWeInitialized = false,
+        pusherPathPre = "http://",
+        pusherPathNgrok = "f705b06e",
+        pusherPathPost = ".ngrok.io/pusher/auth";
         // areWeInstantiated = false;
     define([
         'libs/PusherConfig',
@@ -80,7 +83,7 @@
                 // pusher = new Pusher(APP_KEY);
                 selfdict.pusher = pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: 'http://bfdc9a45.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: pusherPathPre + pusherPathNgrok + pusherPathPost,  // 'http://f705b06e.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,
@@ -368,6 +371,7 @@
             for (handler in selfdict.eventHandlers) {
                 if (selfdict.eventHandlers.hasOwnProperty(handler)) {
                     obj = selfdict.eventHandlers[handler];
+                    console.log("publish pan event for map " + selfdict.eventHandlers[handler].getMapNumber());
                     obj.eventDct['client-MapXtntEvent'](frame);
                 }
             }

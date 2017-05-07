@@ -32,7 +32,7 @@
                 if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
                     mlConfig = new MLConfig.MLConfig(currIndex);
                     mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex-1).getPosition());
-                    MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
+                    MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
                 }
                 newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
                 mapDctv = document.createElement('mapdirective');

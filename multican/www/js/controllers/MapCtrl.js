@@ -110,7 +110,7 @@
             mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
             if (!mlconfig) {
                 mlconfig = new MLConfig.MLConfig(outerMapNumber);
-                MapInstanceService.addConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
+                MapInstanceService.addConfigInstanceForMap(mlconfig); //outerMapNumber, angular.copy(mlconfig));
             }
             gmquery = mlconfig.query();
 
@@ -195,7 +195,7 @@
                 //     popmapString = "click me for map " + mapHoster.getMapNumber(),
                 //     contentString = "<div><a ng-click='clickTest()'>" + popmapString + "</a></div>";
                     // compiledMsg = $compile(contentString)($scope);
-                // mapStartup.configure(configMapNumber, mapOptions);
+                // mapStartup.configure(configMapNumber, mapLocOptions);
 
                 $scope.mapHosterInstance = mapHoster;
                 console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
@@ -288,7 +288,7 @@
                     center,
                     googleCenter,
                     gmap,
-                    mapOptions,
+                    mapLocOptions,
                     pacinput,
                     queryPlaces = {},
                     service;
@@ -306,12 +306,12 @@
                 gmap = googmph.getMap();
                 utils.showLoading();
                 if (!gmap) {
-                    mapOptions = {
+                    mapLocOptions = {
                         center : googleCenter,
                         zoom : 15,
                         mapTypeId : google.maps.MapTypeId.ROADMAP
                     };
-                    gmap = new google.maps.Map(document.getElementById("hiddenmap_canvas"), mapOptions);
+                    gmap = new google.maps.Map(document.getElementById("hiddenmap_canvas"), mapLocOptions);
                 }
 
                 // placesFromSearch = searchBox.getPlaces();
@@ -498,10 +498,10 @@
             tmpltName = $routeParams.id;
             console.log("$routeParams.id is " + tmpltName);
 
-            function configureCurrentMapType(mapOptions) {
+            function configureCurrentMapType(mapLocOptions) {
                 currentMapType = CurrentMapTypeService.getMapStartup();
                 if (currentMapType.configure) {
-                    currentMapType.configure(null, mapOptions);
+                    currentMapType.configure(null, mapLocOptions);
                     $scope.map = currentMapType.getMap();
                     // $scope.map.width = mapSize['medium'];
                     // $scope.MapWdth = mapSize['small'];
@@ -519,7 +519,7 @@
             var
                 // mapHoster,
                 centerCoord,
-                mapOptions = null,
+                mapLocOptions = null,
                 mapNumber = mapNo,
                 mapConfig = MapInstanceService.getConfigInstanceForMap(mapNumber),
                 configMapNumber = mapConfig.getMapId(),
@@ -534,7 +534,7 @@
             curMapTypeInitialized = true;
             console.log("curMapTypeInitialized is " + curMapTypeInitialized);
             centerCoord = { lat: pos.lat, lng: pos.lon};
-            mapOptions = {
+            mapLocOptions = {
                 center: centerCoord,
                 zoom: pos.zoom,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -548,7 +548,7 @@
             }
             // mapStartups.push(mapStartup);
             // setTimeout(function() {
-            mapStartup.configure(configMapNumber, mapOptions);
+            mapStartup.configure(configMapNumber, mapLocOptions);
             //     mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
             //     $scope.mapHosterInstance = mapHoster;
             //     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
@@ -664,7 +664,7 @@
             function initializeLocation() {
                 console.log("In initialize MOBILE");
                 var
-                    mapOptions = {
+                    mapLocOptions = {
                         center: new google.maps.LatLng(37.422858, -122.085065),
                         zoom: 15,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -695,16 +695,16 @@
                     console.log("in $cordovaGeolocation.getCurrentPosition callback");
                     // var latLng = new google.maps.LatLng(33.5432, -112.075)
                     var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    mapOptions = {
+                    mapLocOptions = {
                         center: latLng,
                         zoom: 15,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     };
                     console.log("ready to create/show Map in callback");
-                    console.log("center; " + mapOptions.center.lng() + ", " + mapOptions.center.lat());
+                    console.log("center; " + mapLocOptions.center.lng() + ", " + mapLocOptions.center.lat());
                     $ionicLoading.hide();
-                    mlmap = utils.showMap(mapOptions);
-                    // $scope.map = new google.maps.Map(document.getElementById("mapdiv"), mapOptions);
+                    mlmap = utils.showMap(mapLocOptions);
+                    // $scope.map = new google.maps.Map(document.getElementById("mapdiv"), mapLocOptions);
 
                 }, function (error) {
                     console.log("Could not get location from $cordovaGeolocation.getCurrentPosition");
@@ -714,11 +714,11 @@
                         navigator.geolocation.getCurrentPosition(function (position) {
                             console.log("in navigator getCurrentPosition callback");
 
-                            mapOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                            console.log("mapOptions.center " + mapOptions.center.lng() + ", " + mapOptions.center.lat());
-                            console.debug(mapOptions);
-                            // mlmap = utils.showMap(mapOptions);
-                            mlmap = configureCurrentMapType(mapOptions);
+                            mapLocOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                            console.log("mapLocOptions.center " + mapLocOptions.center.lng() + ", " + mapLocOptions.center.lat());
+                            console.debug(mapLocOptions);
+                            // mlmap = utils.showMap(mapLocOptions);
+                            mlmap = configureCurrentMapType(mapLocOptions);
                             $ionicLoading.hide();
                         },
                             function () {
@@ -730,7 +730,7 @@
                     } else {
                         console.log("Fall thru to default map display");
                         $ionicLoading.hide();
-                        mlmap = utils.showMap(mapOptions);
+                        mlmap = utils.showMap(mapLocOptions);
                         console.debug(error);
                     }
                     $ionicLoading.hide();
@@ -795,7 +795,7 @@
             function initializeLocation() {
                 console.log("MapCtrl.initialize NOT MOBILE");
                 var mapConfig,
-                    mapOptions = {
+                    mapLocOptions = {
                         center: new google.maps.LatLng(37.422858, -122.085065),
                         zoom: 15,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -814,7 +814,7 @@
                         console.log("getCurrentPosition");
                         console.log("at " + position.coords.latitude + ", "  + position.coords.longitude);
 
-                        mapOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        mapLocOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         /// mapConfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
                         // if (!mlconfig) {
                         //     mlconfig = new MLConfig.MLConfig(outerMapNumber);
@@ -829,8 +829,8 @@
                         firstMap = false;
                         // initialize(0, 'google');
                         // mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
-                        // mlmap = utils.showMap(mapOptions);
-                        mlmap = configureCurrentMapType(mapOptions);
+                        // mlmap = utils.showMap(mapLocOptions);
+                        mlmap = configureCurrentMapType(mapLocOptions);
                     },
                         function () {
                             handleLocationError(true, infoWindow, mlmap.getCenter());
@@ -838,7 +838,7 @@
                 } else {
                     // Browser doesn't support Geolocation
                     handleLocationError(false, infoWindow, mlmap.getCenter());
-                    mlmap = utils.showMap(mapOptions);
+                    mlmap = utils.showMap(mapLocOptions);
                 }
             }
             // selfMethods.initialize = initialize;
@@ -874,9 +874,9 @@
             }
         }
 
-        function configureCurrentMapType(mapOptions) {
+        function configureCurrentMapType(mapLocOptions) {
             console.log("configureCurrentMapType");
-            selfMethods.configureCurrentMapType(mapOptions);
+            selfMethods.configureCurrentMapType(mapLocOptions);
         }
 
         function init(isMob) {

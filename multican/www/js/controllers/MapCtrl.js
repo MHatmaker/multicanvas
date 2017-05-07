@@ -20,8 +20,10 @@
         'controllers/MapLinkrMgrCtrl',
         'controllers/WindowStarter',
         'controllers/CanvasHolderCtrl',
+        'controllers/CarouselCtrl',
         'libs/MLConfig'
-    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl, MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, MLConfig) {
+    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl,
+            MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, CarouselCtrlArg, MLConfig) {
         var selfMethods = {},
             MapInstanceService,
             CurrentMapTypeService,
@@ -29,6 +31,7 @@
             LinkrSvc,
             WindowStarter = WindowStarterArg,
             CanvasHolderCtrl = CanvasHolderCtrlArg,
+            CarouselCtrl = CarouselCtrlArg,
             outerMapNumber,
             mlconfig,
             gmquery,
@@ -291,9 +294,10 @@
                     mapLocOptions,
                     pacinput,
                     queryPlaces = {},
-                    service;
+                    service,
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber();
 
-                googmph = CurrentMapTypeService.getSpecificMapType('google');
+                googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);  //CurrentMapTypeService.getSpecificMapType('google');
 
                 mapLinkrBounds = mlconfig.getBounds();
                 searchBounds = new google.maps.LatLngBounds(

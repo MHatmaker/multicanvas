@@ -11,8 +11,10 @@
     define([
     ], function () {
         console.log("ready to create CarouselCtrl");
+        var selfMethods = {};
         function CarouselCtrl($scope, MapInstanceService) {
             var
+                getCurrentSlideNumber,
                 counter = 0,
                 items = [],
                 currentSlide = items[0];
@@ -75,8 +77,16 @@
             if (items.length > 0) {
                 navigate(0);
             }
+
+            getCurrentSlideNumber = function () {
+                return items[counter].slideNumber;
+            };
+            selfMethods.getCurrentSlideNumber = getCurrentSlideNumber;
         }
 
+        function getCurrentSlideNumber() {
+            return selfMethods.getCurrentSlideNumber();
+        }
         function init() {
             console.log('CarouselCtrl init');
             var locApp = angular.module('mapModule');
@@ -86,9 +96,13 @@
 
             return CarouselCtrl;
         }
+        // function getConfigCurrentSlideNumber () {
+        //
+        // }
 
         return {
-            start: init
+            start: init,
+            getCurrentSlideNumber : getCurrentSlideNumber
         };
     });
 }());

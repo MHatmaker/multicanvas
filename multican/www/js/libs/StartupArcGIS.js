@@ -4,7 +4,6 @@
 (function () {
     "use strict";
     console.log('StartupArcGIS setup');
-    var self;
 
     // require(['libs/MapHosterArcGIS', 'libs/utils', 'esri',
     // // 'https://js.arcgis.com/4.1/dojo/domReady!', 'https://js.arcgis.com/4.1/esri/WebMap', 'https://js.arcgis.com/4.1/esri/views/MapView']);
@@ -28,39 +27,13 @@
                 this.aMap = null;
                 this.aView = null;
                 this.mlconfig = mapconfig; //MLConfig.getInstance();
+                this.mlconfig.setMapNumber(mapNo);
                 this.mapHosterSetupCallback = mapHosterSetupCallback;
                 console.log("Setting mapNumber to " + this.mapNumber);
 
-                self = this;
-
-                function showLoading() {
-                    utils.showLoading();
-                    self.aMap.disableMapNavigation();
-                    self.aMap.hideZoomSlider();
-                }
-
-                function hideLoading(error) {
-                    utils.hideLoading(error);
-                    self.aMap.enableMapNavigation();
-                    self.aMap.showZoomSlider();
-                }
-                function placeCustomControls() {
-                    var $inj = self.mlconfig.getInjector(),
-                        ctrlSvc = $inj.get('MapControllerService'),
-                        mapCtrl = ctrlSvc.getController();
-                        // mapCtrl = MapControllerService.getController();
-                    mapCtrl.placeCustomControls();
-                }
-
-                function setupQueryListener() {
-                    var $inj = self.mlconfig.getInjector(),
-                        ctrlSvc = $inj.get('MapControllerService'),
-                        mapCtrl = ctrlSvc.getController();
-                    // var mapCtrl = MapControllerService.getController();
-                    mapCtrl.setupQueryListener();
-                }
 
                 var
+                    self = this,
                     selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0", // Requires a space after map ID
                     previousSelectedWebMapId = selectedWebMapId,
                     zoomWebMap = null,
@@ -71,6 +44,32 @@
 
                     configOptions,
 
+                    showLoading = function () {
+                        utils.showLoading();
+                        self.aMap.disableMapNavigation();
+                        self.aMap.hideZoomSlider();
+                    },
+
+                    hideLoading = function (error) {
+                        utils.hideLoading(error);
+                        self.aMap.enableMapNavigation();
+                        self.aMap.showZoomSlider();
+                    },
+                    placeCustomControls = function () {
+                        var $inj = self.mlconfig.getInjector(),
+                            ctrlSvc = $inj.get('MapControllerService'),
+                            mapCtrl = ctrlSvc.getController();
+                            // mapCtrl = MapControllerService.getController();
+                        mapCtrl.placeCustomControls();
+                    },
+
+                    setupQueryListener = function () {
+                        var $inj = self.mlconfig.getInjector(),
+                            ctrlSvc = $inj.get('MapControllerService'),
+                            mapCtrl = ctrlSvc.getController();
+                        // var mapCtrl = MapControllerService.getController();
+                        mapCtrl.setupQueryListener();
+                    },
                     getMap = function () {
                         return self.aMap;
                     },
@@ -127,7 +126,6 @@
                             pusherChannel = self.mlconfig.masherChannel(false);
 
                             pusher = PusherSetupCtrl.createPusherClient(
-                                pusherChannel,
                                 self.mlconfig,
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
@@ -147,7 +145,6 @@
                             self.mlconfig.setMapHosterInstance = self.mapHoster;
                             pusherChannel = self.mlconfig.masherChannel(false);
                             pusher = PusherSetupCtrl.createPusherClient(
-                                pusherChannel,
                                 self.mlconfig,
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
@@ -327,10 +324,6 @@
                     //     return mapHoster;
                     // }
 
-                    init = function () {
-                        console.log('StartupArcGIS init');
-                        return StartupArcGIS;
-                    },
                     prepareWindow = function (newSelectedWebMapId, referringMph, displayDestination) {
 
                         var curmph = MapHosterArcGIS,
@@ -446,8 +439,7 @@
                     getMap: getMap,
                     getMapNumber: getMapNumber,
                     getMapHosterInstance: getMapHosterInstance,
-                    configure: initializePreProc,
-                    init: init
+                    configure: initializePreProc
                 };
             };
 

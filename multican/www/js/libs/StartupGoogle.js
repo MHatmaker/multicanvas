@@ -95,23 +95,17 @@
                             console.log("failed to create Pusher in StartupGoogle");
                         }
                         // return self.mapHoster;
-                    },
+                    };
 
                     // function getMapHoster() {
                     //     console.log('StartupGoogle return mapHoster with map no. ' + mapHoster.getMapNumber());
                     //     return mapHoster;
                     // }
-
-                    init = function () {
-                        console.log('StartupGoogle init');
-                        return StartupGoogle;
-                    };
                 return {
                     getMap: getMap,
                     getMapNumber: getMapNumber,
                     getMapHosterInstance: getMapHosterInstance,
-                    configure: configure,
-                    init: init
+                    configure: configure
                 };
             };
 

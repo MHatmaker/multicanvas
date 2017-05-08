@@ -11,9 +11,10 @@
         'libs/utils',
         'libs/MLConfig',
         'libs/PusherEventHandler',
+        'controllers/PusherSetupCtrl',
         'libs/PusherConfig',
         'esri/geometry/Point'
-    ], function (PositionViewCtrl, utils, MLConfig, PusherEventHandler, PusherConfig, GeometryPoint) {
+    ], function (PositionViewCtrl, utils, MLConfig, PusherEventHandler, PusherSetupCtrl, PusherConfig, GeometryPoint) {
         console.log('MapHosterArcGIS define');
         var self = this,
             scale2Level = [],
@@ -135,7 +136,7 @@
         }
 
         function setBounds(xtExt) {
-            console.log("MapHosterArcGIS setBounds with selfPusherDetails.pusher " + selfPusherDetails.pusher.getMapNumber());
+            console.log("MapHosterArcGIS setBounds with selfPusherDetails.pusher " + mlconfig.getMapNumber());
             var xtntJsonStr,
                 cmp;
             if (mapReady === true && selfPusherDetails.pusher) { // && self.pusher.ready == true) {
@@ -147,8 +148,9 @@
                 if (cmp === false) {
                     console.log("MapHoster arcGIS " + mlconfig.getMapNumber() + " setBounds pusher send ");
 
-                    if (selfPusherDetails.pusher && selfPusherDetails.channel) {
-                        selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapXtntEvent', xtExt);
+                    if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
+                        selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
+                        PusherSetupCtrl.publishPanEvent(xtExt);
                     }
                     updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                     //console.debug(sendRet);
@@ -172,7 +174,7 @@
             console.log("Ready to subscribe MapHosterArcGIS " + mlconfig.getMapNumber());
             if (selfPusherDetails.pusher === null) {
                 selfPusherDetails.pusher = pusher;
-                selfPusherDetails.channel = channel;
+                selfPusherDetails.channelName = channel;
                 PusherConfig.getInstance().setChannel(channel);
 
                 for (key in evtDct) {
@@ -316,7 +318,8 @@
                         'address' : contextContent
                     };
                     console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLLG.lat + ", " + fixedLLG.lon);
-                    selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
+                    selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
+                    PusherSetupCtrl.publishPanEvent(xtExt);
                 }
             }
 

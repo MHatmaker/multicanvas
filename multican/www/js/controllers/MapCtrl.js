@@ -209,7 +209,9 @@
             }
 
             function placesQueryCallback(placesFromSearch, status) {
-                var googmph,
+                var
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    googmph,
                     curMapType = "no map",
                     placesSearchResults,
                     onAcceptDestination;
@@ -252,7 +254,7 @@
                         }
 
                     } else {  //(destWnd == "Same Window")
-                        googmph = CurrentMapTypeService.getSpecificMapType('google');
+                        googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                         googmph.placeMarkers(placesSearchResults);
                         mlconfig.setQuery(queryForNewDisplay);
                         queryForSameDisplay = queryForNewDisplay;
@@ -284,7 +286,7 @@
             }
 
             function connectQuery() {
-                var googmph,
+                var
                     mapLinkrBounds,
                     searchBounds,
                     position,
@@ -295,9 +297,8 @@
                     pacinput,
                     queryPlaces = {},
                     service,
-                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber();
-
-                googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);  //CurrentMapTypeService.getSpecificMapType('google');
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);  //CurrentMapTypeService.getSpecificMapType('google');
 
                 mapLinkrBounds = mlconfig.getBounds();
                 searchBounds = new google.maps.LatLngBounds(
@@ -471,7 +472,8 @@
             });
             $scope.subsetDestinations = function (placesFromSearch) {
                 var curMapType = CurrentMapTypeService.getMapTypeKey(),
-                    googmph = CurrentMapTypeService.getSpecificMapType('google');
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
 
                 if (curMapType === 'google') {
                     if (placesFromSearch) {

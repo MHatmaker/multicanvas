@@ -17,7 +17,6 @@
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
                 this.lMap = null;
-                this.mlconfig = mlconfig;
                 this.newSelectedWebMapId = '';
                 this.pusherChannel = null;
                 this.pusher = null;
@@ -47,14 +46,11 @@
                     //     window.open(self.mlconfig.gethref() + "arcgis/" + url, self.newSelectedWebMapId, self.mlconfig.getSmallFormDimensions());
                     // },
 
-                    configure = function (newMapId) {
+                    configure = function (newMapId, mapLocOpts) {
                         var $inj = self.mlconfig.getInjector(),
-                            evtSvc = $inj.get('PusherEventHandlerService'),
-                            mapInstanceSvc,
-                            CurrentMapTypeService;
+                            mapInstanceSvc = $inj.get('MapInstanceService');
                         self.newSelectedWebMapId = newMapId;
-                        CurrentMapTypeService = $inj.get('CurrentMapTypeService');
-                        CurrentMapTypeService.setCurrentMapType('leaflet');
+                        // mapInstanceSvc.setCurrentMapType('leaflet');
                         window.loading = dojo.byId("loadingImg");
                         console.log(window.loading);
                         console.log("newSelectedWebMapId " + newMapId);
@@ -75,7 +71,6 @@
                         //     }
                         // } else {
 
-
                         if (self.lMap) {
                             // lMap.remove();
                             self.lMap = new L.Map(document.getElementById("map" + self.mapNumber));
@@ -83,27 +78,13 @@
                             self.lMap = new L.Map(document.getElementById("map" + self.mapNumber));
                         }
 
-                        self.mapHoster = new MapHosterLeaflet.start();
-                        self.mapHoster.config(self.lMap, self.mapNumber, self.mlconfig);
-                        $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
-                        evtSvc = $inj.get('PusherEventHandlerService');
-                        evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
-                        evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
-                        CurrentMapTypeService = $inj.get('CurrentMapTypeService');
-                        CurrentMapTypeService.setCurrentMapType('leaflet');
-                        mapInstanceSvc = $inj.get('MapInstanceService');
+                        self.mapHoster = new MapHosterLeaflet.MapHosterLeaflet();
+                        self.mapHoster.config(self.lMap, self.mapNumber, mapLocOpts, self.mlconfig);
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                         self.pusherChannel = self.mlconfig.masherChannel(false);
                         console.debug(self.pusherChannel);
                         self.pusher = PusherSetupCtrl.createPusherClient(
-                            {
-                                'client-MapXtntEvent' : MapHosterLeaflet.retrievedBounds,
-                                'client-MapClickEvent' : MapHosterLeaflet.retrievedClick,
-                                'client-NewMapPosition' : MapHosterLeaflet.retrievedNewPosition
-                            },
-                            self.pusherChannel,
-                            self.mlconfig.getUserName(),
-                            self.mapNumber,
+                            self.mlconfig,
                             function (channel, userName) {
                                 self.mlconfig.setUserName(userName);
                             },
@@ -114,19 +95,13 @@
                             console.log("createPusherClient failed in StartupLeaflet");
                         }
                         // }
-                    },
-
-                    init = function () {
-                        console.log('StartupLeaflet init');
-                        return StartupLeaflet;
                     };
 
                 return {
                     getMap: getMap,
                     getMapNumber: getMapNumber,
                     getMapHosterInstance: getMapHosterInstance,
-                    configure: configure,
-                    init: init
+                    configure: configure
                 };
             };
         return {

@@ -19,10 +19,16 @@
     console.log("ready to require stuff in MapHosterLeaflet");
     require(['http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js', "libs/utils", 'libs/GeoCoder']);
 
-    define(['controllers/PositionViewCtrl', 'libs/GeoCoder', 'libs/utils', 'libs/MLConfig'], // ,'controllers/PusherSetupCtrl'],
+    define([
+        'controllers/PositionViewCtrl',
+        'libs/GeoCoder',
+        'libs/utils',
+        'libs/MLConfig',
+        'libs/PusherEventHandler',
+        'controllers/PusherSetupCtrl'
+    ], function (PositionViewCtrl, GeoCoder, utils, MLConfig, PusherEventHandler, PusherSetupCtrl) {
 
-        function (PositionViewCtrl, GeoCoder, utils, MLConfig) { //, PusherSetupCtrl) {
-
+        var MapHosterLeaflet = function () {
             var
                 hostName = "MapHosterLeaflet",
                 scale2Level = [],
@@ -292,6 +298,7 @@
                     if (selfPusherDetails.pusher && selfPusherDetails.active) {
                         selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapXtntEvent', xtExt);
                     }
+                    PusherSetupCtrl.publishPanEvent(xtExt);
                     updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                 }
             }
@@ -378,7 +385,7 @@
                 mapCtrl.setupQueryListener();
             }
 
-            function configureMap(lmap, mapno, config) {
+            function configureMap(lmap, mapno, mapOptions, config) {
                 var qlat, // = config.lat(),
                     qlon, // = config.lon(),
                     qzoom, // = config.zoom(),
@@ -400,8 +407,8 @@
                     mphmap.setView([qlat, qlon], qzoom);
                     updateGlobals("init with qlon, qlat", qlon, qlat, qzoom);
                 } else {
-                    mphmap.setView([41.888941, -87.620692], 13);
-                    updateGlobals("init with hard-coded values", -87.620692, 41.888941,  13);
+                    mphmap.setView([mapOptions.center.lat, mapOptions.center.lng], mapOptions.zoom);
+                    updateGlobals("init with hard-coded values", mapOptions.center.lat, mapOptions.center.lng, mapOptions.zoom);
                 }
                 console.log(mphmap.getCenter().lng + " " +  mphmap.getCenter().lat);
 
@@ -455,7 +462,13 @@
                         setBounds('pan', e.latlng);
                     }
                 });
+                pusherEvtHandler = new PusherEventHandler.PusherEventHandler(mlconfig.getMapNumber());
+                console.log("Add pusher event handler for MapHosterGoogle " + mlconfig.getMapNumber());
+
+                pusherEvtHandler.addEvent('client-MapXtntEvent', retrievedBounds);
+                pusherEvtHandler.addEvent('client-MapClickEvent',  retrievedClick);
             }
+
 
             function getMapHosterName() {
                 return "hostName is " + hostName;
@@ -555,10 +568,6 @@
                 return pos;
             }
 
-            function MapHosterLeaflet() {
-                this.pusher = null;
-                userZoom = true;
-            }
 
             function removeEventListeners(destWnd) {
                 var ctrlDiv = document.getElementsByClassName("leaflet-control-container")[0],
@@ -578,27 +587,11 @@
                     }
                 }
             }
-
-            function init() {
-                return {
-                    start: init,
-                    config : configureMap,
-                    retrievedBounds: retrievedBounds,
-                    retrievedClick: retrievedClick,
-                    setPusherClient: setPusherClient,
-                    setUserName : setUserName,
-                    getGlobalsForUrl: getGlobalsForUrl,
-                    getEventDictionary : getEventDictionary,
-                    publishPosition : publishPosition,
-                    getCenter : getCenter,
-                    removeEventListeners : removeEventListeners,
-                    getMapHosterName : getMapHosterName,
-                    geoLocate : geoLocate
-                };
+            function getPusherEventHandler() {
+                return pusherEvtHandler;
             }
 
             return {
-                start: init,
                 config : configureMap,
                 retrievedBounds: retrievedBounds,
                 retrievedClick: retrievedClick,
@@ -610,7 +603,13 @@
                 getCenter : getCenter,
                 removeEventListeners : removeEventListeners,
                 getMapHosterName : getMapHosterName,
-                geoLocate : geoLocate
+                geoLocate : geoLocate,
+                getPusherEventHandler : getPusherEventHandler
             };
-        });
+        };
+
+        return {
+            MapHosterLeaflet : MapHosterLeaflet
+        };
+    });
 }());

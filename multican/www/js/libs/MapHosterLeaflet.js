@@ -147,6 +147,7 @@
                             'address' : contextContent, 'title' : contextHint };
                         console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
                         selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
+                        PusherSetupCtrl.publishCLickEvent(pushLL);
                     }
                 };
 

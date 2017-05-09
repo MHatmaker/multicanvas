@@ -144,7 +144,14 @@
 
                 channelBind.bind('client-MapClickEvent', function (frame) {
                     console.log('frame is', frame);
-                    // eventDct['client-MapClickEvent'](frame);
+                    var handlerkey,
+                        obj;
+                    for (handlerkey in selfdict.eventHandlers) {
+                        if (selfdict.eventHandlers.hasOwnProperty(handlerkey)) {
+                            obj = selfdict.eventHandlers[handlerkey];
+                            obj.eventDct['client-MapXtntEvent'](frame);
+                        }
+                    }
                     console.log("back from clickRetriever");
                 });
 
@@ -368,11 +375,33 @@
             console.log('frame is', frame);
             var handler,
                 obj;
+            if (frame.hasOwnProperty('x')) {
+                frame['lat'] = frame.y;
+                frame['lon'] = frame.x;
+                frame['zoom'] = frame.z;
+            }
             for (handler in selfdict.eventHandlers) {
                 if (selfdict.eventHandlers.hasOwnProperty(handler)) {
                     obj = selfdict.eventHandlers[handler];
                     console.log("publish pan event to map " + selfdict.eventHandlers[handler].getMapNumber());
                     obj.eventDct['client-MapXtntEvent'](frame);
+                }
+            }
+        }
+        function publishClickEvent(frame) {
+            console.log('frame is', frame);
+            var handler,
+                obj;
+            if (frame.hasOwnProperty('x')) {
+                frame['lat'] = frame.y;
+                frame['lon'] = frame.x;
+                frame['zoom'] = frame.z;
+            }
+            for (handler in selfdict.eventHandlers) {
+                if (selfdict.eventHandlers.hasOwnProperty(handler)) {
+                    obj = selfdict.eventHandlers[handler];
+                    console.log("publish click event to map " + selfdict.eventHandlers[handler].getMapNumber());
+                    obj.eventDct['client-MapClickEvent'](frame);
                 }
             }
         }
@@ -415,6 +444,7 @@
 
         return { start: init,
                   publishPanEvent : publishPanEvent,
+                  publishClickEvent : publishClickEvent,
                   setupPusherClient : setupPusherClient,
                   createPusherClient : createPusherClient,
                   isInstantiated : isInstantiated};

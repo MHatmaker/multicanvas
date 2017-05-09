@@ -196,7 +196,9 @@
             console.log("You clicked the map at " + clickPt.x + ", " + clickPt.y);
             // alert("You clicked the map at " + clickPt.x + ", " + clickPt.y);
             console.debug(clickPt);
-            var mpDiv = document.getElementById("map_canvas"),
+            var
+                mpCan = document.getElementById("map" + mlconfig.getMapNumber()),
+                mpDiv = document.getElementById(mpCan), // "map_canvas"),
                 mpDivNG = angular.element(mpDiv),
                 wdt = mpDivNG[0].clientWidth,
                 hgt = mpDivNG[0].clientHeight,
@@ -319,7 +321,7 @@
                     };
                     console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLLG.lat + ", " + fixedLLG.lon);
                     selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
-                    PusherSetupCtrl.publishPanEvent(xtExt);
+                    PusherSetupCtrl.publishClickEvent(pushLL);
                 }
             }
 
@@ -459,8 +461,12 @@
             mapReady = true;
             userZoom = true;
 
+            // mpWrap = document.getElementById("map_wrapper");
+            // mpCan = document.getElementById("map_canvas");
+            // mpCanRoot = document.getElementById("map_canvas_root");
+
             mpWrap = document.getElementById("map_wrapper");
-            mpCan = document.getElementById("map_canvas");
+            mpCan = document.getElementById("map_" + mlconfig.getMapNumber());
             mpCanRoot = document.getElementById("map_canvas_root");
         }
 

@@ -137,13 +137,14 @@
                                 fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6);
                                 referrerId = mlconfig.getUserId();
                                 referrerName = mlconfig.getUserName();
-                                pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
+                                pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : zmG,
                                     "referrerId" : referrerId, "referrerName" : referrerName,
                                     'address' : marker.address, 'title' : marker.title };
                                 console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
                                 triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
                                 console.log("triggered?");
                                 console.log(triggered);
+                                PusherSetupCtrl.publishClickEvent(pushLL);
                             }
                         };
 

@@ -14,8 +14,8 @@
     ], function (MLConfig) {
 
         console.log('CanvasHolderCtrl define');
-        var selfMethods = {};
-        var isInstantiated = false;
+        var selfMethods = {},
+            isInstantiated = false;
 
         function CanvasHolderCtrl($scope, $rootScope, $uibModal, LinkrService, MapInstanceService, CanvasService) {
             console.log("ready to create CanvasHolderCtrl");
@@ -27,11 +27,10 @@
                     newCanvasItem,
                     mapDctv,
                     parentDiv,
-                    mlConfig,
-                    prevConfig;
+                    mlConfig;
                 if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
                     mlConfig = new MLConfig.MLConfig(currIndex);
-                    mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex-1).getPosition());
+                    mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex - 1).getPosition());
                     MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
                 }
                 newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
@@ -70,7 +69,7 @@
                     currentMapInstance.centerOnMe();
                 };
             };
-            selfMethods['addCanvas'] = $scope.addCanvas;
+            selfMethods.addCanvas = $scope.addCanvas;
 
             $scope.removeCanvas = function (clickedItem) {
                 console.log("removeCanvas");
@@ -100,10 +99,11 @@
         }
         CanvasHolderCtrl.prototype.addCanvas = function () {
             selfMethods.addCanvas('google');
-        }
+        };
+
         function init() {
             console.log('CanvasHolderCtrl init');
-            if (! isInstantiated) {
+            if (!isInstantiated) {
                 var locApp = angular.module('mapModule');
 
                 locApp.controller('CanvasHolderCtrl',  ['$scope', '$rootScope', '$uibModal', 'LinkrService', 'MapInstanceService', 'CanvasService', CanvasHolderCtrl]);

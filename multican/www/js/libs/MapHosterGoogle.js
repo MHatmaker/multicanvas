@@ -426,7 +426,7 @@
                     }
                 }
 
-                function configureMap(gMap, mapNo, mapOptions, goooogle, googPlaces, config) {
+                function configureMap(gMap, mapOptions, goooogle, googPlaces, config) {
                     console.log("MapHosterGoogle configureMap");
                     mlconfig = config;
                     mphmap = gMap;

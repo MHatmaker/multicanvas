@@ -22,6 +22,7 @@
                 this.pusher = null;
                 this.mlconfig = mlconfig; //MLConfig.getInstance();
                 this.mlconfig.setMapNumber(mapNo);
+                this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var
@@ -79,7 +80,7 @@
                         }
 
                         self.mapHoster = new MapHosterLeaflet.MapHosterLeaflet();
-                        self.mapHoster.config(self.lMap, self.mapNumber, mapLocOpts, self.mlconfig);
+                        self.mapHoster.config(self.lMap, mapLocOpts, self.mlconfig);
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                         self.mlconfig.setUserId(self.mlconfig.getUserName() + self.mapNumber);
                         self.pusherChannel = self.mlconfig.masherChannel(false);

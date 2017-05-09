@@ -386,7 +386,7 @@
                 mapCtrl.setupQueryListener();
             }
 
-            function configureMap(lmap, mapno, mapOptions, config) {
+            function configureMap(lmap, mapOptions, config) {
                 var qlat, // = config.lat(),
                     qlon, // = config.lon(),
                     qzoom, // = config.zoom(),

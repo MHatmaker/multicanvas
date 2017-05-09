@@ -28,6 +28,7 @@
                 this.aView = null;
                 this.mlconfig = mapconfig; //MLConfig.getInstance();
                 this.mlconfig.setMapNumber(mapNo);
+                this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
                 this.mapHosterSetupCallback = mapHosterSetupCallback;
                 console.log("Setting mapNumber to " + this.mapNumber);
 
@@ -40,7 +41,6 @@
                     pointWebMap = [null, null],
                     channel = null,
                     pusher = null,
-                    pusherChannel = null,
 
                     configOptions,
 
@@ -90,6 +90,7 @@
                             // $inj,
                             // mapTypeSvc,
                             currentPusher,
+                            pusherChannel = null,
                             currentChannel;
 
                         /* Scalebar refuses to appear on map.  It appears outside the map on a bordering control.
@@ -107,7 +108,7 @@
                             // alert("StartupArcGIS.initUI : selfDetails.mph == null");
                             // placeCustomControls();
                             self.mapHoster = new MapHosterArcGIS.start();
-                            self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
+                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, self.mlconfig);
                             self.mlconfig.setMapHosterInstance = self.mapHoster;
                             placeCustomControls();
                             setupQueryListener();
@@ -124,6 +125,7 @@
                             // curmph = mapTypeSvc.getSelectedMapType();
                             // console.log('selected map type is ' + curmph);
                             pusherChannel = self.mlconfig.masherChannel(false);
+                            console.log('pusherChannel is ' + pusherChannel);
 
                             pusher = PusherSetupCtrl.createPusherClient(
                                 self.mlconfig,

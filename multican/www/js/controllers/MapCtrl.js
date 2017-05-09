@@ -221,7 +221,6 @@
 
                 onAcceptDestination = function (info) {
                     var sourceMapType,
-                        evtSvc = $scope.mapHosterInstance,
                         newSelectedWebMapId,
                         destWnd;
 
@@ -800,7 +799,7 @@
 
             function initializeLocation() {
                 console.log("MapCtrl.initialize NOT MOBILE");
-                var mapConfig,
+                var
                     mapLocOptions = {
                         center: new google.maps.LatLng(37.422858, -122.085065),
                         zoom: 15,
@@ -853,7 +852,7 @@
                 if (commonInitialized === false) {
                     initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                                 CurrentMapTypeService, GoogleQueryService, SiteViewService);
-                    }
+                }
             }
             // google.maps.event.addDomListener(document.getElementById('mapdiv'), 'load', function () {
             //     console.log("addDomListener window load callback");

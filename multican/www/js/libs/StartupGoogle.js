@@ -23,6 +23,7 @@
                 this.pusher = null;
                 this.mlconfig = mapconfig; //MLConfig.getInstance();
                 this.mlconfig.setMapNumber(mapNo);
+                this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var self = this,
@@ -40,7 +41,6 @@
 
                     configure = function (newMapId, mapLocOpts) {
                         var $inj,
-                            evtSvc,
                             mapInstanceSvc,
                             centerLatLng,
                             initZoom,
@@ -74,9 +74,8 @@
                         self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapGoogleLocOpts);
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
                         self.mapHoster = new MapHosterGoogle.MapHosterGoogle();
-                        self.mapHoster.config(self.gMap, self.mapNumber, mapGoogleLocOpts, google, google.maps.places, self.mlconfig);
+                        self.mapHoster.config(self.gMap, mapGoogleLocOpts, google, google.maps.places, self.mlconfig);
                         self.mlconfig.setMapHosterInstance(self.mapHoster);
-                        self.mlconfig.setUserId(self.mlconfig.getUserName() + self.mapNumber);
 
                         $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
                         // evtSvc = $inj.get('PusherEventHandlerService');

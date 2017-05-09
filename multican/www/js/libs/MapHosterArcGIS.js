@@ -19,7 +19,7 @@
         var self = this,
             scale2Level = [],
             mphmap = null,
-            mapNumber,
+            // mapNumber,
             mapReady = true,
             zoomLevels = 0,
             zmG,
@@ -236,6 +236,53 @@
                 // .openOn(mphmap);
         }
 
+        function retrievedBounds(xj) {
+            console.log("Back in MapHosterArcGIS " + mlconfig.getMapNumber() + " retrievedBounds");
+            var zm = xj.zoom,
+                cmp = compareExtents("retrievedBounds",
+                    {
+                        'zoom' : xj.zoom,
+                        'lon' : xj.lon,
+                        'lat' : xj.lat
+                    }),
+                view = xj.lon + ", " + xj.lat + " : " + zm + " " + scale2Level[zm].scale,
+                tmpLon,
+                tmpLat,
+                tmpZm,
+                cntr;
+
+            if (document.getElementById("mppos") !== null) {
+                document.getElementById("mppos").value = view;
+            }
+            if (cmp === false) {
+                tmpLon = cntrxG;
+                tmpLat = cntryG;
+                tmpZm = zmG;
+
+                updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
+                // userZoom = false;
+                console.log("retrievedBounds centerAndZoom at zm = " + zm);
+                cntr = new GeometryPoint(xj.lon, xj.lat, new esri.SpatialReference({wkid: 4326}));
+
+                userZoom = false;
+                if (xj.action === 'pan') {
+                    if (tmpZm !== zm) {
+                        mphmap.centerAndZoom(cntr, zm);
+                    } else {
+                        mphmap.centerAt(cntr);
+                    }
+                } else {
+                    if (tmpLon !== xj.lon || tmpLat !== xj.lat) {
+                        // var tmpCenter = new GeometryPoint(tmpLon, tmpLat, new esri.SpatialReference({wkid: 4326}));
+                        mphmap.centerAndZoom(cntr, zm);
+                    } else {
+                        mphmap.setZoom(zm);
+                    }
+                }
+                userZoom = true;
+            }
+        }
+
         function onMapClick(e) {
             var mapPt = {x : e.mapPoint.x, y : e.mapPoint.y},
                 source = new proj4.Proj('GOOGLE'),
@@ -344,12 +391,11 @@
             */
         }
 
-        function configureMap(xtntMap, mapNo, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
+        function configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
             console.log("MapHosterArcGIS configureMap");
             mphmap = xtntMap;
             mapReady = false;
             mlconfig = mlcfg;
-            mapNumber = mapNo;
             var qlat, qlon, qzoom, startCenter, cntr, xtnt, address,
                 mpWrap = null,
                 mpCan = null,
@@ -466,54 +512,7 @@
 
             mpWrap = document.getElementById("map_wrapper");
             mpCan = document.getElementById("map_" + mlconfig.getMapNumber());
-            mpCanRoot = document.getElementById("map_canvas_root");
-        }
-
-        function retrievedBounds(xj) {
-            console.log("Back in MapHosterArcGIS "+ mlconfig.getMapNumber() + " retrievedBounds");
-            var zm = xj.zoom,
-                cmp = compareExtents("retrievedBounds",
-                    {
-                        'zoom' : xj.zoom,
-                        'lon' : xj.lon,
-                        'lat' : xj.lat
-                    }),
-                view = xj.lon + ", " + xj.lat + " : " + zm + " " + scale2Level[zm].scale,
-                tmpLon,
-                tmpLat,
-                tmpZm,
-                cntr;
-
-            if (document.getElementById("mppos") !== null) {
-                document.getElementById("mppos").value = view;
-            }
-            if (cmp === false) {
-                tmpLon = cntrxG;
-                tmpLat = cntryG;
-                tmpZm = zmG;
-
-                updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
-                // userZoom = false;
-                console.log("retrievedBounds centerAndZoom at zm = " + zm);
-                cntr = new GeometryPoint(xj.lon, xj.lat, new esri.SpatialReference({wkid: 4326}));
-
-                userZoom = false;
-                if (xj.action === 'pan') {
-                    if (tmpZm !== zm) {
-                        mphmap.centerAndZoom(cntr, zm);
-                    } else {
-                        mphmap.centerAt(cntr);
-                    }
-                } else {
-                    if (tmpLon !== xj.lon || tmpLat !== xj.lat) {
-                        // var tmpCenter = new GeometryPoint(tmpLon, tmpLat, new esri.SpatialReference({wkid: 4326}));
-                        mphmap.centerAndZoom(cntr, zm);
-                    } else {
-                        mphmap.setZoom(zm);
-                    }
-                }
-                userZoom = true;
-            }
+            mpCanRoot = document.getElementById("map_canvas_root" + mlconfig.getMapNumber());
         }
 
         function retrievedNewPosition(pos) {
@@ -540,7 +539,7 @@
             return pos;
         }
 
-        function getPusherEventHandler () {
+        function getPusherEventHandler() {
             return pusherEvtHandler;
         }
 

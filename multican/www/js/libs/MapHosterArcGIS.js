@@ -197,8 +197,7 @@
             // alert("You clicked the map at " + clickPt.x + ", " + clickPt.y);
             console.debug(clickPt);
             var
-                mpCan = document.getElementById("map" + mlconfig.getMapNumber()),
-                mpDiv = document.getElementById(mpCan), // "map_canvas"),
+                mpDiv = document.getElementById("map" + mlconfig.getMapNumber()),
                 mpDivNG = angular.element(mpDiv),
                 wdt = mpDivNG[0].clientWidth,
                 hgt = mpDivNG[0].clientHeight,

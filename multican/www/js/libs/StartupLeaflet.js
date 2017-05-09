@@ -81,6 +81,7 @@
                         self.mapHoster = new MapHosterLeaflet.MapHosterLeaflet();
                         self.mapHoster.config(self.lMap, self.mapNumber, mapLocOpts, self.mlconfig);
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
+                        self.mlconfig.setUserId(self.mlconfig.getUserName() + self.mapNumber);
                         self.pusherChannel = self.mlconfig.masherChannel(false);
                         console.debug(self.pusherChannel);
                         self.pusher = PusherSetupCtrl.createPusherClient(

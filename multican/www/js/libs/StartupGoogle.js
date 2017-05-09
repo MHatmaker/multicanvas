@@ -76,6 +76,7 @@
                         self.mapHoster = new MapHosterGoogle.MapHosterGoogle();
                         self.mapHoster.config(self.gMap, self.mapNumber, mapGoogleLocOpts, google, google.maps.places, self.mlconfig);
                         self.mlconfig.setMapHosterInstance(self.mapHoster);
+                        self.mlconfig.setUserId(self.mlconfig.getUserName() + self.mapNumber);
 
                         $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
                         // evtSvc = $inj.get('PusherEventHandlerService');

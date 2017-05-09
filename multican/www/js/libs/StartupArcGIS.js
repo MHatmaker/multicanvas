@@ -355,6 +355,7 @@
                             console.log("using channel " + channel + "with userName " + userName);
                             self.mlconfig.setUrl(url);
                             self.mlconfig.setUserName(userName);
+                            self.mlconfig.setUserId(userName + self.mapNumber);
                             if (displayDestination === 'New Pop-up Window') {
                                 baseUrl = self.mlconfig.getbaseurl();
                                 window.open(baseUrl + "/arcgis/" + url, newSelectedWebMapId, self.mlconfig.getSmallFormDimensions());

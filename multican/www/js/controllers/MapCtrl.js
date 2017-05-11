@@ -25,6 +25,7 @@
     ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl,
             MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, CarouselCtrlArg, MLConfig) {
         var selfMethods = {},
+            selfVars = {},
             MapInstanceService,
             CurrentMapTypeService,
             SiteViewService,
@@ -48,7 +49,6 @@
             utils = libutils,
             queryForNewDisplay = "",
             queryForSameDisplay = "",
-            searchInput,
             $scope,
             $compile,
             $routeParams,
@@ -56,6 +56,8 @@
             firstMap = true,
             commonInitialized = false,
             mapStartup;
+
+        selfVars.searchInput = null;
 
         function invalidateCurrentMapTypeConfigured() {
             curMapTypeInitialized = false;
@@ -262,7 +264,7 @@
 
                 if (placesFromSearch && placesFromSearch.length > 0) {
                     placesSearchResults = placesFromSearch;
-
+                    selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
 
                     $scope.subsetDestinations(placesFromSearch);
 
@@ -273,7 +275,7 @@
                         scope,
                         {
                             'id' : null,
-                            'title' : searchInput.value,
+                            'title' : selfVars.searchInput.value,
                             'snippet' : 'No snippet available',
                             'icon' : 'img/googlemap.png',
                             'mapType' : CurrentMapTypeService.getCurrentMapType()
@@ -384,18 +386,23 @@
                 $scope.safeApply();
 
                 setTimeout(function () {
-                    searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input' + currentSlideNumber));
-                    if (searchInput) {
-                        // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
-                        searchInput.value = '';
-                        searchBox = new google.maps.places.SearchBox(searchInput);
+                    // selfVars.searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input' + currentSlideNumber));
+                    console.log("in outer setTimeout setting up selfVars.searchInput");
+                    console.debug(selfVars.searchInput);
+                    selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
+                    if (selfVars.searchInput) {
+                        // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(selfVars.searchInput);
+                        selfVars.searchInput.value = '';
+                        searchBox = new google.maps.places.SearchBox(selfVars.searchInput);
 
                         google.maps.event.addListener(searchBox, 'places_changed', function () {
                             console.log("MapCtrl 'places_changed' listener");
                             connectQuery();
-                            searchInput.blur();
+                            selfVars.searchInput.blur();
                             setTimeout(function () {
-                                searchInput.value = '';
+                                console.log("in inner setTimeout setting up selfVars.searchInput");
+                                console.debug(selfVars.searchInput);
+                                selfVars.searchInput.value = '';
                             }, 10);
                         });
                     }

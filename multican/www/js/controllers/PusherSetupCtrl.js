@@ -8,7 +8,7 @@
     console.log('PusherSetup setup');
     var areWeInitialized = false,
         pusherPathPre = "http://",
-        pusherPathNgrok = "42091926",
+        pusherPathNgrok = "c2478fed",
         pusherPathPost = ".ngrok.io/pusher/auth";
         // areWeInstantiated = false;
     define([
@@ -32,6 +32,7 @@
             displayPusherDialog : null
         },
             selfMethods = {},
+            mlconfig,
             createPusherClient,
             setupPusherClient;
 
@@ -234,7 +235,8 @@
                 }
                 selfdict.clients[foo] = new PusherClient(selfdict.eventDct,
                     $scope.data.privateChannelMashover,
-                    $scope.data.userName,
+                    $scope.data.clientName,
+                    mlconfig.getMapHosterInstance(),
                     selfdict.callbackFunction,
                     selfdict.info);
                 selfdict.eventDct = selfdict.mph.getEventDictionary();
@@ -311,9 +313,11 @@
                 }
             };
 
-            createPusherClient = function (mlconfig, cbfn, nfo) {
+            createPusherClient = function (mlcfg, cbfn, nfo) {
                 console.log("PusherSetupCtrl.createPusherClient");
-                var mapHoster = mlconfig.getMapHosterInstance(),
+                mlconfig = mlcfg;
+                var
+                    mapHoster = mlconfig.getMapHosterInstance(),
                     pusher,
                     clientName = mlconfig.getUserName() + mlconfig.getMapNumber();
 

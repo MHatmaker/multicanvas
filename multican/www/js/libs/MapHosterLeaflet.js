@@ -25,8 +25,9 @@
         'libs/utils',
         'libs/MLConfig',
         'libs/PusherEventHandler',
+        'libs/PusherConfig',
         'controllers/PusherSetupCtrl'
-    ], function (PositionViewCtrl, GeoCoder, utils, MLConfig, PusherEventHandler, PusherSetupCtrl) {
+    ], function (PositionViewCtrl, GeoCoder, utils, MLConfig, PusherEventHandler, PusherConfig, PusherSetupCtrl) {
 
         var MapHosterLeaflet = function () {
             var
@@ -311,7 +312,7 @@
                     linkrSvc,
                     content = "Received Pushed Click from user " + clickPt.referrerName + ", " + clickPt.referrerId + " at " + latlng.toString();
 
-                $inj = mlconfig.getInjector();
+                $inj = PusherConfig.getInstance().getInjector();
                 linkrSvc = $inj.get('LinkrService');
                 linkrSvc.hideLinkr();
                 if (clickPt.title) {
@@ -373,14 +374,14 @@
             });
 
             function placeCustomControls() {
-                var $inj = mlconfig.getInjector(),
+                var $inj = PusherConfig.getInstance().getInjector(),
                     ctrlSvc = $inj.get('MapControllerService'),
                     mapCtrl = ctrlSvc.getController();
                 mapCtrl.placeCustomControls();
             }
 
             function setupQueryListener() {
-                var $inj = mlconfig.getInjector(),
+                var $inj = PusherConfig.getInstance().getInjector(),
                     ctrlSvc = $inj.get('MapControllerService'),
                     mapCtrl = ctrlSvc.getController();
                 mapCtrl.setupQueryListener();
@@ -473,6 +474,10 @@
 
             function getMapHosterName() {
                 return "hostName is " + hostName;
+            }
+            function getMap() {
+                console.log("Asking MapHosterLeaflet to return a google maphoster");
+                return null;
             }
 
             function getEventDictionary() {
@@ -604,6 +609,7 @@
                 getCenter : getCenter,
                 removeEventListeners : removeEventListeners,
                 getMapHosterName : getMapHosterName,
+                getMap : getMap,
                 geoLocate : geoLocate,
                 getPusherEventHandler : getPusherEventHandler
             };

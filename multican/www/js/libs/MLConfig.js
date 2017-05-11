@@ -115,6 +115,20 @@ define(function () {
             setUserId = function (id) {
                 details.userId = id;
             },
+            getReferrerId = function () {
+                return details.referrerId;
+            },
+            getReferrerIdFromUrl = function () {
+                details.referrerId = getParameterByName('referrerId');
+                return details.referrerId;
+            },
+            setReferrerId = function (id) {
+                details.referrerId = id;
+            },
+            getReferrerNameFromUrl = function () {
+                details.referrerName = getParameterByName('referrerName');
+                return details.referrerName;
+            },
             testUrlArgs = function () {
                 var rslt = getParameterByName('id', details);
                 // alert("getParameterByName('id') = " + rslt);
@@ -195,6 +209,10 @@ define(function () {
             setMapType: setMapType,
             getUserId: getUserId,
             setUserId: setUserId,
+            getReferrerId: getReferrerId,
+            getReferrerIdFromUrl: getReferrerIdFromUrl,
+            getReferrerNameFromUrl: getReferrerNameFromUrl,
+            setReferrerId: setReferrerId,
             setMapNumber: setMapNumber,
             getMapNumber: getMapNumber,
             setMapHosterInstance: setMapHosterInstance,

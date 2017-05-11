@@ -320,7 +320,7 @@
 
                 // placesFromSearch = searchBox.getPlaces();
 
-                pacinput = document.getElementById('pac-input');
+                pacinput = document.getElementById('pac-input' + currentSlideNumber);
                 queryPlaces.bounds = searchBounds;
                 queryPlaces.query = pacinput.value;
                 queryPlaces.location = center;
@@ -336,15 +336,16 @@
                 var
                     cnvs, //  = utils.getElemById(whichCanvas),
                     curMapType = CurrentMapTypeService.getMapTypeKey(),
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     fnLink,
                     pacinput,
                     pacinputParent,
                     pacinputElement,
-                    template = ' \
-                        <div id="gmsearch" \
+                    templateUnformatted = ' \
+                        <div id="gmsearch{0}" \
                             class="gmsearchclass" \
                             style="width: 28em; margin-left: 7em; margin-right : 2em;"> \
-                            <input id="pac-input" \
+                            <input id="pac-input{1}" \
                                 class="gmsearchcontrols" className="controls" \
                                 type="text" onclick="cancelBubble=true;" onmousemove="event.stopPropagation();" \
                                 onmousedown="event.stopPropagation();" onmouseup="event.stopPropagation();" \
@@ -352,7 +353,8 @@
                                 ng-class="{\'gmsposition-rel\' : !gsearch.isGoogle, \'gmsposition-abs\' : gsearch.isGoogle}" \
                                 ng-model="gsearch.query" \
                                 ng-change="queryChanged()" auto-focus > \
-                        </div>';
+                        </div>',
+                    template = templateUnformatted.format(currentSlideNumber, currentSlideNumber);
                 // curMapType = CurrentMapTypeService.getMapTypeKey(),
                 if (curMapType === 'google') {
                     $scope.gsearch.isGoogle = true;
@@ -361,7 +363,7 @@
                     if (curMapType === 'arcgis') {
                         whichCanvas = 'map' + mapStartup.getMapNumber() + '_root'; // 'map_canvas_root';
                         // whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
-                        pacinputElement = document.getElementById('pac-input');
+                        pacinputElement = document.getElementById('pac-input' + currentSlideNumber);
                         if (pacinputElement) {
                             pacinputParent = pacinputElement.parentElement;
                             pacinputParent.removeChild(pacinputElement);
@@ -370,7 +372,7 @@
                 }
 
                 whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
-                pacinput = document.getElementById('pac-input');
+                pacinput = document.getElementById('pac-input' + currentSlideNumber);
                 if (!pacinput) {
                     pacinput = angular.element(template);
                     cnvs = utils.getElemById(whichCanvas);
@@ -382,7 +384,7 @@
                 $scope.safeApply();
 
                 setTimeout(function () {
-                    searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input'));
+                    searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input' + currentSlideNumber));
                     if (searchInput) {
                         // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
                         searchInput.value = '';

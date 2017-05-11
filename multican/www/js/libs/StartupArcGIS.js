@@ -107,7 +107,7 @@
                             console.log("self.mapHoster is null");
                             // alert("StartupArcGIS.initUI : selfDetails.mph == null");
                             // placeCustomControls();
-                            self.mapHoster = new MapHosterArcGIS.start();
+                            self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS();
                             self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, self.mlconfig);
                             self.mlconfig.setMapHosterInstance = self.mapHoster;
                             placeCustomControls();
@@ -158,7 +158,7 @@
                             );
                             currentPusher = pusher;
                             currentChannel = channel;
-                            self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
+                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, self.mlconfig);
 
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
                             console.log("use current pusher - now setPusherClient");
@@ -298,9 +298,9 @@
                                 dojo.connect(aMap, "onUpdateEnd", hideLoading);
                                 dojo.connect(aMap, "onLoad", initUI);
 
-                                self.mapHoster = new MapHosterArcGIS.start();
+                                self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS();
                                 // self.mapHosterSetupCallback(self.mapHoster, self.aMap);
-                                self.mapHoster.config(self.aMap, self.mapNumber, zoomWebMap, pointWebMap, self.mlconfig);
+                                self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, self.mlconfig);
                                 $inj = self.mlconfig.getInjector();
                                 mapInstanceSvc = $inj.get('MapInstanceService');
                                 mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);

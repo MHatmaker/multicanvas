@@ -140,7 +140,7 @@
                 console.log("MapHosterArcGIS setBounds with selfPusherDetails.pusher " + mlconfig.getMapNumber());
                 var xtntJsonStr,
                     cmp;
-                if (mapReady === true && selfPusherDetails.pusher) { // && self.pusher.ready == true) {
+                if (mapReady === true) { //} && selfPusherDetails.pusher) { // && self.pusher.ready == true) {
                     // runs this code after you finishing the zoom
                     console.log("MapHoster ArcGIS " + mlconfig.getMapNumber() + " setBounds ready to process json xtExt");
                     xtntJsonStr = JSON.stringify(xtExt);
@@ -148,11 +148,11 @@
                     cmp = compareExtents("setBounds", xtExt);
                     if (cmp === false) {
                         console.log("MapHoster arcGIS " + mlconfig.getMapNumber() + " setBounds pusher send ");
-
-                        if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
-                            selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
-                            PusherSetupCtrl.publishPanEvent(xtExt);
-                        }
+                        //
+                        // if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
+                        //     selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
+                        // }
+                        PusherSetupCtrl.publishPanEvent(xtExt);
                         updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                         //console.debug(sendRet);
                     }
@@ -169,6 +169,7 @@
 
             function setPusherClient(pusher, channel) {
                 console.log("MapHosterArcGIS setPusherClient " +  pusherEvtHandler.getMapNumber());
+                /*
                 var evtDct = pusherEvtHandler.getEventDct(),
                     key;
 
@@ -189,6 +190,7 @@
                     // pusher.subscribe( 'client-NewMapPosition', retrievedNewPosition);
                     console.log("reset MapHosterArcGIS setPusherClient, selfPusherDetails.pusher " +  selfPusherDetails.pusher);
                 }
+                */
             }
 
             function retrievedClick(clickPt) {

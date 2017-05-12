@@ -45,7 +45,7 @@
             selfdict.scope.userName = selfdict.userName;
             selfdict.pusher = null;
             selfdict.isInitialized = areWeInitialized = false;
-            selfdict.clients = {};
+            // selfdict.clients = {};
             selfdict.eventHandlers = {};
 
             $scope.showDialog = selfdict.scope.showDialog = false;
@@ -223,8 +223,8 @@
             };
 
             $scope.onAcceptChannel = function () {
-                var pusher,
-                    clientName = mlconfig.getUserName() + mlconfig.getMapNumber();
+                var pusher;
+                    // clientName = mlconfig.getUserName() + mlconfig.getMapNumber();
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
                 selfdict.CHANNEL = $scope.data.privateChannelMashover;
@@ -233,13 +233,13 @@
                 if (!pusher) {
                     pusher = new PusherChannel(selfdict.CHANNEL);
                 }
-                selfdict.clients[foo] = new PusherClient(selfdict.eventDct,
-                    $scope.data.privateChannelMashover,
-                    $scope.data.clientName,
-                    mlconfig.getMapHosterInstance(),
-                    selfdict.callbackFunction,
-                    selfdict.info);
-                selfdict.eventDct = selfdict.mph.getEventDictionary();
+                // selfdict.clients[foo] = new PusherClient(selfdict.eventDct,
+                //     $scope.data.privateChannelMashover,
+                //     $scope.data.clientName,
+                //     mlconfig.getMapHosterInstance(),
+                //     selfdict.callbackFunction,
+                //     selfdict.info);
+                // selfdict.eventDct = selfdict.mph.getEventDictionary();
             };
 
             $scope.cancel = function () {
@@ -319,7 +319,7 @@
                 var
                     mapHoster = mlconfig.getMapHosterInstance(),
                     pusher,
-                    clientName = mlconfig.getUserName() + mlconfig.getMapNumber();
+                    clientName = 'map' + mlconfig.getMapNumber();
 
                 if (!selfdict.pusher) {
                     pusher = new PusherChannel(PusherConfig.getInstance().getPusherChannel());
@@ -335,7 +335,7 @@
                 console.log("createPusherClient for map " + clientName);
                 selfdict.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), selfdict.CHANNEL, clientName, mapHoster, cbfn);
                 // selfdict.clients[clientName] = new PusherClient(angular.copy(mapHoster.getEventDictionary()), selfdict.CHANNEL, clientName, mapHoster, cbfn);
-                return selfdict.clients[clientName];
+                // return selfdict.clients[clientName];
             };
             selfMethods.createPusherClient = createPusherClient;
 
@@ -391,6 +391,7 @@
                     obj.eventDct['client-MapXtntEvent'](frame);
                 }
             }
+            selfdict.pusher.channel(selfdict.CHANNEL).trigger('client-MapXtntEvent', frame);
         }
         function publishClickEvent(frame) {
             console.log('frame is', frame);

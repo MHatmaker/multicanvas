@@ -83,7 +83,7 @@
                         // evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
                         mapInstanceSvc = $inj.get('MapInstanceService');
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
-
+                        
                         self.pusher = PusherSetupCtrl.createPusherClient(
                             self.mlconfig,
                             function (channel, userName) {
@@ -94,6 +94,7 @@
                         if (!self.pusher) {
                             console.log("failed to create Pusher in StartupGoogle");
                         }
+
                         // return self.mapHoster;
                     };
 

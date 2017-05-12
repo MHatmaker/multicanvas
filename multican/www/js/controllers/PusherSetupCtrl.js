@@ -8,7 +8,7 @@
     console.log('PusherSetup setup');
     var areWeInitialized = false,
         pusherPathPre = "http://",
-        pusherPathNgrok = "c2478fed",
+        pusherPathNgrok = "d84e9c41",
         pusherPathPost = ".ngrok.io/pusher/auth";
         // areWeInstantiated = false;
     define([
@@ -18,6 +18,7 @@
         console.log('PusherSetupCtrl define');
 
         var selfdict = {
+            'channel' : null,
             'scope' : null,
             'mph' : null,
             'pusher' : null,
@@ -33,7 +34,6 @@
         },
             selfMethods = {},
             mlconfig,
-            createPusherClient,
             setupPusherClient;
 
         function PusherSetupCtrl($scope, $uibModal) {
@@ -42,7 +42,7 @@
             console.log("areWeInitialized is " + areWeInitialized);
             $scope.privateChannelMashover = PusherConfig.getInstance().masherChannel();
             selfdict.scope = $scope;
-            selfdict.scope.userName = selfdict.userName;
+            selfdict.scope.userName = PusherConfig.getInstance().getUserName();
             selfdict.pusher = null;
             selfdict.isInitialized = areWeInitialized = false;
             // selfdict.clients = {};
@@ -60,7 +60,7 @@
 
             function PusherChannel(chnl) {
                 var pusher,
-                    APP_ID = '40938',
+                    // APP_ID = '40938',
                     APP_KEY = '5c6bad75dc0dd1cec1a6',
                     APP_SECRET = '54546672d0196be97f6a',
                     channel = chnl,
@@ -77,8 +77,8 @@
                     channel = channelsub;
                 }
 
-                selfdict.CHANNEL = channel.indexOf("private-channel-") > -1 ? channel : 'private-channel-' + channel;
-                console.log("with channel " + selfdict.CHANNEL);
+                selfdict.CHANNELNAME = channel.indexOf("private-channel-") > -1 ? channel : 'private-channel-' + channel;
+                console.log("with channel " + selfdict.CHANNELNAME);
 
                 // pusher = new Pusher({appId: app_id, key: app_key, secret: app_secret});
                 // pusher = new Pusher(APP_KEY);
@@ -92,6 +92,7 @@
                         // user_info: {}
                     }
                 });
+
                 pusher.connection.bind('state_change', function (state) {
                     if (state.current === 'connected') {
                         // alert("Yipee! We've connected!");
@@ -101,8 +102,8 @@
                         console.log("Oh-Noooo!, my Pusher connection failed");
                     }
                 });
-                console.log("Pusher subscribe to channel " + selfdict.CHANNEL);
-                channelBind = pusher.subscribe(selfdict.CHANNEL);
+                console.log("Pusher subscribe to channel " + selfdict.CHANNELNAME);
+                selfdict.channel = channelBind = pusher.subscribe(selfdict.CHANNELNAME);
 
                 /*
                 channelBind.bind('client-MapXtntEvent', function (frame)
@@ -161,40 +162,15 @@
                     console.log('Problem subscribing to "private-channel": ' + statusCode);
                 });
                 channelBind.bind('pusher:subscription_succeeded', function () {
-                    console.log('Successfully subscribed to "' + selfdict.CHANNEL); // + 'r"');
+                    console.log('Successfully subscribed to "' + selfdict.CHANNELNAME); // + 'r"');
                 });
             }
+            PusherChannel(PusherConfig.getInstance().getPusherChannel());
 
-            function PusherClient(evtDct, channel, clientName, mph, cbfn) {
-                var mapHoster = mph,
-                    callbackfunction = cbfn;
+            function PusherClient(evtDct, channel, clientName, cbfn) {
+                var callbackfunction = cbfn;
 
-                // allMapTypes = serv.getMapTypes();
-                // mptLength = allMapTypes.length;
-                //
-                // console.log("BEWARE OF SIDE EFFECTS");
-                // console.log("Attempt to setPusherClient for all defined map types");
-                // for (i = 0; i < mptLength; i +=  1) {
-                //     maptypekey = allMapTypes[i].type;
-                //     maptypeobj = allMapTypes[i].mph;
-                //     console.log("PusherSetupCtrl iteratively setting pusher client for hoster type: " + maptypekey);
-                //     if (maptypeobj && maptypeobj !== "undefined") {
-                //         maptypeobj.setPusherClient(pusher, selfdict.CHANNEL);
-                //         maptypeobj.setUserName(selfdict.userName);
-                //     }
-                // }
-                selfdict.eventHandlers[clientName] = mph.getPusherEventHandler();
-
-                mapHoster.setPusherClient(selfdict.pusher, channel);
-                //maptypeobj.setUserName(selfdict.userName);
-
-                // console.log("CurrentMapTypeService got mph, call setPusherClient");
-                // selfdict.mph.setPusherClient(pusher, selfdict.CHANNEL);
-                // selfdict.mph.setUserName(selfdict.userName);
-                // selfdict.eventDct = selfdict.mph.getEventDictionary();
-                //
-                //selfdict.eventDct = maptypeobj.getEventDictionary();
-
+                selfdict.eventHandlers[clientName] = evtDct;
 
                 if (selfdict.info) {
                     callbackfunction(channel, clientName,
@@ -223,16 +199,12 @@
             };
 
             $scope.onAcceptChannel = function () {
-                var pusher;
-                    // clientName = mlconfig.getUserName() + mlconfig.getMapNumber();
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
-                selfdict.CHANNEL = $scope.data.privateChannelMashover;
+                selfdict.CHANNELNAME = $scope.data.privateChannelMashover;
                 PusherConfig.getInstance().setChannel($scope.data.privateChannelMashover);
                 PusherConfig.getInstance().setNameChannelAccepted(true);
-                if (!pusher) {
-                    pusher = new PusherChannel(selfdict.CHANNEL);
-                }
+                PusherConfig.getInstance().setUserName(selfdict.userName);
                 // selfdict.clients[foo] = new PusherClient(selfdict.eventDct,
                 //     $scope.data.privateChannelMashover,
                 //     $scope.data.clientName,
@@ -313,18 +285,17 @@
                 }
             };
 
-            createPusherClient = function (mlcfg, cbfn, nfo) {
+            function createPusherClient(mlcfg, cbfn, nfo) {
                 console.log("PusherSetupCtrl.createPusherClient");
                 mlconfig = mlcfg;
                 var
                     mapHoster = mlconfig.getMapHosterInstance(),
-                    pusher,
                     clientName = 'map' + mlconfig.getMapNumber();
-
-                if (!selfdict.pusher) {
-                    pusher = new PusherChannel(PusherConfig.getInstance().getPusherChannel());
-                }
-                selfdict.CHANNEL = PusherConfig.getInstance().getPusherChannel();
+                //
+                // if (!selfdict.pusher) {
+                //     selfdict.pusher = new PusherChannel(PusherConfig.getInstance().getPusherChannel());
+                // }
+                selfdict.CHANNELNAME = PusherConfig.getInstance().getPusherChannel();
                 selfdict.userName = mlconfig.getUserName();
                 selfdict.mapNumber = mlconfig.getMapNumber();
                 if (selfdict.scope) {
@@ -333,10 +304,10 @@
                 selfdict.callbackFunction = cbfn;
                 selfdict.info = nfo;
                 console.log("createPusherClient for map " + clientName);
-                selfdict.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), selfdict.CHANNEL, clientName, mapHoster, cbfn);
-                // selfdict.clients[clientName] = new PusherClient(angular.copy(mapHoster.getEventDictionary()), selfdict.CHANNEL, clientName, mapHoster, cbfn);
-                // return selfdict.clients[clientName];
-            };
+                selfdict.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), selfdict.CHANNELNAME, clientName, cbfn);
+                // selfdict.clients[clientName] = new PusherClient(angular.copy(mapHoster.getEventDictionary()), selfdict.CHANNELNAME, clientName, mapHoster, cbfn);
+                return selfdict.clients[clientName];
+            }
             selfMethods.createPusherClient = createPusherClient;
 
             setupPusherClient = function (eventDct, userName, cbfn, nfo) {
@@ -380,27 +351,28 @@
             var handler,
                 obj;
             if (frame.hasOwnProperty('x')) {
-                frame['lat'] = frame.y;
-                frame['lon'] = frame.x;
-                frame['zoom'] = frame.z;
+                frame.lat = frame.y;
+                frame.lon = frame.x;
+                frame.zoom = frame.z;
             }
             for (handler in selfdict.eventHandlers) {
                 if (selfdict.eventHandlers.hasOwnProperty(handler)) {
                     obj = selfdict.eventHandlers[handler];
-                    console.log("publish pan event to map " + selfdict.eventHandlers[handler].getMapNumber());
-                    obj.eventDct['client-MapXtntEvent'](frame);
+                    console.log("publish pan event to map " + selfdict.eventHandlers[handler]);
+                    obj['client-MapXtntEvent'](frame);
                 }
             }
-            selfdict.pusher.channel(selfdict.CHANNEL).trigger('client-MapXtntEvent', frame);
+            selfdict.channel.trigger('client-MapXtntEvent', frame);
+            // selfdict.pusher.channels(selfdict.CHANNELNAME).trigger('client-MapXtntEvent', frame);
         }
         function publishClickEvent(frame) {
             console.log('frame is', frame);
             var handler,
                 obj;
             if (frame.hasOwnProperty('x')) {
-                frame['lat'] = frame.y;
-                frame['lon'] = frame.x;
-                frame['zoom'] = frame.z;
+                frame.lat = frame.y;
+                frame.lon = frame.x;
+                frame.zoom = frame.z;
             }
             for (handler in selfdict.eventHandlers) {
                 if (selfdict.eventHandlers.hasOwnProperty(handler)) {
@@ -409,28 +381,31 @@
                     obj.eventDct['client-MapClickEvent'](frame);
                 }
             }
+            selfdict.channel.trigger('client-MapClickEvent', frame);
+            // selfdict.pusher.channels(selfdict.CHANNELNAME).trigger('client-MapClickEvent', frame);
         }
         function isInstantiated() {
             return selfMethods.isInstantiated;
         }
 
-        // function createPusherClient(pusherChannel, mlconfig, cbfn, nfo) {
-        //     return selfMethods.createPusherClient(pusherChannel, mlconfig, cbfn, nfo);
-        // }
+        function createPusherClient(pusherChannel, mlconfig, cbfn, nfo) {
+            return selfMethods.createPusherClient(pusherChannel, mlconfig, cbfn, nfo);
+        }
         //
         // function setupPusherClient(eventDct, userName, cbfn, nfo) {
         //     return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
         // }
-        function createPusherClient(mlconfig, cbfn, nfo) {
-            return selfMethods.createPusherClient(mlconfig, cbfn, nfo);
-        }
-        function setupPusherClient(eventDct, userName, cbfn, nfo) {
-            return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
-        }
+        // function createPusherClient(mlconfig, cbfn, nfo) {
+        //     return selfMethods.createPusherClient(mlconfig, cbfn, nfo);
+        // }
+        // function setupPusherClient(eventDct, userName, cbfn, nfo) {
+        //     return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
+        // }
 
         function init() {
             console.log('PusherSetup init');
             var App = angular.module('mapModule');
+
             // alert("areWeInitialized ?");
             // alert(areWeInitialized);
             // if (areWeInitialized == true) {

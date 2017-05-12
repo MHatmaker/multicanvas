@@ -13,6 +13,7 @@ define(function () {
             details = {
                 masherChannel : "private-channel-mashchannel",
                 masherChannelInitialized : false,
+                userName : 'defaultuser',
                 nginj : null
             };
         console.log("entering PusherConfig");
@@ -25,7 +26,7 @@ define(function () {
                 results = regex.exec(self.search);
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
-    return {
+        return {
             getChannelFromUrl : function () {
                 details.masherChannel = getParameterByName('channel');
                 details.masherChannelInitialized = true;
@@ -57,6 +58,12 @@ define(function () {
             },
             getPusherChannel : function () {
                 return details.masherChannel;
+            },
+            getUserName : function () {
+                return details.userName;
+            },
+            setUserName : function (name) {
+                details.userName = name;
             },
             setInjector : function (inj) {
                 details.nginj = inj;

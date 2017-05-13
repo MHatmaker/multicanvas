@@ -8,7 +8,7 @@
     console.log('PusherSetup setup');
     var areWeInitialized = false,
         pusherPathPre = "http://",
-        pusherPathNgrok = "d84e9c41",
+        pusherPathNgrok = "bd50e772",
         pusherPathPost = ".ngrok.io/pusher/auth";
         // areWeInstantiated = false;
     define([

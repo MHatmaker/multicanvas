@@ -177,7 +177,7 @@
                 if (selfPusherDetails.pusher === null) {
                     selfPusherDetails.pusher = pusher;
                     selfPusherDetails.channelName = channel;
-                    PusherConfig.getInstance().setChannel(channel);
+                    pusherConfig.setChannel(channel);
 
                     for (key in evtDct) {
                         if (evtDct.hasOwnProperty(key)) {
@@ -357,7 +357,7 @@
                         referrerName,
                         pushLL = {};
 
-                    if (selfPusherDetails.pusher) {
+                    // if (selfPusherDetails.pusher) {
                         referrerId = mlconfig.getUserId();
                         referrerName = mlconfig.getUserName();
                         pushLL = {
@@ -369,9 +369,9 @@
                             'address' : contextContent
                         };
                         console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLLG.lat + ", " + fixedLLG.lon);
-                        selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
+                        // selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
                         PusherSetupCtrl.publishClickEvent(pushLL);
-                    }
+                    // }
                 }
 
                 mphmap.infoWindow.show(screenPt, mphmap.getInfoWindowAnchor(screenPt));

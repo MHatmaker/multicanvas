@@ -26,7 +26,7 @@
                 this.mapHoster = null;
                 this.aMap = null;
                 this.aView = null;
-                this.mlconfig = mapconfig; //MLConfig.getInstance();
+                this.mlconfig = mapconfig;
                 this.mlconfig.setMapNumber(mapNo);
                 this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
                 this.mapHosterSetupCallback = mapHosterSetupCallback;

@@ -21,7 +21,7 @@
                 this.newSelectedWebMapId = '';
                 this.pusherChannel = null;
                 this.pusher = null;
-                this.mlconfig = mapconfig; //MLConfig.getInstance();
+                this.mlconfig = mapconfig;
                 this.mlconfig.setMapNumber(mapNo);
                 this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
 
@@ -55,7 +55,6 @@
 
                         window.loading = dojo.byId("loadingImg");
                         utils.showLoading();
-                        // var centerLatLng = new google.maps.LatLng(41.8, -87.7);
                         centerLatLng = new google.maps.LatLng(mapLocOpts.center.lat, mapLocOpts.center.lng);
                         initZoom = mapLocOpts.zoom;
 
@@ -77,13 +76,10 @@
                         self.mapHoster.config(self.gMap, mapGoogleLocOpts, google, google.maps.places, self.mlconfig);
                         self.mlconfig.setMapHosterInstance(self.mapHoster);
 
-                        $inj = self.mlconfig.getInjector(); // angular.injector(['mapModule']);
-                        // evtSvc = $inj.get('PusherEventHandlerService');
-                        // evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
-                        // evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
+                        $inj = self.mlconfig.getInjector();
                         mapInstanceSvc = $inj.get('MapInstanceService');
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
-                        
+
                         self.pusher = PusherSetupCtrl.createPusherClient(
                             self.mlconfig,
                             function (channel, userName) {
@@ -95,13 +91,8 @@
                             console.log("failed to create Pusher in StartupGoogle");
                         }
 
-                        // return self.mapHoster;
                     };
 
-                    // function getMapHoster() {
-                    //     console.log('StartupGoogle return mapHoster with map no. ' + mapHoster.getMapNumber());
-                    //     return mapHoster;
-                    // }
                 return {
                     getMap: getMap,
                     getMapNumber: getMapNumber,

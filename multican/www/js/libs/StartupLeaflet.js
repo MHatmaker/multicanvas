@@ -20,7 +20,7 @@
                 this.newSelectedWebMapId = '';
                 this.pusherChannel = null;
                 this.pusher = null;
-                this.mlconfig = mlconfig; //MLConfig.getInstance();
+                this.mlconfig = mlconfig;
                 this.mlconfig.setMapNumber(mapNo);
                 this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
 

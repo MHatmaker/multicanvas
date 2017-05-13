@@ -132,7 +132,7 @@
                             referrerId,
                             referrerName,
                             pushLL;
-                        if (selfPusherDetails.pusher) {
+                        // if (selfPusherDetails.pusher) {
                             fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6);
                             referrerId = mlconfig.getUserId();
                             referrerName = mlconfig.getUserName();
@@ -140,11 +140,11 @@
                                 "referrerId" : referrerId, "referrerName" : referrerName,
                                 'address' : marker.address, 'title' : marker.title };
                             console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                            triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
-                            console.log("triggered?");
-                            console.log(triggered);
+                            // triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
+                            // console.log("triggered?");
+                            // console.log(triggered);
                             PusherSetupCtrl.publishClickEvent(pushLL);
-                        }
+                        // }
                     };
 
                 google.maps.event.addListener(marker, 'click', function () {
@@ -557,7 +557,7 @@
 
                         qtext = mlconfig.query();
 
-                        pacnpt = angular.element('pac-input');
+                        pacnpt = angular.element('pac-input' + mlconfig.getMapNumber());
                         pacnpt.value = qtext;
                         // pacnpt.focus();
                         queryPlaces.bounds = gBnds;
@@ -586,7 +586,7 @@
                     google.maps.event.removeListener(listener);
                 });
 
-                searchInput = /** @type {HTMLInputElement} */ (document.getElementById('pac-input' + mlconfig.getMapNumber()));
+                searchInput = (document.getElementById('pac-input' + mlconfig.getMapNumber()));
                 mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
                 searchInput.value = '';
                 // searchBox = new gplaces.SearchBox(/** @type {HTMLInputElement} */

@@ -13,8 +13,7 @@
         // areWeInstantiated = false;
     define([
         'libs/PusherConfig',
-        'libs/MLConfig'
-    ], function (PusherConfig, MLConfig) {
+    ], function (PusherConfig) {
         console.log('PusherSetupCtrl define');
 
         var selfdict = {
@@ -40,9 +39,9 @@
             console.log("in PusherSetupCtrl");
             selfdict.isInstantiated = areWeInitialized = false;
             console.log("areWeInitialized is " + areWeInitialized);
-            $scope.privateChannelMashover = PusherConfig.getInstance().masherChannel();
+            $scope.privateChannelMashover = PusherConfig.masherChannel();
             selfdict.scope = $scope;
-            selfdict.scope.userName = PusherConfig.getInstance().getUserName();
+            selfdict.scope.userName = PusherConfig.getUserName();
             selfdict.pusher = null;
             selfdict.isInitialized = areWeInitialized = false;
             // selfdict.clients = {};
@@ -50,7 +49,7 @@
 
             $scope.showDialog = selfdict.scope.showDialog = false;
             $scope.data = {
-                privateChannelMashover : PusherConfig.getInstance().masherChannel(),
+                privateChannelMashover : PusherConfig.masherChannel(),
                 prevChannel : 'mashchannel',
                 userName : selfdict.userName,
                 prevUserName : selfdict.userName,
@@ -80,11 +79,9 @@
                 selfdict.CHANNELNAME = channel.indexOf("private-channel-") > -1 ? channel : 'private-channel-' + channel;
                 console.log("with channel " + selfdict.CHANNELNAME);
 
-                // pusher = new Pusher({appId: app_id, key: app_key, secret: app_secret});
-                // pusher = new Pusher(APP_KEY);
                 selfdict.pusher = pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: pusherPathPre + pusherPathNgrok + pusherPathPost,  // 'http://f705b06e.ngrok.io/pusher/auth', //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: pusherPathPre + pusherPathNgrok + pusherPathPost, //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,
@@ -105,16 +102,6 @@
                 console.log("Pusher subscribe to channel " + selfdict.CHANNELNAME);
                 selfdict.channel = channelBind = pusher.subscribe(selfdict.CHANNELNAME);
 
-                /*
-                channelBind.bind('client-MapXtntEvent', function (frame)
-                 {  // Executed when a messge is received
-                     console.log('frame is',frame);
-                     self.eventDct.retrievedBounds(frame);
-                     console.log("back from boundsRetriever");
-                 }
-                );
-                 */
-
                 channelBind.bind('client-NewUrlEvent', function (frame) {
                     console.log('frame is', frame);
                     // eventDct['client-NewUrlEvent'](frame);
@@ -123,9 +110,6 @@
 
                 channelBind.bind('client-NewMapPosition', function (frame) {
                     console.log('frame is', frame);
-                    // handler = mapHoster.getPusherEventHandler().getHandler('client-NewMapPosition');
-                    // handler(frame);
-                    // selfdict.eventDct['client-NewMapPosition'](frame);
                     console.log("back from NewMapPosition Event");
                 });
 
@@ -138,7 +122,7 @@
                     for (handlerkey in selfdict.eventHandlers) {
                         if (selfdict.eventHandlers.hasOwnProperty(handlerkey)) {
                             obj = selfdict.eventHandlers[handlerkey];
-                            obj.eventDct['client-MapXtntEvent'](frame);
+                            obj['client-MapXtntEvent'](frame);
                         }
                     }
                     console.log("back from boundsRetriever");
@@ -151,7 +135,7 @@
                     for (handlerkey in selfdict.eventHandlers) {
                         if (selfdict.eventHandlers.hasOwnProperty(handlerkey)) {
                             obj = selfdict.eventHandlers[handlerkey];
-                            obj.eventDct['client-MapXtntEvent'](frame);
+                            obj['client-MapXtntEvent'](frame);
                         }
                     }
                     console.log("back from clickRetriever");
@@ -165,7 +149,7 @@
                     console.log('Successfully subscribed to "' + selfdict.CHANNELNAME); // + 'r"');
                 });
             }
-            PusherChannel(PusherConfig.getInstance().getPusherChannel());
+            PusherChannel(PusherConfig.getPusherChannel());
 
             function PusherClient(evtDct, channel, clientName, cbfn) {
                 var callbackfunction = cbfn;
@@ -202,9 +186,9 @@
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
                 selfdict.CHANNELNAME = $scope.data.privateChannelMashover;
-                PusherConfig.getInstance().setChannel($scope.data.privateChannelMashover);
-                PusherConfig.getInstance().setNameChannelAccepted(true);
-                PusherConfig.getInstance().setUserName(selfdict.userName);
+                PusherConfig.setChannel($scope.data.privateChannelMashover);
+                PusherConfig.setNameChannelAccepted(true);
+                PusherConfig.setUserName(selfdict.userName);
                 // selfdict.clients[foo] = new PusherClient(selfdict.eventDct,
                 //     $scope.data.privateChannelMashover,
                 //     $scope.data.clientName,
@@ -291,11 +275,8 @@
                 var
                     mapHoster = mlconfig.getMapHosterInstance(),
                     clientName = 'map' + mlconfig.getMapNumber();
-                //
-                // if (!selfdict.pusher) {
-                //     selfdict.pusher = new PusherChannel(PusherConfig.getInstance().getPusherChannel());
-                // }
-                selfdict.CHANNELNAME = PusherConfig.getInstance().getPusherChannel();
+
+                selfdict.CHANNELNAME = PusherConfig.getPusherChannel();
                 selfdict.userName = mlconfig.getUserName();
                 selfdict.mapNumber = mlconfig.getMapNumber();
                 if (selfdict.scope) {
@@ -305,7 +286,7 @@
                 selfdict.info = nfo;
                 console.log("createPusherClient for map " + clientName);
                 selfdict.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), selfdict.CHANNELNAME, clientName, cbfn);
-                // selfdict.clients[clientName] = new PusherClient(angular.copy(mapHoster.getEventDictionary()), selfdict.CHANNELNAME, clientName, mapHoster, cbfn);
+
                 return selfdict.clients[clientName];
             }
             selfMethods.createPusherClient = createPusherClient;
@@ -323,7 +304,7 @@
             selfMethods.setupPusherClient = setupPusherClient;
 
             // isinitialized = function () {
-            //     return selfdict.isinitialized;
+            //     return ;
             // };
             // selfmethods.isinitialized = isinitialized;
             //
@@ -377,8 +358,8 @@
             for (handler in selfdict.eventHandlers) {
                 if (selfdict.eventHandlers.hasOwnProperty(handler)) {
                     obj = selfdict.eventHandlers[handler];
-                    console.log("publish click event to map " + selfdict.eventHandlers[handler].getMapNumber());
-                    obj.eventDct['client-MapClickEvent'](frame);
+                    console.log("publish click event to map " + selfdict.eventHandlers[handler]);
+                    obj['client-MapClickEvent'](frame);
                 }
             }
             selfdict.channel.trigger('client-MapClickEvent', frame);
@@ -406,12 +387,6 @@
             console.log('PusherSetup init');
             var App = angular.module('mapModule');
 
-            // alert("areWeInitialized ?");
-            // alert(areWeInitialized);
-            // if (areWeInitialized == true) {
-                // alert("quick bailout");
-                // return;
-            // }
             if (!selfdict.isInitialized) {
                 selfdict.isInitialized = areWeInitialized = true;
                 App.controller('PusherSetupCtrl',  ['$scope', '$uibModal', 'CurrentMapTypeService', PusherSetupCtrl]);

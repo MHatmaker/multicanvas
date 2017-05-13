@@ -43,7 +43,6 @@ console.log("bootstrap outer wrapper");
 
             // ControllerStarter.start(mapModule, portalForSearch, isMobile);
             console.log('mapModule created ... wait for onload to bootstrap');
-            //  PusherSetupCtrl.getInstance().start(angular.module('app'));
             ControllerStarter.start(app, portalForSearch, isMobile);
             angular.element(document).ready(function () {
                 require([
@@ -68,7 +67,7 @@ console.log("bootstrap outer wrapper");
                 console.debug(localApp);
                 angular.bootstrap(document, ['mapModule']);
                 var $inj = angular.element(document.body).injector();
-                PusherConfig.getInstance().setInjector($inj);
+                PusherConfig.setInjector($inj);
             });
             // window.onload = function () {
             //   console.log('ready to bootstrap');

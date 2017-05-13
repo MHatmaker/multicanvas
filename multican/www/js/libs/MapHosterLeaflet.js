@@ -312,7 +312,7 @@
                     linkrSvc,
                     content = "Received Pushed Click from user " + clickPt.referrerName + ", " + clickPt.referrerId + " at " + latlng.toString();
 
-                $inj = PusherConfig.getInstance().getInjector();
+                $inj = PusherConfig.getInjector();
                 linkrSvc = $inj.get('LinkrService');
                 linkrSvc.hideLinkr();
                 if (clickPt.title) {
@@ -368,20 +368,20 @@
                 },
 
                 onAdd: function () { //map) {
-                    var container = document.getElementById('gmsearch');
+                    var container = document.getElementById('gmsearch' + mlconfig.getMapNumber());
                     return container;
                 }
             });
 
             function placeCustomControls() {
-                var $inj = PusherConfig.getInstance().getInjector(),
+                var $inj = PusherConfig.getInjector(),
                     ctrlSvc = $inj.get('MapControllerService'),
                     mapCtrl = ctrlSvc.getController();
                 mapCtrl.placeCustomControls();
             }
 
             function setupQueryListener() {
-                var $inj = PusherConfig.getInstance().getInjector(),
+                var $inj = PusherConfig.getInjector(),
                     ctrlSvc = $inj.get('MapControllerService'),
                     mapCtrl = ctrlSvc.getController();
                 mapCtrl.setupQueryListener();

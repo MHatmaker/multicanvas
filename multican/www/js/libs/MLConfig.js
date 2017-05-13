@@ -245,12 +245,6 @@ define(function () {
     }
 
     return {
-        // getInstance : function (ndx) {
-        //     if (!instance) {
-        //         instance = init(ndx);
-        //     }
-        //     return instance;
-        // }
         MLConfig : function (ndx) {
             return init(ndx);
         }

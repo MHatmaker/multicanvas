@@ -334,10 +334,14 @@
                 }
             }
 
-            function setupQueryListener() {
+/*
+    setupQueryListener has to be called from the map hosters after they instantiate their native map,
+    because the map elements they introduce overwrite the pac-input element created here.
+*/
+            function setupQueryListener(mapType) {
                 var
                     cnvs, //  = utils.getElemById(whichCanvas),
-                    curMapType = CurrentMapTypeService.getMapTypeKey(),
+                    curMapType = mapType ? mapType : 'arcgis',  // mlconfig.getMapType(), // CurrentMapTypeService.getMapTypeKey(),
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     fnLink,
                     pacinput,
@@ -363,7 +367,7 @@
                 } else {
                     $scope.gsearch.isGoogle = false;
                     if (curMapType === 'arcgis') {
-                        whichCanvas = 'map' + mapStartup.getMapNumber() + '_root'; // 'map_canvas_root';
+                        whichCanvas = 'map' + currentSlideNumber + '_root'; // 'map_canvas_root';
                         // whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
                         pacinputElement = document.getElementById('pac-input' + currentSlideNumber);
                         if (pacinputElement) {
@@ -373,7 +377,7 @@
                     }
                 }
 
-                whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
+                whichCanvas = curMapType === 'arcgis' ? 'map' + currentSlideNumber + '_root' : 'map' + currentSlideNumber;
                 pacinput = document.getElementById('pac-input' + currentSlideNumber);
                 if (!pacinput) {
                     pacinput = angular.element(template);
@@ -883,10 +887,10 @@
             selfMethods.getSearchBox();
         }
 
-        function setupQueryListener() {
+        function setupQueryListener(mapType) {
             console.log("setupQueryListener");
             if (selfMethods.setupQueryListener) {
-                selfMethods.setupQueryListener();
+                selfMethods.setupQueryListener(mapType);
             }
         }
 

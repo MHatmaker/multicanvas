@@ -42,6 +42,7 @@
                     configure = function (newMapId, mapLocOpts) {
                         var $inj,
                             mapInstanceSvc,
+                            CurrentMapTypeService,
                             centerLatLng,
                             initZoom,
                             mapGoogleLocOpts = {};
@@ -79,6 +80,8 @@
                         $inj = self.mlconfig.getInjector();
                         mapInstanceSvc = $inj.get('MapInstanceService');
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
+                        CurrentMapTypeService = $inj.get('CurrentMapTypeService');
+                        CurrentMapTypeService.setCurrentMapType('google');
 
                         self.pusher = PusherSetupCtrl.createPusherClient(
                             self.mlconfig,

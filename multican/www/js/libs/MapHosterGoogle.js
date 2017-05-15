@@ -488,7 +488,7 @@
                     var $inj = mlconfig.getInjector(),
                         ctrlSvc = $inj.get('MapControllerService'),
                         mapCtrl = ctrlSvc.getController();
-                    mapCtrl.setupQueryListener();
+                    mapCtrl.setupQueryListener('google');
                 }
 
                 google.maps.event.addListenerOnce(mphmap, 'tilesloaded', function () {
@@ -538,9 +538,9 @@
                     });
 
                     console.log('gmQuery contains ' + gmQuery);
-                searchInput = (document.getElementById('pac-input' + mlconfig.getMapNumber()));
-                mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
-                searchInput.value = '';
+                // searchInput = (document.getElementById('pac-input' + mlconfig.getMapNumber()));
+                // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
+                // searchInput.value = '';
                     if (gmQuery !== '') {
                         searchFiredFromUrl = true;
                         mlconfig.setQuery(gmQuery);

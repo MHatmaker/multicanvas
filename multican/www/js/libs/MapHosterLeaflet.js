@@ -373,7 +373,7 @@
                 var $inj = PusherConfig.getInjector(),
                     ctrlSvc = $inj.get('MapControllerService'),
                     mapCtrl = ctrlSvc.getController();
-                mapCtrl.setupQueryListener();
+                mapCtrl.setupQueryListener('leaflet');
             }
 
             function configureMap(lmap, mapOptions, config) {

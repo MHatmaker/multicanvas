@@ -127,25 +127,21 @@
                     }),
 
                     showSomething = function () {
-                        var triggered,
+                        var
                             fixedLL,
                             referrerId,
                             referrerName,
                             pushLL;
-                        // if (selfPusherDetails.pusher) {
-                            fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6);
-                            referrerId = mlconfig.getUserId();
-                            referrerName = mlconfig.getUserName();
-                            pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : zmG,
-                                "referrerId" : referrerId, "referrerName" : referrerName,
-                                'address' : marker.address, 'title' : marker.title };
-                            console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                            // triggered = selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
-                            // console.log("triggered?");
-                            // console.log(triggered);
-                            PusherSetupCtrl.publishClickEvent(pushLL);
-                        // }
+                        fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6);
+                        referrerId = mlconfig.getUserId();
+                        referrerName = mlconfig.getUserName();
+                        pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : zmG,
+                            "referrerId" : referrerId, "referrerName" : referrerName,
+                            'address' : marker.address, 'title' : marker.title };
+                        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
+                        PusherSetupCtrl.publishClickEvent(pushLL);
                     };
+
 
                 google.maps.event.addListener(marker, 'click', function () {
                     var btnShare;
@@ -504,7 +500,7 @@
                         gBnds,
                         ll,
                         ur,
-                        pacnpt,
+                        pacinput,
                         qtext,
                         service;
                     console.log(">>>>>>>>>>>>>> tiles loaded >>>>>>>>>>>>>>>>>>>>");
@@ -542,6 +538,9 @@
                     });
 
                     console.log('gmQuery contains ' + gmQuery);
+                searchInput = (document.getElementById('pac-input' + mlconfig.getMapNumber()));
+                mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
+                searchInput.value = '';
                     if (gmQuery !== '') {
                         searchFiredFromUrl = true;
                         mlconfig.setQuery(gmQuery);
@@ -557,9 +556,9 @@
 
                         qtext = mlconfig.query();
 
-                        pacnpt = angular.element('pac-input' + mlconfig.getMapNumber());
-                        pacnpt.value = qtext;
-                        // pacnpt.focus();
+                        pacinput = angular.element('pac-input' + mlconfig.getMapNumber());
+                        pacinput.value = qtext;
+                        // pacinput.focus();
                         queryPlaces.bounds = gBnds;
                         queryPlaces.query = qtext;
                         queryPlaces.location = center;
@@ -586,9 +585,9 @@
                     google.maps.event.removeListener(listener);
                 });
 
-                searchInput = (document.getElementById('pac-input' + mlconfig.getMapNumber()));
-                mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
-                searchInput.value = '';
+                // searchInput = (document.getElementById('pac-input' + mlconfig.getMapNumber()));
+                // mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
+                // searchInput.value = '';
                 // searchBox = new gplaces.SearchBox(/** @type {HTMLInputElement} */
                 //     (searchInput));
                 // searchBox = MapCtrl.getSearchBox();

@@ -8,7 +8,7 @@
     console.log('PusherSetup setup');
     var areWeInitialized = false,
         pusherPathPre = "http://",
-        pusherPathNgrok = "bd50e772",
+        pusherPathNgrok = "f2f0123c",
         pusherPathPost = ".ngrok.io/pusher/auth";
         // areWeInstantiated = false;
     define([
@@ -365,6 +365,20 @@
             selfdict.channel.trigger('client-MapClickEvent', frame);
             // selfdict.pusher.channels(selfdict.CHANNELNAME).trigger('client-MapClickEvent', frame);
         }
+
+        function publishPosition(pos) {
+            var handler,
+                obj;
+            for (handler in selfdict.eventHandlers) {
+                if (selfdict.eventHandlers.hasOwnProperty(handler)) {
+                    obj = selfdict.eventHandlers[handler];
+                    console.log("publish position event to map " + selfdict.eventHandlers[handler]);
+                    obj['client-NewMapPosition'](pos);
+                }
+            }
+            selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-NewMapPosition', pos);
+        }
+
         function isInstantiated() {
             return selfMethods.isInstantiated;
         }
@@ -400,6 +414,7 @@
         return { start: init,
                   publishPanEvent : publishPanEvent,
                   publishClickEvent : publishClickEvent,
+                  publishPosition : publishPosition,
                   setupPusherClient : setupPusherClient,
                   createPusherClient : createPusherClient,
                   isInstantiated : isInstantiated};

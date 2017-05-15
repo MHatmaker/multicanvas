@@ -33,7 +33,6 @@
             WindowStarter = WindowStarterArg,
             CanvasHolderCtrl = CanvasHolderCtrlArg,
             CarouselCtrl = CarouselCtrlArg,
-            outerMapNumber,
             mlconfig,
             gmquery,
             currentMapType,
@@ -97,6 +96,7 @@
 
         function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
                     CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg) {
+            var outerMapNumber;
 
             $scope = scope;
             $compile = compileArg;
@@ -472,6 +472,7 @@
             };
 
             $scope.clickTest = function () {
+                var outerMapNumber = MapInstanceService.getSlideCount();
                 alert('infowindow with ng-click on map ' + outerMapNumber);
             };
             // initialize();
@@ -808,7 +809,7 @@
 
             function initializeLocation() {
                 console.log("MapCtrl.initialize NOT MOBILE");
-                var
+                var outerMapNumber = MapInstanceService.getSlideCount(),
                     mapLocOptions = {
                         center: new google.maps.LatLng(37.422858, -122.085065),
                         zoom: 15,
@@ -839,7 +840,8 @@
                         mlconfig.setPosition({'lon' : position.coords.longitude, "lat" : position.coords.latitude, "zoom" : 15});
                         MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig);
                         console.log("MapCtrl will now call CanvasHolderCtrl.addCanvas");
-                        CanvasHolderCtrl.addCanvas('google');
+                        firstMap = false;
+                        CanvasHolderCtrl.addCanvas('google', mlconfig );
                         firstMap = false;
                         // initialize(0, 'google');
                         // mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);

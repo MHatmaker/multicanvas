@@ -15,7 +15,7 @@
         function CarouselCtrl($scope, MapInstanceService) {
             var
                 getCurrentSlideNumber,
-                counter = 0,
+                activeSlideNumber = 0,
                 items = [],
                 currentSlide = items[0];
             $scope.mapcolheight = 480;
@@ -27,18 +27,18 @@
                 // hide the old currentSlide list item
                 currentSlide.classList.remove('current');
 
-                console.log("change counter from " + counter);
+                console.log("change activeSlideNumber from " + activeSlideNumber);
                 // calculate the new position
-                counter = (counter + direction) % $scope.slidesCount;
-                counter = counter < 0 ? $scope.slidesCount - 1 : counter;
-                console.log("to counter " + counter);
+                activeSlideNumber = (activeSlideNumber + direction) % $scope.slidesCount;
+                activeSlideNumber = activeSlideNumber < 0 ? $scope.slidesCount - 1 : activeSlideNumber;
+                console.log("to activeSlideNumber " + activeSlideNumber);
                 // set new currentSlide element
                 // and add CSS class
-                currentSlide = items[counter].mapListItem;
-                $scope.MapNo = counter;
-                $scope.MapName = items[counter].mapName;
+                currentSlide = items[activeSlideNumber].mapListItem;
+                $scope.MapNo = activeSlideNumber;
+                $scope.MapName = items[activeSlideNumber].mapName;
                 currentSlide.classList.add('current');
-                MapInstanceService.setCurrentSlide(items[counter].slideNumber);
+                MapInstanceService.setCurrentSlide(items[activeSlideNumber].slideNumber);
             }
 
             $scope.$on('addslide', function (event, slideData) {
@@ -47,18 +47,22 @@
                 }
                 items.push(slideData);
                 currentSlide = items[items.length - 1].mapListItem;
-                counter = $scope.MapNo = items.length - 1;
+                activeSlideNumber = $scope.MapNo = items.length - 1;
                 $scope.MapName = slideData.mapName;
                 currentSlide.classList.add('current');
                 $scope.slidesCount = items.length;
             });
             $scope.$on('removeslide', function () {
-                var slideToRemove = counter;
-                console.log("remove slide " + counter + " from items array with length" + items.length);
+                var slideToRemove = activeSlideNumber,
+                      slideElement = document.getElementById('slide' + slideToRemove);
+                console.log("remove slide " + activeSlideNumber + " from items array with length" + items.length);
                 if (slideToRemove > -1) {
                     items.splice(slideToRemove, 1);
                     $scope.slidesCount = items.length;
                     console.log("items length is now " + items.length);
+                    if (slideToRemove) {
+                        slideElement.remove();
+                    }
                     navigate(0);
                 }
 
@@ -73,13 +77,13 @@
                 navigate(-1);
             };
             // show the first element
-            // (when direction is 0 counter doesn't change)
+            // (when direction is 0 activeSlideNumber doesn't change)
             if (items.length > 0) {
                 navigate(0);
             }
 
             getCurrentSlideNumber = function () {
-                return items[counter].slideNumber;
+                return items[activeSlideNumber].slideNumber;
             };
             selfMethods.getCurrentSlideNumber = getCurrentSlideNumber;
         }

@@ -25,8 +25,10 @@ define([
                 }
                 return slideCount;
             };
-            this.removeInstance = function () {
-                slideCount -= 1;
+            this.removeInstance = function (slideToRemove) {
+                if (slideToRemove === slideCount - 1) {
+                    slideCount -= 1;
+                }
             };
             this.addConfigInstanceForMap = function (ndx, cfg) {
                 configInstances["cfg" + ndx] = cfg;
@@ -48,7 +50,7 @@ define([
             this.getCurrentSlide = function () {
                 return currentSlideNumber;
             };
-            this.getConfigCurrentSlideNumber = function (ndx) {
+            this.getConfigForMap = function (ndx) {
                 return configInstances["cfg" + ndx].currentSlideNumber;
             };
             this.setMapHosterInstance = function (ndx, inst) {

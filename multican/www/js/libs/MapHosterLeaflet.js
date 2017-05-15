@@ -17,17 +17,16 @@
 (function () {
     "use strict";
     console.log("ready to require stuff in MapHosterLeaflet");
-    require(['http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js', "libs/utils", 'libs/GeoCoder']);
+    require(['http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js', "libs/utils", 'libs/GeoCoder', 'libs/MLConfig']);
 
     define([
         'controllers/PositionViewCtrl',
         'libs/GeoCoder',
         'libs/utils',
-        'libs/MLConfig',
         'libs/PusherEventHandler',
         'libs/PusherConfig',
         'controllers/PusherSetupCtrl'
-    ], function (PositionViewCtrl, GeoCoder, utils, MLConfig, PusherEventHandler, PusherConfig, PusherSetupCtrl) {
+    ], function (PositionViewCtrl, GeoCoder, utils, PusherEventHandler, PusherConfig, PusherSetupCtrl) {
 
         var MapHosterLeaflet = function () {
             var
@@ -46,11 +45,6 @@
                 geoCoder,
                 marker = null,
                 mphmap,
-                selfPusherDetails = {
-                    channel : null,
-                    pusher : null,
-                    active : true
-                },
                 markers = [],
                 popups = [],
                 mrkr,
@@ -139,17 +133,15 @@
                         referrerId,
                         referrerName,
                         pushLL;
-                    if (selfPusherDetails.pusher && selfPusherDetails.active) {
-                        fixedLL = utils.toFixed(contextPos[1], contextPos[0], 6);
-                        referrerId = mlconfig.getUserId();
-                        referrerName = mlconfig.getUserName();
-                        pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
-                            "referrerId" : referrerId, "referrerName" :  referrerName,
-                            'address' : contextContent, 'title' : contextHint };
-                        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                        selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
-                        PusherSetupCtrl.publishCLickEvent(pushLL);
-                    }
+                    fixedLL = utils.toFixed(contextPos[1], contextPos[0], 6);
+                    referrerId = mlconfig.getUserId();
+                    referrerName = mlconfig.getUserName();
+                    pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
+                        "referrerId" : referrerId, "referrerName" :  referrerName,
+                        'address' : contextContent, 'title' : contextHint };
+                    console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
+
+                    PusherSetupCtrl.publishCLickEvent(pushLL);
                 };
 
                 container = angular.element('<div />');
@@ -296,10 +288,7 @@
                 console.log("extracted bounds " + xtntJsonStr);
 
                 if (cmp === false) {
-                    console.log("MapHoster setBounds pusher send to channel " + selfPusherDetails.channel);
-                    if (selfPusherDetails.pusher && selfPusherDetails.active) {
-                        selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapXtntEvent', xtExt);
-                    }
+                    console.log("MapHoster Leaflet setBounds publishPanEvent");
                     PusherSetupCtrl.publishPanEvent(xtExt);
                     updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                 }
@@ -394,9 +383,8 @@
                     osmUrl,
                     lyr;
                 mlconfig = config;
-                console.debug("ready to show mphmap");
+                console.debug("ready to show leaflet mphmap");
                 mphmap = lmap; //L.map('map_canvas').setView([51.50, -0.09], 13);
-                selfPusherDetails.active = true;
                 console.debug(mphmap);
                 showLoading();
 
@@ -491,25 +479,6 @@
                 mlconfig.setUserName(name);
             }
 
-            function setPusherClient(pusher, channel) {
-                var evtDct = pusherEvtHandler.getEventDct(),
-                    key;
-                selfPusherDetails.pusher = pusher;
-                selfPusherDetails.channel = channel;
-                mlconfig.setChannel(channel);
-
-                for (key in evtDct) {
-                    if (evtDct.hasOwnProperty(key)) {
-                        pusher.subscribe(key, evtDct[key]);
-                    }
-                }
-                console.log("reset MapHosterLeaflet setPusherClient, selfPusherDetails.pusher " +  selfPusherDetails.pusher);
-            }
-
-            function unsubscribeFromPusher() {
-                selfPusherDetails.active = false;
-            }
-
             function getGlobalsForUrl() {
                 console.log(" MapHosterLeaflet.prototype.getGlobalsForUrl");
                 console.log("&lon=" + cntrxG + "&lat=" + cntryG + "&zoom=" + zmG);
@@ -534,37 +503,34 @@
             }
 
             function publishPosition(pos) {
-                if (selfPusherDetails.pusher) {
-                    console.log("MapHosterLeaflet.publishPosition");
-                    // pos['maphost'] = 'Leaflet';
-                    console.log(pos);
+                console.log("MapHosterLeaflet.publishPosition");
+                // pos['maphost'] = 'Leaflet';
+                console.log(pos);
 
-                    var lfltBounds = mphmap.getBounds(),
-                        bnds = {},
-                        ne,
-                        sw;
-                    console.debug(lfltBounds);
-                    if (lfltBounds) {
-                        ne = lfltBounds.getNorthEast();
-                        sw = lfltBounds.getSouthWest();
+                var lfltBounds = mphmap.getBounds(),
+                    bnds = {},
+                    ne,
+                    sw;
+                console.debug(lfltBounds);
+                if (lfltBounds) {
+                    ne = lfltBounds.getNorthEast();
+                    sw = lfltBounds.getSouthWest();
 
-                        bounds = lfltBounds;
-                        lfltBounds.xmin = sw.lng;
-                        lfltBounds.ymin = sw.lat;
-                        lfltBounds.xmax = ne.lng;
-                        lfltBounds.ymax = ne.lat;
+                    bounds = lfltBounds;
+                    lfltBounds.xmin = sw.lng;
+                    lfltBounds.ymin = sw.lat;
+                    lfltBounds.xmax = ne.lng;
+                    lfltBounds.ymax = ne.lat;
 
-                        bnds = {'llx' : sw.lng, 'lly' : sw.lat,
-                                     'urx' : ne.lng, 'ury' : ne.lat};
-                        mlconfig.setBounds(bnds);
-                    }
-
-                    bnds = mlconfig.getBoundsForUrl();
-                    pos.search += bnds;
-
-                    selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-NewMapPosition', pos);
+                    bnds = {'llx' : sw.lng, 'lly' : sw.lat,
+                                 'urx' : ne.lng, 'ury' : ne.lat};
+                    mlconfig.setBounds(bnds);
                 }
 
+                bnds = mlconfig.getBoundsForUrl();
+                pos.search += bnds;
+
+                PusherSetupCtrl.publishPosition(pos);
             }
 
             function getCenter() {
@@ -586,13 +552,9 @@
                     mapDiv.classList.remove('leaflet-container');
                     mapDiv.classList.remove('leaflet-fade-anim');
                     mapDiv.classList.remove('map');
-
-                    if (MLConfig.isChannelInitialized() === true) {
-                        unsubscribeFromPusher();
-
-                    }
                 }
             }
+
             function getPusherEventHandler() {
                 return pusherEvtHandler;
             }
@@ -601,7 +563,6 @@
                 config : configureMap,
                 retrievedBounds: retrievedBounds,
                 retrievedClick: retrievedClick,
-                setPusherClient: setPusherClient,
                 setUserName : setUserName,
                 getGlobalsForUrl: getGlobalsForUrl,
                 getEventDictionary : getEventDictionary,

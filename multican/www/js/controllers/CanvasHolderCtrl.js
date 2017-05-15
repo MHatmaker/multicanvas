@@ -7,11 +7,9 @@
     console.log('CanvasHolderCtrl setup');
     // require(['libs/MLConfig']);
     define([
-        'libs/MLConfig'
-        // 'services/CanvasService',
-        // 'services/MapInstanceService'
-        // 'controllers/CarouselCtrl'
-    ], function (MLConfig) {
+        'libs/MLConfig',
+        'controllers/CarouselCtrl'
+    ], function (MLConfig, CarouselCtrl) {
 
         console.log('CanvasHolderCtrl define');
         var selfMethods = {},
@@ -20,7 +18,7 @@
         function CanvasHolderCtrl($scope, $rootScope, $uibModal, LinkrService, MapInstanceService, CanvasService) {
             console.log("ready to create CanvasHolderCtrl");
             console.log("CanvasHolderCtrl calling into CanvasService");
-            $scope.addCanvas = function (mapType) {
+            $scope.addCanvas = function (mapType, mlcfg) {
                 console.log("in CanvasHolderCtrl.addCanvas");
                 var currIndex = MapInstanceService.getSlideCount(),
                     // mlConfig = new MLConfig.MLConfig(currIndex),
@@ -28,10 +26,14 @@
                     mapDctv,
                     parentDiv,
                     mlConfig;
-                if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
-                    mlConfig = new MLConfig.MLConfig(currIndex);
-                    mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex - 1).getPosition());
-                    MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
+                if (mlcfg) {
+                    mlConfig = mlcfg;
+                } else {
+                    if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
+                        mlConfig = new MLConfig.MLConfig(currIndex);
+                        mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex - 1).getPosition());
+                        MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
+                    }
                 }
                 newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
                 mapDctv = document.createElement('mapdirective');
@@ -74,6 +76,7 @@
             $scope.removeCanvas = function (clickedItem) {
                 console.log("removeCanvas");
                 console.debug(clickedItem);
+                MapInstanceService.removeInstance(CarouselCtrl.getCurrentSlideNumber());
                 $scope.$broadcast('removeslide');
             };
 
@@ -94,11 +97,11 @@
 
 
         }
-        function addCanvas() {
-            selfMethods.addCanvas('google');
+        function addCanvas(maptype, mlcfg) {
+            selfMethods.addCanvas(maptype, mlcfg);
         }
-        CanvasHolderCtrl.prototype.addCanvas = function () {
-            selfMethods.addCanvas('google');
+        CanvasHolderCtrl.prototype.addCanvas = function (maptype, mlcfg) {
+            selfMethods.addCanvas(maptype, mlcfg);
         };
 
         function init() {

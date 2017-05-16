@@ -298,8 +298,8 @@
                     pacinput,
                     queryPlaces = {},
                     service,
-                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                    googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);  //CurrentMapTypeService.getSpecificMapType('google');
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber();
+                    // googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);  //CurrentMapTypeService.getSpecificMapType('google');
 
                 mapLinkrBounds = mlconfig.getBounds();
                 searchBounds = new google.maps.LatLngBounds(
@@ -309,7 +309,7 @@
                 position = mlconfig.getPosition();
                 center = {'lat' : position.lat, 'lng' : position.lon};
                 googleCenter = new google.maps.LatLng(position.lat, position.lon);
-                gmap = googmph.getMap();
+                // gmap = googmph.getMap();
                 utils.showLoading();
                 if (!gmap) {
                     mapLocOptions = {
@@ -362,6 +362,7 @@
                         </div>',
                     template = templateUnformatted.format(currentSlideNumber, currentSlideNumber);
                 // curMapType = CurrentMapTypeService.getMapTypeKey(),
+                selfVars.curMapType = curMapType;
                 if (curMapType === 'google') {
                     $scope.gsearch.isGoogle = true;
                 } else {
@@ -401,7 +402,7 @@
 
                         google.maps.event.addListener(searchBox, 'places_changed', function () {
                             console.log("MapCtrl 'places_changed' listener");
-                            connectQuery();
+                            connectQuery(selfVars.curMapType);
                             selfVars.searchInput.blur();
                             setTimeout(function () {
                                 console.log("in inner setTimeout setting up selfVars.searchInput");
@@ -484,7 +485,7 @@
                 invalidateCurrentMapTypeConfigured();
             });
             $scope.subsetDestinations = function (placesFromSearch) {
-                var curMapType = CurrentMapTypeService.getMapTypeKey(),
+                var curMapType = selfVars.curMapType, // CurrentMapTypeService.getMapTypeKey(),
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
 
@@ -500,8 +501,8 @@
             };
 
             $scope.gsearchVisible = 'inline-block';
-            whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
-            $scope.selectedDestination = CurrentMapTypeService.getMapTypeKey() === 'google' ? 'Same Window' : 'New Pop-up Window';
+            whichCanvas = selfVars.curMapType === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+            $scope.selectedDestination = selfVars.curMapType === 'google' ? 'Same Window' : 'New Pop-up Window';
             $scope.updateState($scope.selectedDestination);
 
             if (gmquery !== '') {

@@ -293,7 +293,7 @@
 
             setupPusherClient = function (eventDct, userName, cbfn, nfo) {
                 selfdict.eventDct = eventDct;
-                selfdict.userName = userName;
+                selfdict.userName = PusherConfig.getUserName();
                 if (selfdict.scope) {
                     selfdict.scope.data.userName = userName;
                 }
@@ -386,10 +386,10 @@
         function createPusherClient(pusherChannel, mlconfig, cbfn, nfo) {
             return selfMethods.createPusherClient(pusherChannel, mlconfig, cbfn, nfo);
         }
-        //
-        // function setupPusherClient(eventDct, userName, cbfn, nfo) {
-        //     return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
-        // }
+
+        function setupPusherClient(eventDct, userName, cbfn, nfo) {
+            return selfMethods.setupPusherClient(eventDct, userName, cbfn, nfo);
+        }
         // function createPusherClient(mlconfig, cbfn, nfo) {
         //     return selfMethods.createPusherClient(mlconfig, cbfn, nfo);
         // }

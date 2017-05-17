@@ -216,31 +216,36 @@
                     googmph,
                     curMapType = "no map",
                     placesSearchResults,
-                    onAcceptDestination;
+                    onAcceptDestination,
+                    startNewCanvas;
 
                 console.log('status is ' + status);
                 utils.hideLoading();
 
+                startNewCanvas = function (f1, f2, f3, mapType) {
+                    CanvasHolderCtrl.addCanvas(mapType);
+                };
+
                 onAcceptDestination = function (info) {
-                    var sourceMapType,
+                    var sourceMapType = 'google',
                         newSelectedWebMapId,
                         destWnd;
 
 
                     if (info) {
-                        sourceMapType = info.mapType;
+                        sourceMapType = 'google';
                         destWnd = info.dstSel;
                     }
                     newSelectedWebMapId = "NoId";
 
                     if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
                         if (mlconfig.isNameChannelAccepted() === false) {
-
-                            mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
-                            mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
+                            //
+                            // mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
+                            // mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
 
                             PusherSetupCtrl.setupPusherClient(mlconfig.getMapHosterInstance().getPusherEventHandler().getEventDct(),
-                                mlconfig.getUserName(), WindowStarter.openNewDisplay,
+                                mlconfig.getUserName(), startNewCanvas,
                                 {
                                     'destination' : destWnd,
                                     'currentMapHolder' : sourceMapType,
@@ -249,8 +254,9 @@
                                 });
                             queryForNewDisplay = "";
                         } else {
-                            WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
-                                mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
+                            startNewCanvas(info);
+                            // WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
+                            //     mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
                             queryForNewDisplay = "";
                         }
 

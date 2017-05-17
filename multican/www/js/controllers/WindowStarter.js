@@ -77,7 +77,7 @@
             },
 
             openNewDisplay = function (channel, userName, destWnd, curmph, newSelectedWebMapId, query) {
-                var $inj = angular.injector(['app']),
+                var $inj = angular.element(document.body).injector(),
                     $http = $inj.get('$http');
 
                 $http({method: 'GET', url: '/wndseqno'}).

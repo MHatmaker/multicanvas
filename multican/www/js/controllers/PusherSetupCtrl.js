@@ -35,7 +35,7 @@
             mlconfig,
             setupPusherClient;
 
-        function PusherSetupCtrl($scope, $uibModal) {
+        function PusherSetupCtrl($scope, $uibModal, MapInstanceService) {
             console.log("in PusherSetupCtrl");
             selfdict.isInstantiated = areWeInitialized = false;
             console.log("areWeInitialized is " + areWeInitialized);
@@ -186,10 +186,16 @@
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
                 selfdict.CHANNELNAME = $scope.data.privateChannelMashover;
+                $scope.data.clientName = selfdict.clientName = 'map' + MapInstanceService.getSlideCount(); // + 1);
                 PusherConfig.setChannel($scope.data.privateChannelMashover);
                 PusherConfig.setNameChannelAccepted(true);
                 PusherConfig.setUserName(selfdict.userName);
-                // selfdict.clients[foo] = new PusherClient(selfdict.eventDct,
+                selfdict.clients[selfdict.clientName] = new PusherClient(null,
+                    $scope.data.privateChannelMashover,
+                    $scope.data.clientName,
+                    selfdict.callbackFunction,
+                    selfdict.info);
+                // selfdict.clients['map' + MapInstanceService.getSlideCount() + 1] = new PusherClient(selfdict.eventDct,
                 //     $scope.data.privateChannelMashover,
                 //     $scope.data.clientName,
                 //     mlconfig.getMapHosterInstance(),
@@ -295,7 +301,7 @@
                 selfdict.eventDct = eventDct;
                 selfdict.userName = PusherConfig.getUserName();
                 if (selfdict.scope) {
-                    selfdict.scope.data.userName = userName;
+                    selfdict.scope.data.userName = selfdict.userName;
                 }
                 selfdict.callbackFunction = cbfn;
                 selfdict.info = nfo;
@@ -340,7 +346,9 @@
                 if (selfdict.eventHandlers.hasOwnProperty(handler)) {
                     obj = selfdict.eventHandlers[handler];
                     console.log("publish pan event to map " + selfdict.eventHandlers[handler]);
-                    obj['client-MapXtntEvent'](frame);
+                    if (obj) {
+                        obj['client-MapXtntEvent'](frame);
+                    }
                 }
             }
             selfdict.channel.trigger('client-MapXtntEvent', frame);
@@ -403,7 +411,7 @@
 
             if (!selfdict.isInitialized) {
                 selfdict.isInitialized = areWeInitialized = true;
-                App.controller('PusherSetupCtrl',  ['$scope', '$uibModal', 'CurrentMapTypeService', PusherSetupCtrl]);
+                App.controller('PusherSetupCtrl',  ['$scope', '$uibModal', 'MapInstanceService', PusherSetupCtrl]);
             }
 
             // PusherSetupCtrl.self.scope = PusherSetupCtrl.$scope;

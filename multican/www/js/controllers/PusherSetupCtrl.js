@@ -8,7 +8,7 @@
     console.log('PusherSetup setup');
     var areWeInitialized = false,
         pusherPathPre = "http://",
-        pusherPathNgrok = "f2f0123c",
+        pusherPathNgrok = "a99ba159",
         pusherPathPost = ".ngrok.io/pusher/auth";
         // areWeInstantiated = false;
     define([
@@ -186,7 +186,7 @@
                 console.log("onAcceptChannel " + $scope.data.privateChannelMashover);
                 selfdict.userName = $scope.data.userName;
                 selfdict.CHANNELNAME = $scope.data.privateChannelMashover;
-                $scope.data.clientName = selfdict.clientName = 'map' + MapInstanceService.getSlideCount(); // + 1);
+                $scope.data.clientName = selfdict.clientName = 'map' + MapInstanceService.getSlideCount();
                 PusherConfig.setChannel($scope.data.privateChannelMashover);
                 PusherConfig.setNameChannelAccepted(true);
                 PusherConfig.setUserName(selfdict.userName);
@@ -195,13 +195,6 @@
                     $scope.data.clientName,
                     selfdict.callbackFunction,
                     selfdict.info);
-                // selfdict.clients['map' + MapInstanceService.getSlideCount() + 1] = new PusherClient(selfdict.eventDct,
-                //     $scope.data.privateChannelMashover,
-                //     $scope.data.clientName,
-                //     mlconfig.getMapHosterInstance(),
-                //     selfdict.callbackFunction,
-                //     selfdict.info);
-                // selfdict.eventDct = selfdict.mph.getEventDictionary();
             };
 
             $scope.cancel = function () {

@@ -21,9 +21,10 @@
         'controllers/WindowStarter',
         'controllers/CanvasHolderCtrl',
         'controllers/CarouselCtrl',
-        'libs/MLConfig'
+        'libs/MLConfig',
+        'libs/PusherConfig'
     ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl,
-            MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, CarouselCtrlArg, MLConfig) {
+            MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, CarouselCtrlArg, MLConfig, PusherConfig) {
         var selfMethods = {},
             selfVars = {},
             MapInstanceService,
@@ -57,6 +58,7 @@
             mapStartup;
 
         selfVars.searchInput = null;
+        selfVars.placesFromSearch = null;
 
         function invalidateCurrentMapTypeConfigured() {
             curMapTypeInitialized = false;
@@ -210,20 +212,31 @@
                 // mapHoster.addPopup(compiledMsg[0], centerCoord);
             }
 
-            function placesQueryCallback(placesFromSearch, status) {
+            function placesQueryCallback(placesFromSearchArg, status) {
                 var
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     googmph,
                     curMapType = "no map",
                     placesSearchResults,
                     onAcceptDestination,
+                    placesFromSearch = placesFromSearchArg,
                     startNewCanvas;
 
+                selfVars.placesFromSearch = placesFromSearchArg;
                 console.log('status is ' + status);
                 utils.hideLoading();
 
                 startNewCanvas = function (f1, f2, f3, mapType) {
                     CanvasHolderCtrl.addCanvas(mapType);
+                    // if (placesFromSearch && placesFromSearch.length > 0) {
+                    //     placesSearchResults = placesFromSearch;
+                    //     selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
+                    //
+                    //     $scope.subsetDestinations(placesFromSearch);
+                    //
+                    // } else {
+                    //     console.log('searchBox.getPlaces() still returned no results');
+                    // }
                 };
 
                 onAcceptDestination = function (info) {
@@ -239,7 +252,7 @@
                     newSelectedWebMapId = "NoId";
 
                     if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
-                        if (mlconfig.isNameChannelAccepted() === false) {
+                        if (PusherConfig.isNameChannelAccepted() === false) {
                             //
                             // mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
                             // mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
@@ -254,7 +267,7 @@
                                 });
                             queryForNewDisplay = "";
                         } else {
-                            startNewCanvas(info);
+                            // startNewCanvas(null, null, null, 'google');
                             // WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
                             //     mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
                             queryForNewDisplay = "";
@@ -541,9 +554,25 @@
             commonInitialized = true;
         }
 
+        function fillNewCanvas(placesFromSearchArg) {
+            var placesFromSearch = placesFromSearchArg,
+                currentSlideNumber = CarouselCtrl.getCurrentSlideNumber();
+
+            if (placesFromSearch && placesFromSearch.length > 0) {
+                // placesSearchResults = placesFromSearch;
+                selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
+
+                $scope.subsetDestinations(placesFromSearch);
+
+            } else {
+                console.log('searchBox.getPlaces() still returned no results');
+            }
+
+        }
+
         function initialize(mapNo, mapType, setupMapHoster) {
             var
-                // mapHoster,
+                mapHoster,
                 centerCoord,
                 mapLocOptions = null,
                 mapNumber = mapNo,
@@ -575,7 +604,9 @@
             // mapStartups.push(mapStartup);
             // setTimeout(function() {
             mapStartup.configure(configMapNumber, mapLocOptions);
-            //     mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
+            mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
+            mapConfig.setMapHosterInstance(MapInstanceService.getMapHosterInstance(mapNumber));
+            fillNewCanvas(selfVars.placesFromSearch);
             //     $scope.mapHosterInstance = mapHoster;
             //     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
             //     console.log("Try accessor " + mapStartup.getMapNumber());

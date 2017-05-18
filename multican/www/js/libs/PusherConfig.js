@@ -13,6 +13,7 @@
                 details = {
                     masherChannel : "private-channel-mashchannel",
                     masherChannelInitialized : false,
+                    nameChannelAccepted : false,
                     userName : 'defaultuser',
                     nginj : null
                 };

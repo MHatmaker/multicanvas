@@ -1,4 +1,4 @@
-/*global define, require, console, google, document, window, navigator, alert, angular, plugin*/
+/*global define, require, console, google, document, window, navigator, alert, angular, plugin, Promise*/
 
 /*jslint es5: true */
 /*jslint unparam: true*/
@@ -114,10 +114,9 @@
                 // console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
             MapInstanceService = MapInstanceSvc;
             outerMapNumber = MapInstanceService.getSlideCount();
-            mlconfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber);
-            if (!mlconfig) {
+            if(!MapInstanceService.hasConfigInstanceForMap(outerMapNumber)) {
                 mlconfig = new MLConfig.MLConfig(outerMapNumber);
-                MapInstanceService.addConfigInstanceForMap(mlconfig); //outerMapNumber, angular.copy(mlconfig));
+                MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig); //outerMapNumber, angular.copy(mlconfig));
             }
             gmquery = mlconfig.query();
 
@@ -227,7 +226,10 @@
                 utils.hideLoading();
 
                 startNewCanvas = function (f1, f2, f3, mapType) {
-                    CanvasHolderCtrl.addCanvas(mapType);
+                    return new Promise(function(resolve, reject) {
+                        // CanvasHolderCtrl.addCanvas(mapType);
+                        resolve(mapType);
+                    });
                     // if (placesFromSearch && placesFromSearch.length > 0) {
                     //     placesSearchResults = placesFromSearch;
                     //     selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
@@ -238,6 +240,15 @@
                     //     console.log('searchBox.getPlaces() still returned no results');
                     // }
                 };
+
+                function stageStartNewCanvas() {
+                    queryForNewDisplay = "";
+                    startNewCanvas(null, null, null, 'google').then(function(mapType) {
+                        CanvasHolderCtrl.addCanvas(mapType);
+                    }).then(function() {
+                        fillNewCanvas(selfVars.placesFromSearch);
+                    });
+                }
 
                 onAcceptDestination = function (info) {
                     var sourceMapType = 'google',
@@ -253,12 +264,8 @@
 
                     if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
                         if (PusherConfig.isNameChannelAccepted() === false) {
-                            //
-                            // mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapXtntEvent', sourceMapType.retrievedBounds);
-                            // mlconfig.getMapHosterInstance().getPusherEventHandler().addEvent('client-MapClickEvent', sourceMapType.retrievedClick);
-
                             PusherSetupCtrl.setupPusherClient(mlconfig.getMapHosterInstance().getPusherEventHandler().getEventDct(),
-                                mlconfig.getUserName(), startNewCanvas,
+                                mlconfig.getUserName(), stageStartNewCanvas,
                                 {
                                     'destination' : destWnd,
                                     'currentMapHolder' : sourceMapType,
@@ -266,8 +273,17 @@
                                     'query' : queryForNewDisplay
                                 });
                             queryForNewDisplay = "";
+                            // startNewCanvas(null, null, null, 'google').then(function(mapType) {
+                            //     CanvasHolderCtrl.addCanvas(mapType);
+                            // }).then(function() {
+                            //     fillNewCanvas(selfVars.placesFromSearch);
+                            // });
                         } else {
-                            // startNewCanvas(null, null, null, 'google');
+                            startNewCanvas(null, null, null, 'google').then(function(mapType) {
+                                CanvasHolderCtrl.addCanvas(mapType);
+                            }).then(function() {
+                                fillNewCanvas(selfVars.placesFromSearch);
+                            });
                             // WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
                             //     mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
                             queryForNewDisplay = "";
@@ -285,7 +301,7 @@
                     placesSearchResults = placesFromSearch;
                     selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
 
-                    $scope.subsetDestinations(placesFromSearch);
+                    // $scope.subsetDestinations(placesFromSearch);
 
                     gmQSvc = $scope.GoogleQueryService;
                     scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
@@ -499,18 +515,22 @@
                 var outerMapNumber = MapInstanceService.getSlideCount();
                 alert('infowindow with ng-click on map ' + outerMapNumber);
             };
-            // initialize();
             $scope.$on('invalidateCurrentMapTypeConfigured', function () {
                 invalidateCurrentMapTypeConfigured();
             });
             $scope.subsetDestinations = function (placesFromSearch) {
                 var curMapType = selfVars.curMapType, // CurrentMapTypeService.getMapTypeKey(),
-                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                    googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber() - 1,
+                    configInst = MapInstanceService.getConfigInstanceForMap(currentSlideNumber),
+                    googmph = configInst.getMapHosterInstance();
+                    // googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
+                console.log("subsetDestinations for map id " + currentSlideNumber);
+                console.debug(googmph);
 
                 if (curMapType === 'google') {
                     if (placesFromSearch) {
                         googmph.setPlacesFromSearch(placesFromSearch);
+                        googmph.placeMarkers(placesFromSearch);
                     }
                     $scope.destSelections[0].showing = 'destination-option-showing';
                 } else {
@@ -557,7 +577,6 @@
         function fillNewCanvas(placesFromSearchArg) {
             var placesFromSearch = placesFromSearchArg,
                 currentSlideNumber = CarouselCtrl.getCurrentSlideNumber();
-
             if (placesFromSearch && placesFromSearch.length > 0) {
                 // placesSearchResults = placesFromSearch;
                 selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
@@ -605,8 +624,9 @@
             // setTimeout(function() {
             mapStartup.configure(configMapNumber, mapLocOptions);
             mapHoster = mapStartup.getMapHosterInstance(configMapNumber);
-            mapConfig.setMapHosterInstance(MapInstanceService.getMapHosterInstance(mapNumber));
-            fillNewCanvas(selfVars.placesFromSearch);
+            mapConfig.setMapHosterInstance(mapHoster); // MapInstanceService.getMapHosterInstance(mapNumber));
+            MapInstanceService.setMapHosterInstance(mapNumber, mapHoster);
+            // fillNewCanvas(selfVars.placesFromSearch);
             //     $scope.mapHosterInstance = mapHoster;
             //     console.log("MapCtrl finished configuring mapStartup with map no. " + mapStartup.getMapNumber());
             //     console.log("Try accessor " + mapStartup.getMapNumber());

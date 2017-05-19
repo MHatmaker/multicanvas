@@ -84,12 +84,18 @@ define(function () {
             },
             setMapHosterInstance = function (inst) {
                 details.mapHosterInstance = inst;
-                console.log("MLConfig.mapHosterInstance is set to " + details.mapNumber);
+                if (!inst) {
+                    console.log("attempting to setMapHosterInstance to null/undefined");
+                }
+                console.log("MLConfig.setMapHosterInstance is set to " + details.mapNumber);
                 console.debug(details.mapHosterInstance);
             },
             getMapHosterInstance = function () {
-                console.log("MLConfig.mapHosterInstance is returning instance " + details.mapId);
+                console.log("MLConfig.getMapHosterInstance is returning instance " + details.mapId);
                 console.debug(details.mapHosterInstance);
+                if (!details.mapHosterInstance) {
+                    console.log("attempting to getMapHosterInstance containing null/undefined");
+                }
                 return details.mapHosterInstance;
             },
             webmapId = function (newWindow) {

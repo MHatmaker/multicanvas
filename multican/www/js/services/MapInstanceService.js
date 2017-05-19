@@ -51,7 +51,7 @@ define([
                 return currentSlideNumber;
             };
             this.getConfigForMap = function (ndx) {
-                return configInstances["cfg" + ndx].currentSlideNumber;
+                return configInstances["cfg" + ndx];
             };
             this.setMapHosterInstance = function (ndx, inst) {
                 var cfgndx = "cfg" + ndx;

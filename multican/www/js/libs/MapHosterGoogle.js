@@ -490,6 +490,12 @@
                         mapCtrl = ctrlSvc.getController();
                     mapCtrl.setupQueryListener('google');
                 }
+                function fillMapWithMarkers() {
+                    var $inj = mlconfig.getInjector(),
+                        ctrlSvc = $inj.get('MapControllerService'),
+                        mapCtrl = ctrlSvc.getController();
+                    mapCtrl.fillMapWithMarkers();
+                }
 
                 google.maps.event.addListenerOnce(mphmap, 'tilesloaded', function () {
                     var zsvc = new google.maps.MaxZoomService(),
@@ -567,7 +573,7 @@
                     }
 
                     placeCustomControls();
-                    // setupQueryListener();
+                    fillMapWithMarkers();
                 });
 
                 setupQueryListener();

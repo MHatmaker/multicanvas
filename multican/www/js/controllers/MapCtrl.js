@@ -114,7 +114,7 @@
                 // console.log("In MapCtrl, Config Instance for map id is " + configMapNumber);
             MapInstanceService = MapInstanceSvc;
             outerMapNumber = MapInstanceService.getSlideCount();
-            if(!MapInstanceService.hasConfigInstanceForMap(outerMapNumber)) {
+            if (!MapInstanceService.hasConfigInstanceForMap(outerMapNumber)) {
                 mlconfig = new MLConfig.MLConfig(outerMapNumber);
                 MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig); //outerMapNumber, angular.copy(mlconfig));
             }
@@ -221,13 +221,15 @@
                     placesFromSearch = placesFromSearchArg,
                     startNewCanvas;
 
-                selfVars.placesFromSearch = placesFromSearchArg;
+                selfVars.placesFromSearch = placesFromSearchArg ? placesFromSearchArg : selfVars.placesFromSearch;
                 console.log('status is ' + status);
                 utils.hideLoading();
 
                 startNewCanvas = function (f1, f2, f3, mapType) {
-                    return new Promise(function(resolve, reject) {
-                        // CanvasHolderCtrl.addCanvas(mapType);
+                    console.log('startNewCanvas with Promise');
+                    return new Promise(function (resolve, reject) {
+                        console.log("call CanvasHolderCtrl.addCanvas");
+                        CanvasHolderCtrl.addCanvas(mapType);
                         resolve(mapType);
                     });
                     // if (placesFromSearch && placesFromSearch.length > 0) {
@@ -242,13 +244,19 @@
                 };
 
                 function stageStartNewCanvas() {
+                    console.log('stageStartNewCanvas');
                     queryForNewDisplay = "";
-                    startNewCanvas(null, null, null, 'google').then(function(mapType) {
-                        CanvasHolderCtrl.addCanvas(mapType);
+                    startNewCanvas(null, null, null, 'google').then(function (mapType) {
+                        console.log("resolve then first method is empty");
+                        // CanvasHolderCtrl.addCanvas(mapType);
                     }).then(function() {
                         fillNewCanvas(selfVars.placesFromSearch);
                     });
                 }
+                function fillMapWithMarkers() {
+                    fillNewCanvas(selfVars.placesFromSearch);
+                }
+                selfMethods.fillMapWithMarkers = fillMapWithMarkers;
 
                 onAcceptDestination = function (info) {
                     var sourceMapType = 'google',
@@ -279,9 +287,9 @@
                             //     fillNewCanvas(selfVars.placesFromSearch);
                             // });
                         } else {
-                            startNewCanvas(null, null, null, 'google').then(function(mapType) {
+                            startNewCanvas(null, null, null, 'google').then(function (mapType) {
                                 CanvasHolderCtrl.addCanvas(mapType);
-                            }).then(function() {
+                            }).then(function () {
                                 fillNewCanvas(selfVars.placesFromSearch);
                             });
                             // WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
@@ -301,7 +309,7 @@
                     placesSearchResults = placesFromSearch;
                     selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
 
-                    // $scope.subsetDestinations(placesFromSearch);
+                    $scope.subsetDestinations(placesFromSearch);
 
                     gmQSvc = $scope.GoogleQueryService;
                     scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
@@ -520,7 +528,7 @@
             });
             $scope.subsetDestinations = function (placesFromSearch) {
                 var curMapType = selfVars.curMapType, // CurrentMapTypeService.getMapTypeKey(),
-                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber() - 1,
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     configInst = MapInstanceService.getConfigInstanceForMap(currentSlideNumber),
                     googmph = configInst.getMapHosterInstance();
                     // googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
@@ -530,10 +538,11 @@
                 if (curMapType === 'google') {
                     if (placesFromSearch) {
                         googmph.setPlacesFromSearch(placesFromSearch);
-                        googmph.placeMarkers(placesFromSearch);
+                        // googmph.placeMarkers(placesFromSearch);
                     }
                     $scope.destSelections[0].showing = 'destination-option-showing';
                 } else {
+                    // do not show smae window if the query isn't coming from a google map.
                     $scope.destSelections[0].showing = 'destination-option-hidden';
                     $scope.data.dstSel = $scope.destSelections[2].option;
                 }
@@ -575,13 +584,16 @@
         }
 
         function fillNewCanvas(placesFromSearchArg) {
+            console.log('fillNewCanvas');
             var placesFromSearch = placesFromSearchArg,
-                currentSlideNumber = CarouselCtrl.getCurrentSlideNumber();
+                currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                mph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
             if (placesFromSearch && placesFromSearch.length > 0) {
                 // placesSearchResults = placesFromSearch;
                 selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
 
-                $scope.subsetDestinations(placesFromSearch);
+                // $scope.subsetDestinations(placesFromSearch);
+                mph.placeMarkers(placesFromSearch);
 
             } else {
                 console.log('searchBox.getPlaces() still returned no results');
@@ -903,7 +915,7 @@
                         MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig);
                         console.log("MapCtrl will now call CanvasHolderCtrl.addCanvas");
                         firstMap = false;
-                        CanvasHolderCtrl.addCanvas('google', mlconfig );
+                        CanvasHolderCtrl.addCanvas('google', mlconfig);
                         firstMap = false;
                         // initialize(0, 'google');
                         // mapStartup = new StartupGoogle.StartupGoogle(outerMapNumber, mlconfig);
@@ -952,6 +964,11 @@
             }
         }
 
+        function fillMapWithMarkers() {
+            if (selfMethods.fillMapWithMarkers) {
+                selfMethods.fillMapWithMarkers();
+            }
+        }
         function configureCurrentMapType(mapLocOptions) {
             console.log("configureCurrentMapType");
             selfMethods.configureCurrentMapType(mapLocOptions);
@@ -983,6 +1000,7 @@
             invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfiguredOuter,
             placeCustomControls : placeCustomControls,
             setupQueryListener : setupQueryListener,
+            fillMapWithMarkers : fillMapWithMarkers,
             getSearchBox: getSearchBox
         };
     });

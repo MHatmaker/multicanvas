@@ -369,8 +369,7 @@
                         };
 
                         if (PusherConfig.isNameChannelAccepted() === false) {
-                            PusherSetupCtrl.setupPusherClient(self.mlconfig.getMapHosterInstance().getPusherEventHandler(),
-                                self.mlconfig.getUserName(), openNewDisplay,
+                            PusherSetupCtrl.setupPusherClient(openNewDisplay,
                                     {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId});
                         } else {
                             openNewDisplay(PusherConfig.masherChannel(false), self.mlconfig.getUserName());

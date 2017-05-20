@@ -225,7 +225,7 @@
                 console.log('status is ' + status);
                 utils.hideLoading();
 
-                startNewCanvas = function (f1, f2, f3, mapType) {
+                startNewCanvas = function (mapType) {
                     console.log('startNewCanvas with Promise');
                     return new Promise(function (resolve, reject) {
                         console.log("call CanvasHolderCtrl.addCanvas");
@@ -246,10 +246,11 @@
                 function stageStartNewCanvas() {
                     console.log('stageStartNewCanvas');
                     queryForNewDisplay = "";
-                    startNewCanvas(null, null, null, 'google').then(function (mapType) {
-                        console.log("resolve then first method is empty");
-                        // CanvasHolderCtrl.addCanvas(mapType);
-                    }).then(function() {
+                    startNewCanvas('google').then(function (mapType) {
+                        console.log("resolve calls addCanvas");
+                        CanvasHolderCtrl.addCanvas(mapType);
+                    })
+                    .then(function() {
                         fillNewCanvas(selfVars.placesFromSearch);
                     });
                 }
@@ -272,8 +273,7 @@
 
                     if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
                         if (PusherConfig.isNameChannelAccepted() === false) {
-                            PusherSetupCtrl.setupPusherClient(mlconfig.getMapHosterInstance().getPusherEventHandler().getEventDct(),
-                                mlconfig.getUserName(), stageStartNewCanvas,
+                            PusherSetupCtrl.setupPusherClient(stageStartNewCanvas,
                                 {
                                     'destination' : destWnd,
                                     'currentMapHolder' : sourceMapType,
@@ -287,7 +287,7 @@
                             //     fillNewCanvas(selfVars.placesFromSearch);
                             // });
                         } else {
-                            startNewCanvas(null, null, null, 'google').then(function (mapType) {
+                            startNewCanvas('google').then(function (mapType) {
                                 CanvasHolderCtrl.addCanvas(mapType);
                             }).then(function () {
                                 fillNewCanvas(selfVars.placesFromSearch);

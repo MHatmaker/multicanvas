@@ -290,8 +290,7 @@
             }
             selfMethods.createPusherClient = createPusherClient;
 
-            setupPusherClient = function (eventDct, userName, cbfn, nfo) {
-                selfdict.eventDct = eventDct;
+            setupPusherClient = function (cbfn, nfo) {
                 selfdict.userName = PusherConfig.getUserName();
                 if (selfdict.scope) {
                     selfdict.scope.data.userName = selfdict.userName;

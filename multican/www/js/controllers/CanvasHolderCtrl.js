@@ -31,6 +31,7 @@
                 } else {
                     if (MapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
                         mlConfig = new MLConfig.MLConfig(currIndex);
+                        console.log("addCanvas with index " + currIndex);
                         mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex === 0 ? currIndex : currIndex - 1).getPosition());
                         MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
                     }

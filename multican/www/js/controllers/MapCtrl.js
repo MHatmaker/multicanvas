@@ -52,7 +52,6 @@
             $scope,
             $compile,
             $routeParams,
-            stup,
             firstMap = true,
             commonInitialized = false,
             mapStartup;
@@ -99,6 +98,7 @@
         function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
                     CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg) {
             var outerMapNumber;
+            console.log('initializeCommon and set $scope');
 
             $scope = scope;
             $compile = compileArg;
@@ -120,7 +120,7 @@
             }
             gmquery = mlconfig.query();
 
-            whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+            whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + outerMapNumber + '_root' : 'map' + outerMapNumber;
             // CurrentMapTypeService.addScope($scope);
             // $scope.$on('ForceMapSystemEvent', function (evt, args) {
             //     $scope.currentMapSystem = args.whichsystem;
@@ -131,7 +131,7 @@
                 console.log("In MapCtrl ... SwitchedMapSystemEvent");
 
                 $scope.currentMapSystem = args.whichsystem;
-                whichCanvas = $scope.currentMapSystem.maptype === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+                whichCanvas = $scope.currentMapSystem.maptype === 'arcgis' ? 'map' + outerMapNumber + '_root' : 'map' + outerMapNumber;
             });
 
             // $scope.PusherEventHandlerService = PusherEventHandlerService;
@@ -196,6 +196,9 @@
             //     }
             // }
 
+            $scope.startMap = function (mapNumber, mapType) {
+                initialize(mapNumber, mapType);
+            };
             function setupMapHoster(mapHoster, aMap) {
                 // var
                 //     popmapString = "click me for map " + mapHoster.getMapNumber(),
@@ -221,7 +224,7 @@
                     placesFromSearch = placesFromSearchArg,
                     startNewCanvas;
 
-                selfVars.placesFromSearch = placesFromSearchArg ? placesFromSearchArg : selfVars.placesFromSearch;
+                selfVars.placesFromSearch = placesFromSearchArg || selfVars.placesFromSearch;
                 console.log('status is ' + status);
                 utils.hideLoading();
 
@@ -243,18 +246,40 @@
                     // }
                 };
 
+                function fillNewCanvas(placesFromSearchArg) {
+                    console.log('fillNewCanvas');
+                    var
+                        slideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                        mph = MapInstanceService.getMapHosterInstance(slideNumber);
+                    placesFromSearch = placesFromSearchArg;
+                    if (placesFromSearch && placesFromSearch.length > 0) {
+                        // placesSearchResults = placesFromSearch;
+                        selfVars.searchInput = document.getElementById('pac-input' + slideNumber);
+
+                        // $scope.subsetDestinations(placesFromSearch);
+
+                        // mph.setPlacesFromSearch(placesFromSearch);
+                        mph.placeMarkers(placesFromSearch);
+
+                    } else {
+                        console.log('searchBox.getPlaces() still returned no results');
+                    }
+
+                }
+
                 function stageStartNewCanvas() {
                     console.log('stageStartNewCanvas');
                     queryForNewDisplay = "";
                     startNewCanvas('google').then(function (mapType) {
                         console.log("resolve calls addCanvas");
-                        CanvasHolderCtrl.addCanvas(mapType);
-                    })
-                    .then(function() {
-                        fillNewCanvas(selfVars.placesFromSearch);
+                        // CanvasHolderCtrl.addCanvas(mapType);
+                    }).then(function () {
+                        // fillNewCanvas(selfVars.placesFromSearch);
+                        console.log('do nothing here');
                     });
                 }
                 function fillMapWithMarkers() {
+                    console.log("fillMapWithMarkers calling fillNewCanvas");
                     fillNewCanvas(selfVars.placesFromSearch);
                 }
                 selfMethods.fillMapWithMarkers = fillMapWithMarkers;
@@ -288,7 +313,8 @@
                             // });
                         } else {
                             startNewCanvas('google').then(function (mapType) {
-                                CanvasHolderCtrl.addCanvas(mapType);
+                                // CanvasHolderCtrl.addCanvas(mapType);
+                                console.log("do nothing in first then section");
                             }).then(function () {
                                 fillNewCanvas(selfVars.placesFromSearch);
                             });
@@ -384,44 +410,46 @@
             function setupQueryListener(mapType) {
                 var
                     cnvs, //  = utils.getElemById(whichCanvas),
-                    curMapType = mapType ? mapType : 'arcgis',  // mlconfig.getMapType(), // CurrentMapTypeService.getMapTypeKey(),
+                    curMapType = mapType || 'arcgis',  // mlconfig.getMapType(), // CurrentMapTypeService.getMapTypeKey(),
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     fnLink,
                     pacinput,
                     pacinputParent,
                     pacinputElement,
-                    templateUnformatted = ' \
-                        <div id="gmsearch{0}" \
-                            class="gmsearchclass" \
-                            style="width: 28em; margin-left: 7em; margin-right : 2em;"> \
-                            <input id="pac-input{1}" \
-                                class="gmsearchcontrols" className="controls" \
-                                type="text" onclick="cancelBubble=true;" onmousemove="event.stopPropagation();" \
-                                onmousedown="event.stopPropagation();" onmouseup="event.stopPropagation();" \
-                                placeholder="Search Google Places"  \
-                                ng-class="{\'gmsposition-rel\' : !gsearch.isGoogle, \'gmsposition-abs\' : gsearch.isGoogle}" \
-                                ng-model="gsearch.query" \
-                                ng-change="queryChanged()" auto-focus > \
-                        </div>',
+                    templateUnformatted =
+                    ' \
+                    <div id="gmsearch{0}" \
+                        class="gmsearchclass" \
+                        style="width: 28em; margin-left: 7em; margin-right : 2em;"> \
+                        <input id="pac-input{1}" \
+                            class="gmsearchcontrols" className="controls" \
+                            type="text" onclick="cancelBubble=true;" onmousemove="event.stopPropagation();" \
+                            onmousedown="event.stopPropagation();" onmouseup="event.stopPropagation();" \
+                            placeholder="Search Google Places"  \
+                            ng-class="{\'gmsposition-rel\' : !gsearch.isGoogle, \'gmsposition-abs\' : gsearch.isGoogle}" \
+                            ng-model="gsearch.query" \
+                            ng-change="queryChanged()" auto-focus > \
+                    </div>',
                     template = templateUnformatted.format(currentSlideNumber, currentSlideNumber);
                 // curMapType = CurrentMapTypeService.getMapTypeKey(),
                 selfVars.curMapType = curMapType;
                 if (curMapType === 'google') {
                     $scope.gsearch.isGoogle = true;
+                    whichCanvas = 'map' + currentSlideNumber;
                 } else {
                     $scope.gsearch.isGoogle = false;
                     if (curMapType === 'arcgis') {
                         whichCanvas = 'map' + currentSlideNumber + '_root'; // 'map_canvas_root';
-                        // whichCanvas = curMapType === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
                         pacinputElement = document.getElementById('pac-input' + currentSlideNumber);
                         if (pacinputElement) {
                             pacinputParent = pacinputElement.parentElement;
                             pacinputParent.removeChild(pacinputElement);
                         }
+                    } else {
+                        whichCanvas = 'map' + currentSlideNumber;
                     }
                 }
 
-                whichCanvas = curMapType === 'arcgis' ? 'map' + currentSlideNumber + '_root' : 'map' + currentSlideNumber;
                 pacinput = document.getElementById('pac-input' + currentSlideNumber);
                 if (!pacinput) {
                     pacinput = angular.element(template);
@@ -515,31 +543,28 @@
                 });
 
             };
-            $scope.startMap = function (mapNumber, mapType) {
-                initialize(mapNumber, mapType);
-            };
 
             $scope.clickTest = function () {
-                var outerMapNumber = MapInstanceService.getSlideCount();
-                alert('infowindow with ng-click on map ' + outerMapNumber);
+                var mapNumber = MapInstanceService.getSlideCount();
+                alert('infowindow with ng-click on map ' + mapNumber);
             };
             $scope.$on('invalidateCurrentMapTypeConfigured', function () {
                 invalidateCurrentMapTypeConfigured();
             });
             $scope.subsetDestinations = function (placesFromSearch) {
-                var curMapType = selfVars.curMapType, // CurrentMapTypeService.getMapTypeKey(),
-                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                    configInst = MapInstanceService.getConfigInstanceForMap(currentSlideNumber),
-                    googmph = configInst.getMapHosterInstance();
+                var curMapType = selfVars.curMapType; // CurrentMapTypeService.getMapTypeKey(),
+                    // currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    // configInst = MapInstanceService.getConfigInstanceForMap(currentSlideNumber),
+                    // googmph = configInst.getMapHosterInstance();
                     // googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-                console.log("subsetDestinations for map id " + currentSlideNumber);
-                console.debug(googmph);
+                // console.log("subsetDestinations for map id " + currentSlideNumber);
+                // console.debug(googmph);
 
                 if (curMapType === 'google') {
-                    if (placesFromSearch) {
-                        googmph.setPlacesFromSearch(placesFromSearch);
+                //     if (placesFromSearch) {
+                //         googmph.setPlacesFromSearch(placesFromSearch);
                         // googmph.placeMarkers(placesFromSearch);
-                    }
+                    // }
                     $scope.destSelections[0].showing = 'destination-option-showing';
                 } else {
                     // do not show smae window if the query isn't coming from a google map.
@@ -549,7 +574,7 @@
             };
 
             $scope.gsearchVisible = 'inline-block';
-            whichCanvas = selfVars.curMapType === 'arcgis' ? 'map_canvas_root' : 'map_canvas';
+            whichCanvas = selfVars.curMapType === 'arcgis' ? 'map' + outerMapNumber + '_root' : 'map' + outerMapNumber;
             $scope.selectedDestination = selfVars.curMapType === 'google' ? 'Same Window' : 'New Pop-up Window';
             $scope.updateState($scope.selectedDestination);
 
@@ -581,24 +606,6 @@
 
             selfMethods.configureCurrentMapType = configureCurrentMapType;
             commonInitialized = true;
-        }
-
-        function fillNewCanvas(placesFromSearchArg) {
-            console.log('fillNewCanvas');
-            var placesFromSearch = placesFromSearchArg,
-                currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                mph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-            if (placesFromSearch && placesFromSearch.length > 0) {
-                // placesSearchResults = placesFromSearch;
-                selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
-
-                // $scope.subsetDestinations(placesFromSearch);
-                mph.placeMarkers(placesFromSearch);
-
-            } else {
-                console.log('searchBox.getPlaces() still returned no results');
-            }
-
         }
 
         function initialize(mapNo, mapType, setupMapHoster) {
@@ -650,42 +657,51 @@
           // google.maps.event.addDomListener(window, 'load', initialize);
 
         function placeCustomControls() {
+            var currentMapNumber = mapStartup.getMapNumber(),
+                contextScope = $scope,
+                cnvs,
+                // templateUrl,
+                templateLnkr,
+                templateMinMaxr,
+                lnkr1,
+                lnkr,
+                minmaxr1,
+                minmaxr,
+                lnkrdiv,
+                mnmxdiv,
+                lnkrText,
+                lnkrSymbol,
+                refreshDelay;
             function stopLintUnusedComplaints(lnkr, minmaxr) {
                 console.log("stopLintUnusedComplaints");
             }
             if (document.getElementById("linkerDirectiveId") === null) {
 
-                whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + mapStartup.getMapNumber() + '_root' : 'map' + mapStartup.getMapNumber();
-                var contextScope = $scope,
-                    cnvs = utils.getElemById(whichCanvas),
-                    templateLnkr = ' \
-                        <div id="linkerDirectiveId" class="lnkrclass"> \
-                        <label id="idLinkerText" class="lnkmaxcontrol_label lnkcontrol_margin"  \
+                whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + currentMapNumber + '_root' : 'map' + currentMapNumber;
+                cnvs = utils.getElemById(whichCanvas);
+                templateLnkr = ' \
+                    <div id="linkerDirectiveId" class="lnkrclass"> \
+                    <label id="idLinkerText" class="lnkmaxcontrol_label lnkcontrol_margin"  \
+                    style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                    </label> \
+                    <img id="idLinkerSymbol" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
+                       style="cursor:url(../img/LinkerCursor.png) 9 9,auto;" > \
+                    </div>';
+
+                templateMinMaxr = ' \
+                    <div id="mapmaximizerDirectiveId" class="mnmxclass" > \
+                    <label id="idMinMaxText" class="lnkmaxcontrol_label maxcontrol_margin" \
                         style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                        </label> \
-                        <img id="idLinkerSymbol" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
-                           style="cursor:url(../img/LinkerCursor.png) 9 9,auto;" > \
-                        </div>',
+                    </label> \
+                    <img id="idMinMaxSymbol" class="lnkmaxcontrol_symbol maxcontrol_margin" \
+                         style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                    </div>';
+                lnkr1 = angular.element(templateLnkr);
+                lnkr = cnvs.append(lnkr1);
 
-                    templateMinMaxr = ' \
-                        <div id="mapmaximizerDirectiveId" class="mnmxclass" > \
-                        <label id="idMinMaxText" class="lnkmaxcontrol_label maxcontrol_margin" \
-                            style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                        </label> \
-                        <img id="idMinMaxSymbol" class="lnkmaxcontrol_symbol maxcontrol_margin" \
-                             style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                        </div>',
-                    lnkr1 = angular.element(templateLnkr),
-                    lnkr = cnvs.append(lnkr1),
+                minmaxr1 = angular.element(templateMinMaxr);
+                minmaxr = cnvs.append(minmaxr1);
 
-                    minmaxr1 = angular.element(templateMinMaxr),
-                    minmaxr = cnvs.append(minmaxr1),
-
-                    lnkrdiv,
-                    mnmxdiv,
-                    lnkrText,
-                    lnkrSymbol,
-                    refreshDelay;
                 stopLintUnusedComplaints(lnkr, minmaxr);
 
                 setTimeout(function () {

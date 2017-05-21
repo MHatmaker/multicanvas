@@ -572,6 +572,7 @@
                         service.textSearch(queryPlaces, placesQueryCallback);
                     }
 
+                    // setupQueryListener();
                     placeCustomControls();
                     fillMapWithMarkers();
                 });
@@ -827,23 +828,6 @@
                 mlconfig.setUserName(name);
             }
 
-            // MapHosterGoogle.prototype.setPusherClient = function (pusher, channel)
-            function setPusherClient(pusher, channel) {
-
-                console.log("Ready to subscribe MapHosterGoogle " + mlconfig.getMapNumber());
-                // var evtDct = pusherEvtHandler.getEventDct(),
-                //     key;
-                // for (key in evtDct) {
-                //     if (evtDct.hasOwnProperty(key)) {
-                //         pusher.subscribe(key, evtDct[key]);
-                //     }
-                // }
-                selfPusherDetails.pusher = pusher;
-                selfPusherDetails.channelName = channel;
-                mlconfig.setChannel(channel);
-                console.log("reset MapHosterGoogle setPusherClient, selfPusherDetails.pusher " +  selfPusherDetails.pusher);
-            }
-
             function getGlobalsForUrl() {
                 return "&lon=" + cntrxG + "&lat=" + cntryG + "&zoom=" + zmG;
             }
@@ -931,7 +915,6 @@
                 config : configureMap,
                 retrievedBounds: retrievedBounds,
                 retrievedClick: retrievedClick,
-                setPusherClient: setPusherClient,
                 setUserName : setUserName,
                 getGlobalsForUrl: getGlobalsForUrl,
                 getCenter : getCenter,

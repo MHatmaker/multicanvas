@@ -1,7 +1,7 @@
-/*global require, define, console, document*/
+/*global require, define, console, document, angular*/
 
 define([
-], function (app) {
+], function () {
     'use strict';
     var
         app = angular.module('mapModule');
@@ -36,5 +36,5 @@ define([
             };
 
         return {addScope : addScope, hideLinkr: hideLinkr, showLinkr: showLinkr};
-    }])
+    }]);
 });

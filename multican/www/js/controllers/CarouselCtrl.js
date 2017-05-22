@@ -18,7 +18,7 @@
                 activeSlideNumber = 0,
                 items = [],
                 currentSlide = items[0];
-            $scope.mapcolheight = 480;
+            $scope.mapcolheight = 510;
             $scope.mapcolWidth = 380;
             $scope.slidesCount = items.length;
             $scope.ActNoAct = 'active';

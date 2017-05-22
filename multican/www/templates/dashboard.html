@@ -41,12 +41,12 @@
                     <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:512px; top:256px; z-index:100;" />
                 </div>
             </div>
-            <div class='row'>
-                <button id="addcanbtnG" ng-click="addCanvas('google')" value="Add Google Map" class="btn col-md-3 col-xs-5">Add Google Map</button>
-                <button id="addcanbtnA" ng-click="addCanvas('arcgis')" value="Add ArcGIS Map" class="btn col-md-3 col-xs-5">Add ArcGIS Map</button>
-                <button id="addcanbtnL" ng-click="addCanvas('leaflet')" value="Add Leaflet Map" class="btn col-md-3 col-xs-5">Add leaflet Map</button>
-                <button id="removecanbtn" ng-click="removeCanvas()" value="Drop Map" class="btn col-md-3 col-xs-5">Drop Map</button>
-                <button id="centerbtn" ng-click="centerOnMe()" value="Center" class="btn col-md-3 col-xs-5">Center</button>
+            <div class='row' padding='6px 4px' class="btn-labelled btn-primary">
+                <button id="addcanbtnG" ng-click="addCanvas('google')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">+ Google</button>
+                <button id="addcanbtnA" ng-click="addCanvas('arcgis')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">+ ArcGIS</button>
+                <button id="addcanbtnL" ng-click="addCanvas('leaflet')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">+ Leaflet</button>
+                <button id="removecanbtn" ng-click="removeCanvas()" class="btn-mapsource" col-md-5 col-xs-5">Drop Map</button>
+                <button id="centerbtn" ng-click="centerOnMe()" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Center</button>
             </div>
             <div id="hiddenmap_canvas" style="margin:0px; width: 100%; height: 100%; display: none;"></div>
         </div>

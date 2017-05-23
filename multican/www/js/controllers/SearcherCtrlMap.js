@@ -14,14 +14,16 @@ angular.isUndefinedOrNull = function (val) {
         'libs/StartupArcGIS',
         'libs/MapHosterArcGIS',
         'libs/utils',
+        'libs/PusherConfig',
         'libs/MLConfig',
-        'controllers/PusherSetupCtrl'
-    ], function (StartupArcGIS, MapHosterArcGIS, utils, MLConfig, PusherSetupCtrl) {
+        'controllers/PusherSetupCtrl',
+        'controllers/CarouselCtrl'
+    ], function (StartupArcGIS, MapHosterArcGIS, utils, PusherConfig, MLConfig, PusherSetupCtrl, CarouselCtrl) {
         console.log('SearcherCtrlMap define');
         var scopeDict = {},
             portalForSearch = null;
 
-        function SearcherCtrlMap($scope, $rootScope) {
+        function SearcherCtrlMap($scope, $rootScope, MapInstanceService, GoogleQueryService) {
             var self = this,
                 selectedWebMapId = "Nada ID",
                 selectedWebMapTitle = "Nada Title",
@@ -42,20 +44,27 @@ angular.isUndefinedOrNull = function (val) {
 
             onAcceptDestination = function (destWnd) {
                 var
-                    $inj = MLConfig.getInjector(),
-                    serv = $inj.get('CurrentMapTypeService'),
-                    selMph = serv.getSelectedMapType();
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    mapInstance = MapInstanceService.getMapHosterInstance(currentSlideNumber),
+                    startupArcGIS,
+                    mlconfig;
+
                 console.log("onAcceptDestination " + destWnd);
-                selMph.removeEventListeners(destWnd.dstSel);
+                mlconfig = new MLConfig.MLConfig(currentSlideNumber);
+                console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
+                mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
+                MapInstanceService.addConfigInstanceForMap(currentSlideNumber, mlconfig);
+                mapInstance.removeEventListeners(destWnd.dstSel);
                 $scope.$parent.accept();
 
                 console.log("onAcceptDestination " + destWnd.dstSel);
-                StartupArcGIS.replaceWebMap(selectedWebMapId,  destWnd, selectedWebMapTitle, selMph);
+                startupArcGIS = new StartupArcGIS.StartupArcGIS(currentSlideNumber, mlconfig);
+                startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
             };
 
             // $scope.onDestinationWindowSelected = function (args) {
             //     var destWnd = args.dstWnd,
-            //         $inj = MLConfig.getInjector(),
+            //         $inj = PusherConfig.getInjector(),
             //         serv = $inj.get('CurrentMapTypeService'),
             //         selMph = serv.getSelectedMapType();
             //     console.log("onAcceptDestination " + destWnd);
@@ -293,12 +302,11 @@ angular.isUndefinedOrNull = function (val) {
             // $scope.openWindowSelectionDialog = function (modal311, selectedWebMapId, selectedMapTitle) {
             $scope.openWindowSelectionDialog = function (info) {
 
-                var $inj = MLConfig.getInjector(),
-                    gmQSvc = $inj.get('GoogleQueryService'),
-                    scope = gmQSvc.getQueryDestinationDialogScope('arcgis'),
-                    serv = $inj.get('CurrentMapTypeService'),
-                    selMph = serv.getSelectedMapType();
-                selMph.removeEventListeners();
+                var
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    mapInstance = MapInstanceService.getMapHosterInstance(currentSlideNumber),
+                    scope = GoogleQueryService.getQueryDestinationDialogScope();
+                mapInstance.removeEventListeners();
 
                 scope.showDestDialog(
                     onAcceptDestination,
@@ -320,7 +328,7 @@ angular.isUndefinedOrNull = function (val) {
 
             // App.service("CurrentWebMapIdService");
 
-            App.controller('SearcherCtrlMap',  ['$scope', '$rootScope', SearcherCtrlMap]);
+            App.controller('SearcherCtrlMap',  ['$scope', '$rootScope', 'MapInstanceService', 'GoogleQueryService', SearcherCtrlMap]);
 
             portalForSearch = portal;
             return SearcherCtrlMap;

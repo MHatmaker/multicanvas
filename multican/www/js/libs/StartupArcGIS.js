@@ -328,23 +328,15 @@
 
                     prepareWindow = function (newSelectedWebMapId, referringMph, displayDestination) {
 
-                        var curmph = MapHosterArcGIS,
+                        var curmph = self.mapHoster,
                             $inj,
                             mapTypeSvc,
                             url,
                             baseUrl,
                             openNewDisplay;
 
-                        $inj = self.mlconfig.getInjector();
-                        mapTypeSvc = $inj.get('CurrentMapTypeService');
-                        curmph = mapTypeSvc.getSelectedMapType();
-
-                        // evtSvc = $inj.get('PusherEventHandlerService');
-                        // evtSvc.addEvent('client-MapXtntEvent', curmph.retrievedBounds);
-                        // evtSvc.addEvent('client-MapClickEvent', curmph.retrievedClick);
-
                         openNewDisplay = function (channel, userName) {
-                            url = "?id=" + newSelectedWebMapId + curmph.getGlobalsForUrl() +
+                            url = "?id=" + newSelectedWebMapId + self.mapHoster.getGlobalsForUrl() +
                                 "&channel=" + channel + "&userName=" + userName +
                                 "&maphost=ArcGIS" + "&referrerId=" + self.mlconfig.getUserId();
                             if (referringMph) {
@@ -377,9 +369,9 @@
                     },
 
                     initialize = function (newSelectedWebMapId, destDetails, selectedMapTitle, referringMph) {
-                        var displayDestination = destDetails.dstSel,
-                            $inj,
-                            CurrentMapTypeService;
+                        var displayDestination = destDetails.dstSel;
+                        //     $inj,
+                        // CurrentMapTypeService;
                         /*
                         This branch should only be encountered after a DestinationSelectorEvent in the AGO group/map search process.
                         The user desires to open a new popup or tab related to the current map view, without yet publishing the new map environment.
@@ -394,14 +386,12 @@
 
                             initializePostProc(newSelectedWebMapId);
 
-                            $inj = self.mlconfig.getInjector();
-                            // evtSvc = $inj.get('PusherEventHandlerService');
-                            CurrentMapTypeService = $inj.get('CurrentMapTypeService');
-                            CurrentMapTypeService.setCurrentMapType('arcgis');
-                            // evtSvc.addEvent('client-MapXtntEvent', self.mapHoster.retrievedBounds);
-                            // evtSvc.addEvent('client-MapClickEvent',  self.mapHoster.retrievedClick);
+                            // $inj = self.mlconfig.getInjector();
+                            // CurrentMapTypeService = $inj.get('CurrentMapTypeService');
+                            // CurrentMapTypeService.setCurrentMapType('arcgis');
                         }
                     },
+
                     initializePreProc = function () {
 
                         console.log('initializePreProc entered');
@@ -441,7 +431,8 @@
                     getMap: getMap,
                     getMapNumber: getMapNumber,
                     getMapHosterInstance: getMapHosterInstance,
-                    configure: initializePreProc
+                    configure: initializePreProc,
+                    replaceWebMap: initialize
                 };
             };
 

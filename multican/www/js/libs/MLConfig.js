@@ -8,13 +8,6 @@ define(function () {
         console.log("MLConfig ctor");
 
         console.log("mapId to be set to " + ndx);
-        function getParameterByName(name, details) {
-            // console.log("get paramater " + name + " from " + details.search);
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(details.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
 
         var
             details = {
@@ -24,6 +17,9 @@ define(function () {
                 mapNumber: null,
                 mapHoster : null,
                 webmapId : "a4bb8a91ecfb4131aa544eddfbc2f1d0",
+                lat : '',
+                lon : '',
+                zoom : '',
                 nginj : null,
                 masherChannel : "private-channel-mashchannel",
                 masherChannelInitialized : false,
@@ -32,7 +28,13 @@ define(function () {
                 search: '/',
                 startupView : {'summaryShowing' : true, 'websiteDisplayMode' : true}
             },
-
+            getParameterByName = function (name, details) {
+                // console.log("get paramater " + name + " from " + details.search);
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(details.search);
+                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            },
             setMapId = function (id) {
                 console.log("MLConfig setMapId to " + id);
                 details.mapId = id;
@@ -98,8 +100,17 @@ define(function () {
                 }
                 return details.mapHosterInstance;
             },
-            webmapId = function (newWindow) {
-                return newWindow ? getParameterByName('id', details) : details.webmapId;
+            getWebmapId = function (newWindow) {
+                var result = "";
+                if (newWindow === true) {
+                    result = getParameterByName('id', details);
+                    if (result === "") {
+                        result = details.webmapId;
+                    }
+                } else {
+                    result = details.webmapId;
+                }
+                return result;
             },
             setWebmapId = function (id) {
                 console.log("Setting webmapId to " + id);
@@ -147,6 +158,26 @@ define(function () {
                 return rslt.length !== 0;
             },
 
+            setUrl = function (u) {
+                details.url = u;
+            },
+            getUrl = function () {
+                return details.url;
+            },
+            hasCoordinates = function () {
+                var result = "";
+                result = getParameterByName('zoom', details);
+                return result === "" ? false : true;
+            },
+            lon = function () {
+                return getParameterByName('lon', details);
+            },
+            lat = function () {
+                return getParameterByName('lat', details);
+            },
+            zoom = function () {
+                return getParameterByName('zoom', details);
+            },
             setPosition = function (position) {
                 details.lon = position.lon;
                 details.lat = position.lat;
@@ -227,7 +258,7 @@ define(function () {
             getUserName: getUserName,
             setInjector: setInjector,
             getInjector: getInjector,
-            webmapId: webmapId,
+            getWebmapId: getWebmapId,
             setWebmapId: setWebmapId,
             masherChannel: masherChannel,
             getChannelFromUrl: getChannelFromUrl,
@@ -246,7 +277,13 @@ define(function () {
             setStartupView: setStartupView,
             query: query,
             setQuery: setQuery,
-            getQueryFromUrl: getQueryFromUrl
+            getQueryFromUrl: getQueryFromUrl,
+            lat: lat,
+            lon: lon,
+            zoom: zoom,
+            hasCoordinates : hasCoordinates,
+            setUrl: setUrl,
+            getUrl: getUrl
         };
     }
 

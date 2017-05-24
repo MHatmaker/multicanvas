@@ -53,12 +53,14 @@ angular.isUndefinedOrNull = function (val) {
                 mlconfig = new MLConfig.MLConfig(currentSlideNumber);
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
                 mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
+                mlconfig.webmapId = selectedWebMapId;
                 MapInstanceService.addConfigInstanceForMap(currentSlideNumber, mlconfig);
                 mapInstance.removeEventListeners(destWnd.dstSel);
                 $scope.$parent.accept();
 
                 console.log("onAcceptDestination " + destWnd.dstSel);
                 startupArcGIS = new StartupArcGIS.StartupArcGIS(currentSlideNumber, mlconfig);
+                startupArcGIS.configure(); //currentSlideNumber, mapLocOptions);
                 startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
             };
 

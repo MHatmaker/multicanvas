@@ -398,7 +398,7 @@
                         // var urlparams=dojo.queryToObject(window.location.search);
                         // console.debug(urlparams);
                         // var idWebMap=urlparams['?id'];
-                        var idWebMap = self.mlconfig.webmapId(true),
+                        var idWebMap = self.mlconfig.getWebmapId(true),
                             llon,
                             llat;
 
@@ -418,10 +418,12 @@
                         } else {
                             console.log("found idWebMap");
                             console.log("use " + idWebMap);
-                            zoomWebMap = self.mlconfig.zoom();
-                            llon = self.mlconfig.lon();
-                            llat = self.mlconfig.lat();
-                            pointWebMap = [llon, llat];
+                            if (self.mlconfig.hasCoordinates()) {
+                                zoomWebMap = self.mlconfig.zoom();
+                                llon = self.mlconfig.lon();
+                                llat = self.mlconfig.lat();
+                                pointWebMap = [llon, llat];
+                            }
                             initialize(idWebMap, {dstSel : 'no destination selection probably Same Window'});
                         }
                     };

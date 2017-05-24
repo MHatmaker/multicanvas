@@ -33,7 +33,7 @@
                         mlConfig = new MLConfig.MLConfig(currIndex);
                         console.log("addCanvas with index " + currIndex);
                         mlConfig.setPosition(MapInstanceService.getConfigInstanceForMap(currIndex === 0 ? currIndex : currIndex - 1).getPosition());
-                        MapInstanceService.addConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
+                        MapInstanceService.setConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
                     }
                 }
                 newCanvasItem = CanvasService.makeCanvasSlideListItem(currIndex);
@@ -51,7 +51,7 @@
                         // currIndex = MapInstanceService.getSlideCount();
                         // var
                         //     mlConfig = new MLConfig.MLConfig(currIndex);
-                        // MapInstanceService.addConfigInstanceForMap(currIndex, angular.copy(mlConfig));
+                        // MapInstanceService.setConfigInstanceForMap(currIndex, angular.copy(mlConfig));
                         console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
                         scope.startMap(currIndex, mapType);
                         MapInstanceService.incrementMapNumber();

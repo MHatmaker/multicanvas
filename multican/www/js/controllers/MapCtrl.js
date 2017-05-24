@@ -116,7 +116,7 @@
             outerMapNumber = MapInstanceService.getSlideCount();
             if (!MapInstanceService.hasConfigInstanceForMap(outerMapNumber)) {
                 mlconfig = new MLConfig.MLConfig(outerMapNumber);
-                MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig); //outerMapNumber, angular.copy(mlconfig));
+                MapInstanceService.setConfigInstanceForMap(outerMapNumber, mlconfig); //outerMapNumber, angular.copy(mlconfig));
             }
             gmquery = mlconfig.query();
 
@@ -923,12 +923,12 @@
                         /// mapConfig = MapInstanceService.getConfigInstanceForMap(outerMapNumber),
                         // if (!mlconfig) {
                         //     mlconfig = new MLConfig.MLConfig(outerMapNumber);
-                        //     MapInstanceService.addConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
+                        //     MapInstanceService.setConfigInstanceForMap(outerMapNumber, angular.copy(mlconfig));
                         // }
                         mlconfig = new MLConfig.MLConfig(outerMapNumber);
                         mlconfig.setMapType('google');
                         mlconfig.setPosition({'lon' : position.coords.longitude, "lat" : position.coords.latitude, "zoom" : 15});
-                        MapInstanceService.addConfigInstanceForMap(outerMapNumber, mlconfig);
+                        MapInstanceService.setConfigInstanceForMap(outerMapNumber, mlconfig);
                         console.log("MapCtrl will now call CanvasHolderCtrl.addCanvas");
                         firstMap = false;
                         CanvasHolderCtrl.addCanvas('google', mlconfig);

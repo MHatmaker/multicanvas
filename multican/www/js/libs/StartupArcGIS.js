@@ -87,7 +87,8 @@
                         console.debug(self.aMap);
                         var
                             curmph = null,
-                            // $inj,
+                            $inj,
+                            mapInstanceSvc,
                             // mapTypeSvc,
                             currentPusher,
                             pusherChannel = null,
@@ -109,6 +110,9 @@
                             // placeCustomControls();
                             self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS();
                             self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, self.mlconfig);
+                            $inj = self.mlconfig.getInjector();
+                            mapInstanceSvc = $inj.get('MapInstanceService');
+                            mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                             self.mlconfig.setMapHosterInstance = self.mapHoster;
                             placeCustomControls();
                             setupQueryListener();
@@ -298,12 +302,12 @@
                                 dojo.connect(aMap, "onUpdateEnd", hideLoading);
                                 dojo.connect(aMap, "onLoad", initUI);
 
-                                self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS();
-                                // self.mapHosterSetupCallback(self.mapHoster, self.aMap);
-                                self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, self.mlconfig);
-                                $inj = self.mlconfig.getInjector();
-                                mapInstanceSvc = $inj.get('MapInstanceService');
-                                mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
+                                // self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS();
+                                // // self.mapHosterSetupCallback(self.mapHoster, self.aMap);
+                                // self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, self.mlconfig);
+                                // $inj = self.mlconfig.getInjector();
+                                // mapInstanceSvc = $inj.get('MapInstanceService');
+                                // mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                                 setTimeout(function () {
                                     if (aMap.loaded) {
                                         initUI();

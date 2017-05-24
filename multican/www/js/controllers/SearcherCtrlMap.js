@@ -49,18 +49,21 @@ angular.isUndefinedOrNull = function (val) {
                     startupArcGIS,
                     mlconfig;
 
-                console.log("onAcceptDestination " + destWnd);
+                console.log("onAcceptDestination " + destWnd.dstSel);
                 mlconfig = new MLConfig.MLConfig(currentSlideNumber);
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
                 mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
                 mlconfig.webmapId = selectedWebMapId;
-                MapInstanceService.addConfigInstanceForMap(currentSlideNumber, mlconfig);
-                mapInstance.removeEventListeners(destWnd.dstSel);
+                if (destWnd.dstSel !== 'Same Window') {
+                    currentSlideNumber = currentSlideNumber + 1;
+                }
+                MapInstanceService.setConfigInstanceForMap(currentSlideNumber, mlconfig);
+                mapInstance.removeEventListeners();
                 $scope.$parent.accept();
 
                 console.log("onAcceptDestination " + destWnd.dstSel);
                 startupArcGIS = new StartupArcGIS.StartupArcGIS(currentSlideNumber, mlconfig);
-                startupArcGIS.configure(); //currentSlideNumber, mapLocOptions);
+                // .configure(); //currentSlideNumber, mapLocOptions);
                 startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
             };
 
@@ -308,7 +311,9 @@ angular.isUndefinedOrNull = function (val) {
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     mapInstance = MapInstanceService.getMapHosterInstance(currentSlideNumber),
                     scope = GoogleQueryService.getQueryDestinationDialogScope();
-                mapInstance.removeEventListeners();
+                if (mapInstance) {
+                    mapInstance.removeEventListeners();
+                }
 
                 scope.showDestDialog(
                     onAcceptDestination,

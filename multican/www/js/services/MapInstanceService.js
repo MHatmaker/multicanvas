@@ -30,7 +30,7 @@ define([
                     slideCount -= 1;
                 }
             };
-            this.addConfigInstanceForMap = function (ndx, cfg) {
+            this.setConfigInstanceForMap = function (ndx, cfg) {
                 configInstances["cfg" + ndx] = cfg;
             };
             this.getConfigInstanceForMap = function (ndx) {

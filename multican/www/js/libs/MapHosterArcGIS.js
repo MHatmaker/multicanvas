@@ -545,6 +545,10 @@
             function getPusherEventHandler() {
                 return pusherEvtHandler;
             }
+            function removeEventListeners() {
+                // mphmap.removeListener();
+                console.log("empty function removeEventListners");
+            }
 
             return {
                 getMap: getMap,
@@ -559,7 +563,8 @@
                 getPusherEventHandler: getPusherEventHandler,
                 getGlobalsForUrl: getGlobalsForUrl,
                 getGlobalPositionComponents: getGlobalPositionComponents,
-                getCenter: getCenter
+                getCenter: getCenter,
+                removeEventListeners: removeEventListeners,
             };
         };
         return {

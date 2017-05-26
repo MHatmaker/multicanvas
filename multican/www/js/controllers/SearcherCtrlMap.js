@@ -1,5 +1,5 @@
 /*global define */
-/*global dojo */
+/*global dojo, angular, console, window, setTimeout, document, alert */
 
 angular.isUndefinedOrNull = function (val) {
     "use strict";
@@ -17,8 +17,9 @@ angular.isUndefinedOrNull = function (val) {
         'libs/PusherConfig',
         'libs/MLConfig',
         'controllers/PusherSetupCtrl',
-        'controllers/CarouselCtrl'
-    ], function (StartupArcGIS, MapHosterArcGIS, utils, PusherConfig, MLConfig, PusherSetupCtrl, CarouselCtrl) {
+        'controllers/CarouselCtrl',
+        "controllers/CanvasHolderCtrl"
+    ], function (StartupArcGIS, MapHosterArcGIS, utils, PusherConfig, MLConfig, PusherSetupCtrl, CarouselCtrl, CanvasHolderCtrl) {
         console.log('SearcherCtrlMap define');
         var scopeDict = {},
             portalForSearch = null;
@@ -45,26 +46,35 @@ angular.isUndefinedOrNull = function (val) {
             onAcceptDestination = function (destWnd) {
                 var
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    nextSlideNumber = CarouselCtrl.getNextSlideNumber(),
                     mapInstance = MapInstanceService.getMapHosterInstance(currentSlideNumber),
                     startupArcGIS,
                     mlconfig;
 
                 console.log("onAcceptDestination " + destWnd.dstSel);
-                mlconfig = new MLConfig.MLConfig(currentSlideNumber);
+                if (destWnd.dstSel === 'Same Window') {
+                    mlconfig = new MLConfig.MLConfig(nextSlideNumber);
+                    MapInstanceService.setConfigInstanceForMap(currentSlideNumber, mlconfig);
+                } else {
+                    mlconfig = new MLConfig.MLConfig(nextSlideNumber);
+                    CanvasHolderCtrl.addCanvas('arcgis', mlconfig);
+                    MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
+                }
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
                 mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
                 mlconfig.webmapId = selectedWebMapId;
-                if (destWnd.dstSel !== 'Same Window') {
-                    currentSlideNumber = currentSlideNumber + 1;
+                if (destWnd.dstSel === 'Same Window') {
+                    mapInstance.removeEventListeners();
                 }
-                MapInstanceService.setConfigInstanceForMap(currentSlideNumber, mlconfig);
-                mapInstance.removeEventListeners();
+                // MapInstanceService.setConfigInstanceForMap(currentSlideNumber, mlconfig);
+                // mapInstance.removeEventListeners();
                 $scope.$parent.accept();
 
                 console.log("onAcceptDestination " + destWnd.dstSel);
-                startupArcGIS = new StartupArcGIS.StartupArcGIS(currentSlideNumber, mlconfig);
+                // CanvasHolderCtrl.addCanvas('arcgis', mlconfig);
+                // startupArcGIS = new StartupArcGIS.StartupArcGIS(currentSlideNumber, mlconfig);
                 // .configure(); //currentSlideNumber, mapLocOptions);
-                startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
+                // startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
             };
 
             // $scope.onDestinationWindowSelected = function (args) {
@@ -80,7 +90,7 @@ angular.isUndefinedOrNull = function (val) {
             //     StartupArcGIS.replaceWebMap(selectedWebMapId,  destWnd, selectedWebMapTitle, selMph);
             // };
 
-            $scope.selectWebMap = function(rowItem) {
+            $scope.selectWebMap = function (rowItem) {
                 selectedWebMapId = rowItem.entity.id;
                 selectedWebMapTitle = rowItem.entity.title;
                 $scope.openWindowSelectionDialog(
@@ -91,7 +101,7 @@ angular.isUndefinedOrNull = function (val) {
                         'icon' : rowItem.entity.thumbnail
                     }
                 );
-            }
+            };
 
             $scope.gridOptions = {
                 // data: 'gridData',
@@ -113,7 +123,7 @@ angular.isUndefinedOrNull = function (val) {
                         resizable : false,
                         width : 60,
                         // cellTemplate : '<img ng-src="{{row.getProperty(col.field)}}" width="50" height="50"/>'
-                        cellTemplate:"<img width=\"50px\" ng-src=\"{{grid.getCellValue(row, col)}}\" lazy-src>"
+                        cellTemplate: "<img width=\"50px\" ng-src=\"{{grid.getCellValue(row, col)}}\" lazy-src>"
 
                     },
                     {
@@ -141,36 +151,36 @@ angular.isUndefinedOrNull = function (val) {
                         name : 'id',
                         visible : false,
                         displayName : 'ID'
-                    },
+                    }
 
                 ]
             };
 
             function transformResponse(results) {
                 var trnsf = [],
-                rsp,
-                i,
-                mp,
-                mpsub,
-                limit = 20,
-                colDefs = [
-                    {
-                        field : 'snippet',
-                        name : 'snippet',
-                        displayName : 'Description'
-                    },
-                    {
-                        field : 'owner',
-                        name : 'owner',
-                        visible : false
-                    }
-                ];
+                    rsp,
+                    i,
+                    mp,
+                    mpsub,
+                    limit = 20,
+                    colDefs = [
+                        {
+                            field : 'snippet',
+                            name : 'snippet',
+                            displayName : 'Description'
+                        },
+                        {
+                            field : 'owner',
+                            name : 'owner',
+                            visible : false
+                        }
+                    ];
 
 
                 if (results.length < limit) {
                     limit = results.length;
                 }
-                for (i = 0; i < limit; i++) {
+                for (i = 0; i < limit; i += 1) {
                     rsp = results[i];
                     mp = {};
                     mp.title = rsp.title;
@@ -185,7 +195,7 @@ angular.isUndefinedOrNull = function (val) {
                     mp.subGridOptions.data = [];
                     mpsub = {};
                     mpsub.snippet = rsp.snippet;
-                    mpsub.id =rsp.id;
+                    mpsub.id = rsp.id;
                     mpsub.owner = rsp.owner;
                     mp.subGridOptions.data.push(mpsub);
 
@@ -263,7 +273,7 @@ angular.isUndefinedOrNull = function (val) {
                 };
                 portalForSearch.queryItems(params).then(function (data) {
                     $scope.showMapResults(data);
-                },function (error) {  //error so reset sign in link
+                }, function (error) {  //error so reset sign in link
                     alert('error returning items');
                 });
             };

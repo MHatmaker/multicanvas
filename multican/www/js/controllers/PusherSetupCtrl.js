@@ -29,7 +29,8 @@
             'isInstantiated' : false,
             'serverUrl' : 'http://linkr622-arcadian.rhcloud.com/',
             'clients' : {},
-            displayPusherDialog : null
+            'eventHandlers' : {},
+            'displayPusherDialog' : null
         },
             selfMethods = {},
             mlconfig,
@@ -45,7 +46,7 @@
             selfdict.pusher = null;
             selfdict.isInitialized = areWeInitialized = false;
             // selfdict.clients = {};
-            selfdict.eventHandlers = {};
+            // selfdict.eventHandlers = {};
 
             $scope.showDialog = selfdict.scope.showDialog = false;
             $scope.data = {
@@ -193,8 +194,7 @@
                 selfdict.clients[selfdict.clientName] = new PusherClient(null,
                     $scope.data.privateChannelMashover,
                     $scope.data.clientName,
-                    selfdict.callbackFunction,
-                    selfdict.info);
+                    selfdict.callbackFunction);
             };
 
             $scope.cancel = function () {
@@ -383,8 +383,8 @@
             return selfMethods.isInstantiated;
         }
 
-        function createPusherClient(pusherChannel, mlconfig, cbfn, nfo) {
-            return selfMethods.createPusherClient(pusherChannel, mlconfig, cbfn, nfo);
+        function createPusherClient(mlconfig, cbfn, nfo) {
+            return selfMethods.createPusherClient(mlconfig, cbfn, nfo);
         }
 
         function setupPusherClient(eventDct, userName, cbfn, nfo) {

@@ -16,6 +16,7 @@
             var
                 getCurrentSlideNumber,
                 activeSlideNumber = 0,
+                nextSlideNumber = 0,
                 items = [],
                 currentSlide = items[0];
             $scope.mapcolheight = 510;
@@ -48,6 +49,7 @@
                 items.push(slideData);
                 currentSlide = items[items.length - 1].mapListItem;
                 activeSlideNumber = $scope.MapNo = items.length - 1;
+                nextSlideNumber += 1;
                 $scope.MapName = slideData.mapName;
                 currentSlide.classList.add('current');
                 $scope.slidesCount = items.length;
@@ -86,10 +88,17 @@
                 return items[activeSlideNumber].slideNumber;
             };
             selfMethods.getCurrentSlideNumber = getCurrentSlideNumber;
+            getNextSlideNumber = function () {
+                return nextSlideNumber;
+            };
+            selfMethods.getNextSlideNumber = getNextSlideNumber;
         }
 
         function getCurrentSlideNumber() {
             return selfMethods.getCurrentSlideNumber();
+        }
+        function getNextSlideNumber() {
+            return selfMethods.getNextSlideNumber();
         }
         function init() {
             console.log('CarouselCtrl init');
@@ -106,7 +115,8 @@
 
         return {
             start: init,
-            getCurrentSlideNumber : getCurrentSlideNumber
+            getCurrentSlideNumber : getCurrentSlideNumber,
+            getNextSlideNumber: getNextSlideNumber
         };
     });
 }());

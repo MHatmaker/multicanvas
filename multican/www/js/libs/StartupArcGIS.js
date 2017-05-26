@@ -89,9 +89,9 @@
                             curmph = null,
                             $inj,
                             mapInstanceSvc,
+                            CurrentMapTypeSvc,
                             // mapTypeSvc,
                             currentPusher,
-                            pusherChannel = null,
                             currentChannel;
 
                         /* Scalebar refuses to appear on map.  It appears outside the map on a bordering control.
@@ -114,6 +114,8 @@
                             mapInstanceSvc = $inj.get('MapInstanceService');
                             mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                             self.mlconfig.setMapHosterInstance = self.mapHoster;
+                            CurrentMapTypeSvc = $inj.get('CurrentMapTypeService');
+                            CurrentMapTypeSvc.setCurrentMapType('arcgis');
                             placeCustomControls();
                             setupQueryListener();
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
@@ -128,10 +130,8 @@
                             // mapTypeSvc = $inj.get('CurrentMapTypeService');
                             // curmph = mapTypeSvc.getSelectedMapType();
                             // console.log('selected map type is ' + curmph);
-                            pusherChannel = self.mlconfig.masherChannel(false);
-                            console.log('pusherChannel is ' + pusherChannel);
 
-                            pusher = PusherSetupCtrl.createPusherClient(
+                            self.pusher = PusherSetupCtrl.createPusherClient(
                                 self.mlconfig,
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
@@ -141,6 +141,9 @@
                                 },
                                 {'destination' : "destPlaceHolder", 'currentMapHolder' : self.mapHoster, 'newWindowId' : "windowIdPlaceholder"}
                             );
+                            if (!self.pusher) {
+                                console.log("failed to create Pusher in StartupGoogle");
+                            }
 
                         } else {
                             console.log("self.mapHoster is something or other");
@@ -380,7 +383,9 @@
                         This branch should only be encountered after a DestinationSelectorEvent in the AGO group/map search process.
                         The user desires to open a new popup or tab related to the current map view, without yet publishing the new map environment.
                          */
-                        if (displayDestination === 'New Pop-up Window' || displayDestination === 'New Tab') {
+                        if (displayDestination === 'New Pop-up Window') {
+                            prepareWindow(newSelectedWebMapId, referringMph, displayDestination);
+                        } else if (displayDestination === 'New Tab') {
                             prepareWindow(newSelectedWebMapId, referringMph, displayDestination);
                         } else {
                             /*

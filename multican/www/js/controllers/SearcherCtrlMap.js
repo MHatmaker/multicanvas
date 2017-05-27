@@ -48,13 +48,36 @@ angular.isUndefinedOrNull = function (val) {
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     nextSlideNumber = CarouselCtrl.getNextSlideNumber(),
                     mapInstance = MapInstanceService.getMapHosterInstance(currentSlideNumber),
+                    configInstance = MapInstanceService.getConfigInstanceForMap(currentSlideNumber),
                     startupArcGIS,
+                    mapHoster,
+                    mapLinkrBounds,
+                    configMapNumber,
+                    centerCoord,
+                    pos,
+                    mapLocOptions,
                     mlconfig;
 
                 console.log("onAcceptDestination " + destWnd.dstSel);
                 if (destWnd.dstSel === 'Same Window') {
-                    mlconfig = new MLConfig.MLConfig(nextSlideNumber);
+                    mlconfig = new MLConfig.MLConfig(currentSlideNumber);
                     MapInstanceService.setConfigInstanceForMap(currentSlideNumber, mlconfig);
+                    startupArcGIS = new StartupArcGIS.StartupArcGIS(currentSlideNumber, mlconfig);
+                    mlconfig.setPosition(configInstance.getPosition());
+                    pos = mlconfig.getPosition();
+                    centerCoord = { lat: pos.lat, lng: pos.lon};
+                    mapLocOptions = {
+                        center: centerCoord,
+                        zoom: pos.zoom,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    startupArcGIS.configure(currentSlideNumber, mapLocOptions);
+                    configMapNumber = mlconfig.getMapId();
+                    mapHoster = startupArcGIS.getMapHosterInstance(currentSlideNumber);
+                    // startupArcGIS.setMapHosterInstance(mapHoster); // MapInstanceService.getMapHosterInstance(mapNumber));
+                    MapInstanceService.setMapHosterInstance(currentSlideNumber, mapHoster);
+                    // startupArcGIS.configure(); //currentSlideNumber, mapLocOptions);
+                    // startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
                 } else {
                     mlconfig = new MLConfig.MLConfig(nextSlideNumber);
                     CanvasHolderCtrl.addCanvas('arcgis', mlconfig);

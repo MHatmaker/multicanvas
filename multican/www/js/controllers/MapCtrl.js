@@ -325,7 +325,8 @@
 
                     } else {  //(destWnd == "Same Window")
                         googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-                        googmph.placeMarkers(placesSearchResults);
+                        fillNewCanvas(selfVars.placesFromSearch);
+                        // googmph.placeMarkers(placesSearchResults);
                         mlconfig.setQuery(queryForNewDisplay);
                         queryForSameDisplay = queryForNewDisplay;
                     }

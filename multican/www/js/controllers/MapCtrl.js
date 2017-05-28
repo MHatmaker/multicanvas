@@ -64,9 +64,9 @@
         }
         selfMethods.invalidateCurrentMapTypeConfigured = invalidateCurrentMapTypeConfigured;
 
-        function refreshLinker() {
-            var lnkrText = document.getElementById("idLinkerText"),
-                lnkrSymbol = document.getElementById("idLinkerSymbol"),
+        function refreshLinker(mapNo) {
+            var lnkrText = document.getElementById("idLinkerText" + mapNo),
+                lnkrSymbol = document.getElementById("idLinkerSymbol" + mapNo),
                 lnkrTxt,
                 lnkrSmbl;
             if (lnkrSymbol && lnkrText) {
@@ -84,9 +84,9 @@
             }
         }
 
-        function refreshMinMax() {
-            var minMaxText = document.getElementById("idMinMaxText"),
-                minMaxSymbol = document.getElementById("idMinMaxSymbol");
+        function refreshMinMax(mapNo) {
+            var minMaxText = document.getElementById("idMinMaxText" + mapNo),
+                minMaxSymbol = document.getElementById("idMinMaxSymbol" + mapNo);
             if (minMaxText && minMaxSymbol) {
                 minMaxText.innerHTML = SiteViewService.getSiteExpansion();
                 console.log("refresh MinMax Text with " + minMaxText.innerHTML);
@@ -421,7 +421,7 @@
                     ' \
                     <div id="gmsearch{0}" \
                         class="gmsearchclass" \
-                        style="width: 28em; margin-left: 7em; margin-right : 2em;"> \
+                        style="width: 28em; margin-right : 2em;"> \
                         <input id="pac-input{1}" \
                             class="gmsearchcontrols" className="controls" \
                             type="text" onclick="cancelBubble=true;" onmousemove="event.stopPropagation();" \
@@ -663,7 +663,9 @@
                 cnvs,
                 // templateUrl,
                 templateLnkr,
+                templateLnkrUnformatted,
                 templateMinMaxr,
+                templateMinMaxrUnformatted,
                 lnkr1,
                 lnkr,
                 minmaxr1,
@@ -680,23 +682,25 @@
 
                 whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + currentMapNumber + '_root' : 'map' + currentMapNumber;
                 cnvs = utils.getElemById(whichCanvas);
-                templateLnkr = ' \
-                    <div id="linkerDirectiveId" class="lnkrclass"> \
-                    <label id="idLinkerText" class="lnkmaxcontrol_label lnkcontrol_margin"  \
-                    style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                    </label> \
-                    <img id="idLinkerSymbol" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
-                       style="cursor:url(../img/LinkerCursor.png) 9 9,auto;" > \
-                    </div>';
-
-                templateMinMaxr = ' \
-                    <div id="mapmaximizerDirectiveId" class="mnmxclass" > \
-                    <label id="idMinMaxText" class="lnkmaxcontrol_label maxcontrol_margin" \
+                templateLnkrUnformatted = ' \
+                    <div id="linkerDirectiveId{0}" class="lnkrclass"> \
+                    <label id="idLinkerText{1}" class="lnkmaxcontrol_label lnkcontrol_margin"  \
                         style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
                     </label> \
-                    <img id="idMinMaxSymbol" class="lnkmaxcontrol_symbol maxcontrol_margin" \
+                    <img id="idLinkerSymbol{2}" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
+                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                    </div>';
+                templateLnkr = templateLnkrUnformatted.format(currentMapNumber, currentMapNumber, currentMapNumber);
+
+                templateMinMaxrUnformatted = ' \
+                    <div id="mapmaximizerDirectiveId{0}" class="mnmxclass" > \
+                    <label id="idMinMaxText{1}" class="lnkmaxcontrol_label maxcontrol_margin" \
+                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                    </label> \
+                    <img id="idMinMaxSymbol{2}" class="lnkmaxcontrol_symbol maxcontrol_margin" \
                          style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
                     </div>';
+                templateMinMaxr = templateMinMaxrUnformatted.format(currentMapNumber, currentMapNumber, currentMapNumber);
                 lnkr1 = angular.element(templateLnkr);
                 lnkr = cnvs.append(lnkr1);
 
@@ -706,14 +710,14 @@
                 stopLintUnusedComplaints(lnkr, minmaxr);
 
                 setTimeout(function () {
-                    lnkrdiv = document.getElementsByClassName('lnkrclass')[0];
+                    lnkrdiv = document.getElementById('linkerDirectiveId' + currentMapNumber);
                     lnkrdiv.addEventListener('click', function (event) {
                         console.log('lnkr[0].onclick   display LinkerEvent');
                         event.stopPropagation();
 
                         LinkrSvc.showLinkr();
                     });
-                    mnmxdiv = document.getElementsByClassName('mnmxclass')[0];
+                    mnmxdiv = document.getElementById('mapmaximizerDirectiveId' + currentMapNumber);
 
                     mnmxdiv.addEventListener('click', function (event) {
                         console.log('minmaxr[0].onclick   mapMaximizerEvent');
@@ -725,15 +729,15 @@
                 }, 200);
 
 
-                lnkrText = document.getElementById("idLinkerText");
-                lnkrSymbol = document.getElementById("idLinkerSymbol");
+                lnkrText = document.getElementById("idLinkerText" + currentMapNumber);
+                lnkrSymbol = document.getElementById("idLinkerSymbol" + currentMapNumber);
                 refreshDelay = 500;
                 if (lnkrSymbol && lnkrText) {
                     refreshDelay = 10;
                 }
                 setTimeout(function () {
-                    refreshLinker();
-                    refreshMinMax();
+                    refreshLinker(currentMapNumber);
+                    refreshMinMax(currentMapNumber);
                 }, refreshDelay);
             }
             // else {

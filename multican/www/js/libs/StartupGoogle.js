@@ -68,6 +68,10 @@
                             center: centerLatLng, //new google.maps.LatLng(41.8, -87.7),
                             // center: new google.maps.LatLng(51.50, -0.09),
                             zoom: initZoom,
+                            zoomControlOptions: {
+                                style: google.maps.ZoomControlStyle.SMALL,
+                                position: google.maps.ControlPosition.LEFT_CENTER
+                            },
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         };
 

@@ -398,7 +398,7 @@
                     updateGlobals("init with qlon, qlat", qlon, qlat, qzoom);
                 } else {
                     mphmap.setView([mapOptions.center.lat, mapOptions.center.lng], mapOptions.zoom);
-                    updateGlobals("init with hard-coded values", mapOptions.center.lat, mapOptions.center.lng, mapOptions.zoom);
+                    updateGlobals("init with hard-coded values", mapOptions.center.lng, mapOptions.center.lat, mapOptions.zoom);
                 }
                 console.log(mphmap.getCenter().lng + " " +  mphmap.getCenter().lat);
 

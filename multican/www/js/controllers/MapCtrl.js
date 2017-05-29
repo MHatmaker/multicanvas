@@ -682,20 +682,20 @@
 
                 whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + currentMapNumber + '_root' : 'map' + currentMapNumber;
                 cnvs = utils.getElemById(whichCanvas);
-                templateLnkrUnformatted = ' \
-                    <div id="linkerDirectiveId{0}" class="lnkrclass"> \
-                    <label id="idLinkerText{1}" class="lnkmaxcontrol_label lnkcontrol_margin"  \
-                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
-                    </label> \
-                    <img id="idLinkerSymbol{2}" class="lnkmaxcontrol_symbol lnkcontrol_margin" \
-                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                templateLnkrUnformatted = '\
+                    <div id="linkerDirectiveId{0}" class="lnkrclass">\
+                    <label id="idLinkerText{1}" class="lnkmaxcontrol_label lnkcontrol_margin"\
+                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto; font-size: 1em;">\
+                    </label>\
+                    <img id="idLinkerSymbol{2}" class="lnkmaxcontrol_symbol lnkcontrol_margin"\
+                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto;">\
                     </div>';
                 templateLnkr = templateLnkrUnformatted.format(currentMapNumber, currentMapNumber, currentMapNumber);
 
                 templateMinMaxrUnformatted = ' \
                     <div id="mapmaximizerDirectiveId{0}" class="mnmxclass" > \
                     <label id="idMinMaxText{1}" class="lnkmaxcontrol_label maxcontrol_margin" \
-                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
+                        style="cursor:url(../img/LinkerCursor.png) 9 9,auto; font-size: 1em;"> \
                     </label> \
                     <img id="idMinMaxSymbol{2}" class="lnkmaxcontrol_symbol maxcontrol_margin" \
                          style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
@@ -708,6 +708,7 @@
                 minmaxr = cnvs.append(minmaxr1);
 
                 stopLintUnusedComplaints(lnkr, minmaxr);
+                $scope.safeApply();
 
                 setTimeout(function () {
                     lnkrdiv = document.getElementById('linkerDirectiveId' + currentMapNumber);
@@ -726,7 +727,7 @@
                         contextScope.$apply();
                         refreshMinMax();
                     });
-                }, 200);
+                }, 500);
 
 
                 lnkrText = document.getElementById("idLinkerText" + currentMapNumber);

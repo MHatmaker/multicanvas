@@ -520,7 +520,7 @@
                     // google.maps.event.trigger(mphmap, 'resize');
                     // mphmap.setCenter(center);
                     gmQuery = mlconfig.query();
-                    console.log("getMaxZoomAtLatLng for " + cntr.lng + ", " + cntr.lat);
+                    console.log("getMaxZoomAtLatLng for " + cntr.lng() + ", " + cntr.lat());
 
                     zsvc.getMaxZoomAtLatLng(cntr, function (response) {
                         console.log("zsvc.getMaxZoomAtLatLng returned response:");
@@ -536,6 +536,12 @@
                                 // alert("getMaxZoomAtLatLng service returned status other than OK");
                                 console.log("getMaxZoomAtLatLng service returned status other than OK");
                                 console.log(response.status);
+                                console.log("zoom level returned " + response.zoom);
+                                maxZoom = response.zoom || mphmap.getZoom();
+                                console.log("used zoom level " + mphmap.getZoom());
+                                zoomLevels = maxZoom - minZoom;
+                                collectScales(zoomLevels);
+                                showGlobals("after zsvc.getMaxZoomAtLatLng failure and collectScales");
                             } else {
                                 alert("getMaxZoomAtLatLng service returned null");
                             }

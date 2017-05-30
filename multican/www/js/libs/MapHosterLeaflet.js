@@ -411,14 +411,16 @@
                     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery � <a href="http://cloudmade.com">CloudMade</a>'
                 }).addTo(mphmap);
                 lyr.on("load", function () {
-                    placeCustomControls();
-                    if (queryListenerLoaded === false) {
-                        setupQueryListener();
-                    } else {
-                        queryListenerLoaded = true;
-                    }
+                // setTimeout(function() {
+                        placeCustomControls();
+                        if (queryListenerLoaded === false) {
+                            setupQueryListener();
+                        } else {
+                            queryListenerLoaded = true;
+                        }
+                    // }, 1000);
                     hideLoading();
-                    mphmap.addControl(new CustomControl());
+                    // mphmap.addControl(new CustomControl());
                 });
 
                 lyr.on("loading", function () { //(e) {

@@ -11,9 +11,9 @@
     </div>
 </script>
 <ion-view view-title="Dashboard">
-    <ion-content style="height: 550px; width: 380px;">
+    <ion-content style="height: 550px; width: 350px;">
         <div id='canvasholder' ng-controller='CanvasHolderCtrl' onmousedown="return false">
-            <div style="height: 500px; width: 380px;" class='row'>
+            <div style="height: 500px; width: 100%;" class='row'>
                 <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl">
                     <div class="buttons row " ng-class="{'mapsshowing' : amount > 1, 'mapshidden' : amount < 2}">
                         <div class="col-md-1 col-xs-1">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
 
-                    <ol class="MapContainer" style="height: {{mapcolheight}}px; width: {{mapcolWidth}}px;"></ol>
+                    <ol class="MapContainer" style="height: {{mapcolheight}}px; width: {{mapcolWidth}}%;"></ol>
                     <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:200px; top:256px; z-index:100;" />
                 </div>
             </div>

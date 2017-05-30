@@ -287,7 +287,8 @@
                 onAcceptDestination = function (info) {
                     var sourceMapType = 'google',
                         newSelectedWebMapId,
-                        destWnd;
+                        destWnd,
+                        customControlElement;
 
 
                     if (info) {
@@ -325,8 +326,9 @@
 
                     } else {  //(destWnd == "Same Window")
                         googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-                        fillNewCanvas(selfVars.placesFromSearch);
+                        removeCustomControls(currentSlideNumber);
                         // googmph.placeMarkers(placesSearchResults);
+                        fillNewCanvas(selfVars.placesFromSearch);
                         mlconfig.setQuery(queryForNewDisplay);
                         queryForSameDisplay = queryForNewDisplay;
                     }
@@ -656,6 +658,24 @@
             //   }, 1000);
         }
           // google.maps.event.addDomListener(window, 'load', initialize);
+        function removeChildrenFromNode(node) {
+             if(node === undefined || node === null) {
+                return;
+            	}
+              while (node.firstChild) {
+                  node.removeChild(node.firstChild);
+              }
+          }
+
+        function removeCustomControls(mapNo) {
+            var elem,
+                elems = ['gmsearch' + mapNo, 'linkerDirectiveId' + mapNo, 'mapmaximizerDirectiveId' + mapNo];
+                // elems = ['linkerDirectiveId', 'idLinkerText', 'idLinkerSymbol', 'mapmaximizerDirectiveId', 'idMinMaxText', 'idMinMaxSymbol', 'idMinMaxSymbol'];
+            for (elem = 0; elem < elems.length; elem += 1) {
+                //  elem = document.getElementById('slide' + slideToRemove);
+                removeChildrenFromNode(elem);
+            }
+        }
 
         function placeCustomControls() {
             var currentMapNumber = mapStartup.getMapNumber(),
@@ -678,7 +698,7 @@
             function stopLintUnusedComplaints(lnkr, minmaxr) {
                 console.log("stopLintUnusedComplaints");
             }
-            if (document.getElementById("linkerDirectiveId") === null) {
+            if (document.getElementById("linkerDirectiveId" + currentMapNumber) === null) {
 
                 whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + currentMapNumber + '_root' : 'map' + currentMapNumber;
                 cnvs = utils.getElemById(whichCanvas);

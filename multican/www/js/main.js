@@ -8,7 +8,7 @@ require({
         'controllers' : 'controllers',
         'libs' : 'libs',
         'services' : 'services',
-        'routes' : 'routes',
+        // 'routes' : 'routes',
         'config' : 'config',
         'run' : 'run',
         // 'main' : 'http://localhost:8100/js/main',

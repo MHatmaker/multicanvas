@@ -1,4 +1,4 @@
-/*global require, define, console, angular, document, ionic*/
+/*global require, define, console, angular, document, ionic, window, cordova, StatusBar */
 
 console.log("bootstrap outer wrapper");
 (function () {
@@ -24,22 +24,36 @@ console.log("bootstrap outer wrapper");
             console.log("ready to create module mapModule");
             app = angular.module('mapModule', dependencies.concat(modules))
 
-                .config(['$routeProvider', '$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider',
-                    function ($routeProvider, $locationProvider,  $urlRouterProvider, $stateProvider) {  // $compileProvider,
+                .config(['$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider', '$routeProvider'
+                    function ($locationProvider,  $urlRouterProvider, $stateProvider) {  // $compileProvider, $routeProvider
                         $locationProvider.html5Mode({
                             enabled: true,
                             requireBase: false
                         }); // enable html5 mode
                         // other pieces of code.
-                        $stateProvider.state('map', {
-                            url: '/',
-                            templateUrl: 'templates/dashboard.html',
-                            controller: 'MapCtrl'
-                        });
+                        $stateProvider.
+                            state('app', {
+                                url: "/app",
+                                abstract: true,
+                                templateUrl: "menu.html",
+                                controller: 'AppCtrl'
+                            }).
+                            state('app.dashboard', {
+                                url: '/dashboard',
+                                templateUrl: 'templates/dashboard.html',
+                                controller: 'MapCtrl'
+                            }).
+                            state('app.maplinkr', {
+                                url: '/dashboard',
+                                templateUrl: 'templates/MapLinkrPlugin.html',
+                                controller: 'MapCtrl'
+                            });
 
-                        $urlRouterProvider.otherwise("/");
-                    }
-                    ]);
+                        $urlRouterProvider.otherwise("/app/dashboard");
+                    }]);
+            app.controller('AppCtrl', function () { // ($scope) {
+                console.log("Nothing happening in AppCtrl yet");
+            });
 
             // ControllerStarter.start(mapModule, portalForSearch, isMobile);
             console.log('mapModule created ... wait for onload to bootstrap');
@@ -73,6 +87,25 @@ console.log("bootstrap outer wrapper");
             //   console.log('ready to bootstrap');
             //   angular.bootstrap(document, ['app']);
             // }
+
+
+            app.run([
+                '$ionicPlatform',
+                function ($ionicPlatform) {
+                    $ionicPlatform.ready(function () {
+                        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+                        // for form inputs)
+                        if (window.cordova && window.cordova.plugins.Keyboard) {
+                            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+                            cordova.plugins.Keyboard.disableScroll(true);
+                        }
+                        if (window.StatusBar) {
+                            // org.apache.cordova.statusbar required
+                            StatusBar.styleDefault();
+                        }
+                    });
+                }
+            ]);
         }
         return {
             start : init

@@ -16,6 +16,12 @@ define([
 
             $stateProvider
             // app states
+                .state('app', {
+                  url: "/",
+                  abstract: true,
+                  templateUrl: "menu.html",
+                  controller: 'AppCtrl'
+                })
                 .state('dashboard', {
                     url: '/dashboard',
                     templateUrl: 'templates/dashboard.html',

@@ -24,29 +24,45 @@ console.log("bootstrap outer wrapper");
             console.log("ready to create module mapModule");
             app = angular.module('mapModule', dependencies.concat(modules))
 
-                .config(['$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider', '$routeProvider'
-                    function ($locationProvider,  $urlRouterProvider, $stateProvider) {  // $compileProvider, $routeProvider
-                        $locationProvider.html5Mode({
-                            enabled: true,
-                            requireBase: false
-                        }); // enable html5 mode
+                .config(['$ionicConfigProvider', '$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider', '$routeProvider'
+                    function ($ionicConfigProvider, $locationProvider,  $urlRouterProvider, $stateProvider) {  // $compileProvider, $routeProvider
+                        // $locationProvider.html5Mode({
+                        //     enabled: true,
+                        //     requireBase: false
+                        // }); // enable html5 mode
                         // other pieces of code.
+                        // $ionicConfigProvider.views.maxCache(10);
+                        $ionicConfigProvider.views.transition('platform');
+                        // $ionicConfigProvider.views.forwardCache(false);
+                        $ionicConfigProvider.backButton.icon('ion-ios-arrow-back');
+                        $ionicConfigProvider.backButton.text('');                  // default is 'Back'
+                        $ionicConfigProvider.backButton.previousTitleText(false);  // hides the 'Back' text
+                        // $ionicConfigProvider.templates.maxPrefetch(20);
+
                         $stateProvider.
                             state('app', {
                                 url: "/app",
                                 abstract: true,
-                                templateUrl: "menu.html",
+                                templateUrl: "templates/menu.html",
                                 controller: 'AppCtrl'
                             }).
                             state('app.dashboard', {
                                 url: '/dashboard',
-                                templateUrl: 'templates/dashboard.html',
-                                controller: 'MapCtrl'
+                                views: {
+                                    'menuContent' : {
+                                        templateUrl: 'templates/dashboard.html',
+                                        controller: 'MapCtrl'
+                                    }
+                                }
                             }).
                             state('app.maplinkr', {
                                 url: '/dashboard',
-                                templateUrl: 'templates/MapLinkrPlugin.html',
-                                controller: 'MapCtrl'
+                                views: {
+                                    'menuContent' : {
+                                        templateUrl: 'templates/MapLinkrPlugin.html',
+                                        controller: 'MapCtrl'
+                                    }
+                                }
                             });
 
                         $urlRouterProvider.otherwise("/app/dashboard");

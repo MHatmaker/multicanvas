@@ -40,13 +40,13 @@ console.log("bootstrap outer wrapper");
                         // $ionicConfigProvider.templates.maxPrefetch(20);
 
                         $stateProvider.
-                            state('app', {
-                                url: "/app",
+                            state('mapModule', {
+                                url: "/mapModule",
                                 abstract: true,
                                 templateUrl: "templates/menu.html",
                                 controller: 'AppCtrl'
                             }).
-                            state('app.dashboard', {
+                            state('mapModule.dashboard', {
                                 url: '/dashboard',
                                 views: {
                                     'menuContent' : {
@@ -55,7 +55,16 @@ console.log("bootstrap outer wrapper");
                                     }
                                 }
                             }).
-                            state('app.maplinkr', {
+                            state('mapModule.search', {
+                                url: '/search',
+                                views: {
+                                    'menuContent' : {
+                                        templateUrl: 'templates/Search.html',
+                                        controller: 'MapCtrl'
+                                    }
+                                }
+                            }).
+                            state('mapModule.maplinkr', {
                                 url: '/dashboard',
                                 views: {
                                     'menuContent' : {
@@ -65,7 +74,7 @@ console.log("bootstrap outer wrapper");
                                 }
                             });
 
-                        $urlRouterProvider.otherwise("/app/dashboard");
+                        $urlRouterProvider.otherwise("/mapModule/dashboard");
                     }]);
             app.controller('AppCtrl', function () { // ($scope) {
                 console.log("Nothing happening in AppCtrl yet");

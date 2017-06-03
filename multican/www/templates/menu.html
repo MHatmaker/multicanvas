@@ -18,13 +18,13 @@
           </ion-header-bar>
           <ion-content class="has-header">
             <ion-list>
-                <ion-item menu-close ui-sref="mapModule.dashboard">
+                <ion-item menu-close ui-sref="mapModule.dashboard({mapNo: google})">
                 Google
                 </ion-item>
-                <ion-item menu-close ui-sref="mapModule.dashboard">
+                <ion-item menu-close ui-sref="mapModule.addmap({mapNo: 'arcgis'})">
                 ArcGIS
                 </ion-item>
-                <ion-item menu-close ui-sref="mapModule.dashboard">
+                <ion-item menu-close ui-sref="mapModule.addmap({mapNo: 'leaflet'})">
                 Leaflet
                 </ion-item>
                 <ion-item menu-close ui-sref="mapModule.search">

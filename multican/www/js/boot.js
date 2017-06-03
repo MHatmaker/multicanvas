@@ -47,11 +47,33 @@ console.log("bootstrap outer wrapper");
                                 controller: 'AppCtrl'
                             }).
                             state('mapModule.dashboard', {
-                                url: '/dashboard',
+                                url: '/dashboard/{mapNo}',
                                 views: {
                                     'menuContent' : {
                                         templateUrl: 'templates/dashboard.html',
-                                        controller: 'MapCtrl'
+                                        controller: function ($stateParams) {
+                                            var $inj = angular.element(document.body).injector(),
+                                                canvasHolder = $inj.get('CanvasHolderCtrl');
+                                            console.log("$stateParams : " + $stateParams.mapNo);
+                                            console.debug($stateParams);
+                                            canvasHolder.addCanvas($stateParams.mapNo);
+                                        }
+                                        // controller: 'MapCtrl'
+                                    }
+                                }
+                            }).
+                            state('mapModule.addmap', {
+                                url: '/addmap/{mapNo}',
+                                views: {
+                                    'menuContent' : {
+                                        templateUrl: 'templates/dashboard.html',
+                                        controller: function ($stateParams) {
+                                            // var $inj = angular.element(document.body).injector(),
+                                            //     canvasHolder = $inj.get('CanvasHolderCtrl');
+                                            console.log("$stateParams : " + $stateParams.mapNo);
+                                            console.debug($stateParams);
+                                            // canvasHolder.addCanvas($stateParams.mapNo);
+                                        }
                                     }
                                 }
                             }).

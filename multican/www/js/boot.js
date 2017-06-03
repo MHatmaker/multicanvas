@@ -54,16 +54,17 @@ console.log("bootstrap outer wrapper");
                                         // controller: function ($stateParams) {
                                         //     var $inj = angular.element(document.body).injector(),
                                         //         canvasHolder = $inj.get('CanvasHolderCtrl');
-                                        //     console.log("$stateParams : " + $stateParams.mapNo);
+                                        //     console.log("$stateParams : " + $stateParams.mapType);
                                         //     console.debug($stateParams);
-                                        //     canvasHolder.addCanvas($stateParams.mapNo);
+                                        //     canvasHolder.addCanvas($stateParams.mapType);
                                         // }
                                         controller: 'MapCtrl'
                                     }
                                 }
                             }).
                             state('mapModule.addmap', {
-                                url: '/addmap/{mapNo}',
+                                url: '/addmap/{mapType}',
+                                cache: false,
                                 views: {
                                     'menuContent' : {
                                         templateUrl: 'templates/dashboard.html',
@@ -71,11 +72,11 @@ console.log("bootstrap outer wrapper");
                                             // var $inj = angular.element(document.body).injector(),
                                             //     canvasHolder = $inj.get('CanvasHolderCtrl');
                                             console.debug($rootScope);
-                                            console.log("$stateParams : " + $stateParams.mapNo);
+                                            console.log("$stateParams : " + $stateParams.mapType);
                                             console.debug($stateParams);
-                                            $rootScope.$broadcast('selectMapTypeEvent', {'mapType': $stateParams.mapNo});
+                                            $rootScope.$broadcast('selectMapTypeEvent', {'mapType': $stateParams.mapType});
                                             // define(['controllers/CanvasHolderCtrl']);
-                                            // CanvasHolder.addCanvas($stateParams.mapNo);
+                                            // CanvasHolder.addCanvas($stateParams.mapType);
                                         }
                                     }
                                 }

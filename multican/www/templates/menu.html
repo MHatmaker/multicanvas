@@ -18,13 +18,13 @@
           </ion-header-bar>
           <ion-content class="has-header">
             <ion-list>
-                <ion-item menu-close ui-sref="mapModule.addmap({mapNo: 'google'})">
+                <ion-item menu-close ui-sref="mapModule.addmap({mapType: 'google'})" data-ui-sref-opts="{reload: true}">
                 Google
                 </ion-item>
-                <ion-item menu-close ui-sref="mapModule.addmap({mapNo: 'arcgis'})">
+                <ion-item menu-close ui-sref="mapModule.addmap({mapType: 'arcgis'})" data-ui-sref-opts="{reload: true}">
                 ArcGIS
                 </ion-item>
-                <ion-item menu-close ui-sref="mapModule.dashboard.addmap({mapNo: 'leaflet'})">
+                <ion-item menu-close ui-sref="mapModule.addmap({mapType: 'leaflet'})" data-ui-sref-opts="{reload: true}">
                 Leaflet
                 </ion-item>
                 <ion-item menu-close ui-sref="mapModule.search">

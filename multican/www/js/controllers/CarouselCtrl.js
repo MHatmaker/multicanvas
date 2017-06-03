@@ -11,13 +11,13 @@
     define([
     ], function () {
         console.log("ready to create CarouselCtrl");
-        var selfMethods = {};
+        var selfMethods = {},
+            items = [];
         function CarouselCtrl($scope, MapInstanceService) {
             var
                 getCurrentSlideNumber,
                 activeSlideNumber = 0,
                 nextSlideNumber = 0,
-                items = [],
                 currentSlide = items[0];
             $scope.mapcolheight = 510;
             $scope.mapcolWidth = 100;
@@ -43,6 +43,8 @@
             }
 
             $scope.$on('addslide', function (event, slideData) {
+                console.log("CarouselCtrl on addslide to array with length " + items.length);
+                console.debug(slideData);
                 if (items.length > 0) {
                     currentSlide.classList.remove('current');
                 }

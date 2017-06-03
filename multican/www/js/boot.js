@@ -22,9 +22,9 @@ console.log("bootstrap outer wrapper");
             }
             console.debug(dependencies.concat(modules));
             console.log("ready to create module mapModule");
-            app = angular.module('mapModule', dependencies.concat(modules))
+            app = angular.module('mapModule', dependencies.concat(modules)).
 
-                .config(['$ionicConfigProvider', '$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider', '$routeProvider'
+                config(['$ionicConfigProvider', '$locationProvider',  '$urlRouterProvider', '$stateProvider', // '$compileProvider', '$routeProvider'
                     function ($ionicConfigProvider, $locationProvider,  $urlRouterProvider, $stateProvider) {  // $compileProvider, $routeProvider
                         // $locationProvider.html5Mode({
                         //     enabled: true,
@@ -47,18 +47,18 @@ console.log("bootstrap outer wrapper");
                                 controller: 'AppCtrl'
                             }).
                             state('mapModule.dashboard', {
-                                url: '/dashboard/{mapNo}',
+                                url: '/dashboard',
                                 views: {
                                     'menuContent' : {
                                         templateUrl: 'templates/dashboard.html',
-                                        controller: function ($stateParams) {
-                                            var $inj = angular.element(document.body).injector(),
-                                                canvasHolder = $inj.get('CanvasHolderCtrl');
-                                            console.log("$stateParams : " + $stateParams.mapNo);
-                                            console.debug($stateParams);
-                                            canvasHolder.addCanvas($stateParams.mapNo);
-                                        }
-                                        // controller: 'MapCtrl'
+                                        // controller: function ($stateParams) {
+                                        //     var $inj = angular.element(document.body).injector(),
+                                        //         canvasHolder = $inj.get('CanvasHolderCtrl');
+                                        //     console.log("$stateParams : " + $stateParams.mapNo);
+                                        //     console.debug($stateParams);
+                                        //     canvasHolder.addCanvas($stateParams.mapNo);
+                                        // }
+                                        controller: 'MapCtrl'
                                     }
                                 }
                             }).
@@ -67,12 +67,15 @@ console.log("bootstrap outer wrapper");
                                 views: {
                                     'menuContent' : {
                                         templateUrl: 'templates/dashboard.html',
-                                        controller: function ($stateParams) {
+                                        controller: function ($scope, $rootScope, $stateParams) {
                                             // var $inj = angular.element(document.body).injector(),
                                             //     canvasHolder = $inj.get('CanvasHolderCtrl');
+                                            console.debug($rootScope);
                                             console.log("$stateParams : " + $stateParams.mapNo);
                                             console.debug($stateParams);
-                                            // canvasHolder.addCanvas($stateParams.mapNo);
+                                            $rootScope.$broadcast('selectMapTypeEvent', {'mapType': $stateParams.mapNo});
+                                            // define(['controllers/CanvasHolderCtrl']);
+                                            // CanvasHolder.addCanvas($stateParams.mapNo);
                                         }
                                     }
                                 }
@@ -98,6 +101,7 @@ console.log("bootstrap outer wrapper");
 
                         $urlRouterProvider.otherwise("/mapModule/dashboard");
                     }]);
+
             app.controller('AppCtrl', function () { // ($scope) {
                 console.log("Nothing happening in AppCtrl yet");
             });
@@ -134,7 +138,6 @@ console.log("bootstrap outer wrapper");
             //   console.log('ready to bootstrap');
             //   angular.bootstrap(document, ['app']);
             // }
-
 
             app.run([
                 '$ionicPlatform',

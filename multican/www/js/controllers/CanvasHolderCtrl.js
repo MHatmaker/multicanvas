@@ -17,7 +17,6 @@
 
         function CanvasHolderCtrl($scope, $rootScope, $uibModal, LinkrService, MapInstanceService, CanvasService) {
             console.log("ready to create CanvasHolderCtrl");
-            console.log("CanvasHolderCtrl calling into CanvasService");
             $scope.addCanvas = function (mapType, mlcfg) {
                 console.log("in CanvasHolderCtrl.addCanvas");
                 var currIndex = MapInstanceService.getSlideCount(),
@@ -58,6 +57,11 @@
                     }, 10);
                 });
 
+                $scope.$on('selectMapTypeEvent', function (evt, data) {
+                    console.log('CanvasHolderCtrl on selectMapTypeEvent');
+                    console.debug(data);
+                    $scope.addCanvas(data.mapType);
+                });
                 $scope.$broadcast('addslide', {
                     mapListItem: newCanvasItem,
                     slideNumber: currIndex,

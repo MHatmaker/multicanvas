@@ -19,16 +19,22 @@
           <ion-content class="has-header" ng-controller="SideMenuCtrl">
             <ion-list>
                 <ion-item menu-close>
-                    <div style="z-index: 1000; height: 30px;" ng-click="addNewMap('google');">Google</div>
+                    <button ng-click="addNewMap('google')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Google</button>
                 </ion-item>
                 <ion-item menu-close>
-                    <div style="z-index: 1000; height: 30px;" ng-click="addNewMap('arcgis');">ArcGIS</div>
+                    <button ng-click="addNewMap('arcgis')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">ArcGIS</button>
                 </ion-item>
                 <ion-item menu-close>
-                    <div style="z-index: 1000; height: 30px;" ng-click="addNewMap('leaflet');">Leaflet</div>
+                    <button ng-click="addNewMap('leaflet')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Leaflet</button>
                 </ion-item>
-                <ion-item menu-close ui-sref="mapModule.search">
-                Search
+                <ion-item menu-close >
+                    <a ui-sref="mapModule.search" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Search</a>
+                </ion-item>
+                <ion-item menu-close>
+                    <button ng-click="removeCanvas()" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Remove Canvas</button>
+                </ion-item>
+                <ion-item menu-close>
+                    <button ng-click="centerMe()" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Center On Me</button>
                 </ion-item>
             </ion-list>
 

@@ -23,6 +23,12 @@
                 //     canvasHolder = $inj.get('CanvasHolderCtrl');
                 CanvasHolderCtrl.addCanvas(mapType);
             };
+            $scope.centerMe = function () {
+                CanvasHolderCtrl.centerOnMe();
+            };
+            $scope.removeCanvas = function () {
+                CanvasHolderCtrl.removeCanvas();
+            };
         }
         function init() {
             console.log('SideMenuCtrl init');

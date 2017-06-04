@@ -12,17 +12,17 @@
 </script>
 
 <ion-view view-title="Dashboard">
-    <ion-content style="height: 550px; width: 350px;" class="has-header">
+    <ion-content style="height: 550px; width: 100%;" class="has-header">
         <div id='canvasholder' ng-controller='CanvasHolderCtrl' onmousedown="return false">
             <div style="height: 500px; width: 100%;" class='row'>
                 <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl">
-                    <div class="buttons row " ng-class="{'mapsshowing' : amount > 1, 'mapshidden' : amount < 2}">
+                    <div class="buttons row " ng-class="{'mapsshowing' : slidesCount > 1, 'mapshidden' : slidesCount < 2}">
                         <div class="col-md-1 col-xs-1">
                             <button class="chevron-prev" ng-click="onClickPrev()">
                                 <span class="offscreen">Previous</span>
                             </button>
                         </div>
-                        <div class="col-md-3 col-xs-3" ng-class="{'mapsshowingtext' : amount > 0, 'mapshiddentext' : amount < 1}">{{MapName}}
+                        <div class="col-md-3 col-xs-3" ng-class="{'mapsshowingtext' : slidesCount > 0, 'mapshiddentext' : slidesCount < 1}">{{MapName}}
                         </div>
                         <div class="col-md-1 col-xs-1">
                             <button class="chevron-next" ng-click="onClickNext()">
@@ -41,13 +41,6 @@
                     <ol class="MapContainer" style="height: {{mapcolheight}}px; width: {{mapcolWidth}}%;"></ol>
                     <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:200px; top:256px; z-index:100;" />
                 </div>
-            </div>
-            <div class='row' padding='6px 4px' class="btn-labelled btn-primary">
-                <button id="addcanbtnG" ng-click="addCanvas('google')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">+ Google</button>
-                <button id="addcanbtnA" ng-click="addCanvas('arcgis')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">+ ArcGIS</button>
-                <button id="addcanbtnL" ng-click="addCanvas('leaflet')" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">+ Leaflet</button>
-                <button id="removecanbtn" ng-click="removeCanvas()" class="btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Drop Map</button>
-                <button id="centerbtn" ng-click="centerOnMe()" class="btn btn-labelled btn-primary btn-mapsource" col-md-5 col-xs-5">Center</button>
             </div>
             <div id="DestWndDialogNode"></div>
             <div id="hiddenmap_canvas" style="margin:0px; width: 100%; height: 100%; display: none;"></div>

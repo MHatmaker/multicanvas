@@ -72,9 +72,10 @@
                     var currentMapNumber = MapInstanceService.getCurrentSlide(),
                         currentMapInstance = MapInstanceService.getMapHosterInstance(currentMapNumber);
                     console.log("getCurrentSlide() returned " + currentMapNumber);
-                    console.log("CanvasHolderCtrl.centerOnMe for map " + currentMapInstance.getMapNumber());
+                    console.log("CanvasHolderCtrl.centerOnMe for map " + currentMapNumber);
                     currentMapInstance.centerOnMe();
                 };
+                selfMethods.centerOnMe = $scope.centerOnMe;
             };
             selfMethods.addCanvas = $scope.addCanvas;
 
@@ -84,6 +85,7 @@
                 MapInstanceService.removeInstance(CarouselCtrl.getCurrentSlideNumber());
                 $scope.$broadcast('removeslide');
             };
+            selfMethods.removeCanvas = $scope.removeCanvas;
 
             $scope.safeApply = function (fn) {
                 var phase = this.$root.$$phase;
@@ -108,6 +110,18 @@
         CanvasHolderCtrl.prototype.addCanvas = function (maptype, mlcfg) {
             selfMethods.addCanvas(maptype, mlcfg);
         };
+        CanvasHolderCtrl.prototype.removeCanvas = function () {
+            selfMethods.removeCanvas();
+        };
+        CanvasHolderCtrl.prototype.centerOnMe = function () {
+            selfMethods.centerOnMe();
+        };
+        function removeCanvas() {
+            selfMethods.removeCanvas();
+        }
+        function centerOnMe() {
+            selfMethods.centerOnMe();
+        }
 
         function init() {
             console.log('CanvasHolderCtrl init');
@@ -118,12 +132,18 @@
                 // angular.bootstrap(document.getElementById('year'), ['example']);
                 isInstantiated = true;
             }
-            return {addCanvas : addCanvas};
+            return {
+                addCanvas : addCanvas,
+                removeCanvas : removeCanvas,
+                centerOnMe : centerOnMe
+            }
         }
 
         return {
             start: init,
-            addCanvas: addCanvas
+            addCanvas: addCanvas,
+            removeCanvas : removeCanvas,
+            centerOnMe : centerOnMe
         };
     });
 }());

@@ -113,15 +113,19 @@ console.log("bootstrap outer wrapper");
                     }
                 }
             });
+/*
             app.controller('SideMenuCtrl', function ($scope, $rootScope) { // ($scope) {
                 console.log("Nothing happening in SideMenuCtrl yet");
                 $scope.addNewMap = function (mapType) {
                     // alert("new map of type " + mapType);
                     console.log("new map of type " + mapType);
-                    $rootScope.$broadcast('selectMapTypeEvent', {'mapType': mapType});
+                    // $rootScope.$broadcast('selectMapTypeEvent', {'mapType': mapType});
+                    var $inj = angular.element(document.body).injector(),
+                        canvasHolder = $inj.get('CanvasHolderCtrl');
+                    canvasHolder.addCanvas(mapType);
                 }
             });
-
+*/
             // ControllerStarter.start(mapModule, portalForSearch, isMobile);
             console.log('mapModule created ... wait for onload to bootstrap');
             ControllerStarter.start(app, portalForSearch, isMobile);

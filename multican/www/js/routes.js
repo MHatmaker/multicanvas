@@ -20,7 +20,7 @@ define([
                   url: "/",
                   abstract: true,
                   templateUrl: "menu.html",
-                  controller: 'AppCtrl'
+                  controller: 'SideMenuCtrl'
                 })
                 .state('dashboard', {
                     url: '/dashboard',

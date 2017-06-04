@@ -44,7 +44,7 @@ console.log("bootstrap outer wrapper");
                                 url: "/mapModule",
                                 abstract: true,
                                 templateUrl: "templates/menu.html",
-                                controller: 'AppCtrl'
+                                controller: 'SideMenuCtrl'
                             }).
                             state('mapModule.dashboard', {
                                 url: '/dashboard',
@@ -74,9 +74,11 @@ console.log("bootstrap outer wrapper");
                                             console.debug($rootScope);
                                             console.log("$stateParams : " + $stateParams.mapType);
                                             console.debug($stateParams);
-                                            $rootScope.$broadcast('selectMapTypeEvent', {'mapType': $stateParams.mapType});
-                                            // define(['controllers/CanvasHolderCtrl']);
-                                            // CanvasHolder.addCanvas($stateParams.mapType);
+                                            // $rootScope.$broadcast('selectMapTypeEvent', {'mapType': $stateParams.mapType});
+                                            // $scope.addNewMap = function (mapType) {
+                                            //     alert("new map of type " + mapType);
+                                            //     console.log("new map of type " + mapType);
+                                            // }
                                         }
                                     }
                                 }
@@ -102,9 +104,22 @@ console.log("bootstrap outer wrapper");
 
                         $urlRouterProvider.otherwise("/mapModule/dashboard");
                     }]);
-
-            app.controller('AppCtrl', function () { // ($scope) {
-                console.log("Nothing happening in AppCtrl yet");
+            app.directive('sideMenuClick', function() {
+                return {
+                    link: function($scope, element) {
+                        element.on('click', function() {
+                            alert('click');
+                        });
+                    }
+                }
+            });
+            app.controller('SideMenuCtrl', function ($scope, $rootScope) { // ($scope) {
+                console.log("Nothing happening in SideMenuCtrl yet");
+                $scope.addNewMap = function (mapType) {
+                    // alert("new map of type " + mapType);
+                    console.log("new map of type " + mapType);
+                    $rootScope.$broadcast('selectMapTypeEvent', {'mapType': mapType});
+                }
             });
 
             // ControllerStarter.start(mapModule, portalForSearch, isMobile);

@@ -96,7 +96,7 @@
         }
 
         function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
-                    CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg) {
+                    CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg, $state) {
             var outerMapNumber;
             console.log('initializeCommon and set $scope');
 
@@ -158,7 +158,6 @@
                 query : "no query yet"
 
             };
-
             $scope.preserveState = function () {
                 console.log("preserveState");
 

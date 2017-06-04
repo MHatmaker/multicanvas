@@ -64,7 +64,7 @@ console.log("bootstrap outer wrapper");
                             }).
                             state('mapModule.addmap', {
                                 url: '/addmap/{mapType}',
-                                cache: false,
+                                // cache: false,
                                 views: {
                                     'menuContent' : {
                                         templateUrl: 'templates/dashboard.html',
@@ -88,7 +88,11 @@ console.log("bootstrap outer wrapper");
                                 views: {
                                     'menuContent' : {
                                         templateUrl: 'templates/Search.html',
-                                        controller: 'MapCtrl'
+                                        controller: function ($scope, $state) {
+                                            $scope.backToMaps = function ($scope) {
+                                                $state.go("mapModule.dashboard");
+                                            }
+                                        }
                                     }
                                 }
                             }).

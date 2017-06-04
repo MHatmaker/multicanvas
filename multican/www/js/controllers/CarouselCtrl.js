@@ -20,7 +20,7 @@
                 nextSlideNumber = 0,
                 currentSlide = items[0];
             $scope.mapcolheight = 510;
-            $scope.mapcolWidth = 100;
+            $scope.mapcolWidth = 420;
             $scope.slidesCount = items.length;
             $scope.ActNoAct = 'active';
             // navigate through the carousel

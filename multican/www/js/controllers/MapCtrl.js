@@ -137,7 +137,7 @@
             // $scope.PusherEventHandlerService = PusherEventHandlerService;
             $scope.GoogleQueryService = GoogleQueryService;
             $scope.mapheight = 450;
-            $scope.mapwidth = 100;
+            $scope.mapwidth = 420;
             $scope.mapHosterInstance = null;
 
             $scope.destSelections = [

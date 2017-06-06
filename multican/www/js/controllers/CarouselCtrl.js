@@ -13,14 +13,14 @@
         console.log("ready to create CarouselCtrl");
         var selfMethods = {},
             items = [];
-        function CarouselCtrl($scope, MapInstanceService) {
+        function CarouselCtrl($scope, $window, MapInstanceService) {
             var
                 getCurrentSlideNumber,
                 activeSlideNumber = 0,
                 nextSlideNumber = 0,
                 currentSlide = items[0];
             $scope.mapcolheight = 510;
-            $scope.mapcolWidth = 420;
+            $scope.mapcolWidth = $window.innerWidth;
             $scope.slidesCount = items.length;
             $scope.ActNoAct = 'active';
             // navigate through the carousel

@@ -50,6 +50,7 @@
             queryForNewDisplay = "",
             queryForSameDisplay = "",
             $scope,
+            $window,
             $compile,
             $routeParams,
             firstMap = true,
@@ -95,14 +96,15 @@
             }
         }
 
-        function initializeCommon(scope, $routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
+        function initializeCommon(scope, window, routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
                     CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg, $state) {
             var outerMapNumber;
             console.log('initializeCommon and set $scope');
 
             $scope = scope;
+            $window = window;
             $compile = compileArg;
-            $routeParams = $routeParamsArg;
+            $routeParams = routeParamsArg;
             CurrentMapTypeService = CurrentMapTypeSvc;
             LinkrSvc = LinkrSvcArg;
             SiteViewService = SiteViewServiceArg;
@@ -134,10 +136,22 @@
                 whichCanvas = $scope.currentMapSystem.maptype === 'arcgis' ? 'map' + outerMapNumber + '_root' : 'map' + outerMapNumber;
             });
 
+            $scope.calculateDimensions = function(gesture) {
+                $scope.mapwidth = $window.innerWidth;
+                $scope.mapheight = $window.innerHeight - 70;
+            };
+
+            angular.element($window).bind('resize', function(){
+                $scope.$apply(function() {
+                  $scope.calculateDimensions();
+                });
+            });
+
+            $scope.calculateDimensions();
             // $scope.PusherEventHandlerService = PusherEventHandlerService;
             $scope.GoogleQueryService = GoogleQueryService;
-            $scope.mapheight = 450;
-            $scope.mapwidth = 420;
+            // $scope.mapheight = 450;
+            // $scope.mapwidth = $window.innerWidth;
             $scope.mapHosterInstance = null;
 
             $scope.destSelections = [
@@ -917,7 +931,7 @@
             // }, 5000);
         }
 
-        function MapCtrlBrowser($scopeArg, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
+        function MapCtrlBrowser($scopeArg, $window, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                     CurrentMapTypeService, GoogleQueryService, SiteViewService) {
             console.log("in MapCtrlBrowser");
             $scope = $scopeArg;
@@ -976,7 +990,7 @@
             if (firstMap === true) {
                 initializeLocation();
                 if (commonInitialized === false) {
-                    initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
+                    initializeCommon($scope, $window, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                                 CurrentMapTypeService, GoogleQueryService, SiteViewService);
                 }
             }
@@ -1025,7 +1039,7 @@
                     'MapInstanceService', 'LinkrService', 'CurrentMapTypeService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlMobile]);
             } else {
-                MapCtrl = App.controller('MapCtrl', ['$scope',
+                MapCtrl = App.controller('MapCtrl', ['$scope', '$window',
                     '$routeParams', '$compile', '$uibModal', '$uibModalStack', 'MapInstanceService',
                     'LinkrService', 'CurrentMapTypeService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlBrowser]);

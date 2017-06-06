@@ -12,20 +12,20 @@
 </script>
 
 <ion-view view-title="Dashboard">
-    <ion-content style="height: 550px; width: 100%;" class="has-header">
+    <ion-content style="height: 100%; width: 100%;" class="has-header">
         <div id='canvasholder' ng-controller='CanvasHolderCtrl' onmousedown="return false">
-            <div style="height: 500px;" class='row'>
+            <div style="height: 100%;" class='icon-row'>
                 <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl">
-                    <div class="buttons row " ng-class="{'mapsshowing' : slidesCount > 1, 'mapshidden' : slidesCount < 2}">
+                    <div class="buttons icon-row ">
                         <div class="col-md-1 col-xs-1">
-                            <button class="chevron-prev" ng-click="onClickPrev()">
+                            <button class="chevron-prev" ng-class="{'mapsshowing' : slidesCount > 1, 'mapshidden' : slidesCount < 2}" ng-click="onClickPrev()">
                                 <span class="offscreen">Previous</span>
                             </button>
                         </div>
                         <div class="col-md-3 col-xs-3" ng-class="{'mapsshowingtext' : slidesCount > 0, 'mapshiddentext' : slidesCount < 1}">{{MapName}}
                         </div>
                         <div class="col-md-1 col-xs-1">
-                            <button class="chevron-next" ng-click="onClickNext()">
+                            <button class="chevron-next" ng-click="onClickNext()" ng-class="{'mapsshowing' : slidesCount > 1, 'mapshidden' : slidesCount < 2}">
                                 <span class="offscreen">Next</span>
                             </button>
                         </div>
@@ -38,7 +38,7 @@
                         </div>
                     </div>
 
-                    <ol class="MapContainer" style="height: {{mapcolheight}}px; width: {{mapcolWidth}}px;"></ol>
+                    <ol class="MapContainer" style="height: {{mapcolheight}}px; width: 100%;"></ol>
                     <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:200px; top:256px; z-index:100;" />
                 </div>
             </div>

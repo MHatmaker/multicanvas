@@ -136,14 +136,14 @@
                 whichCanvas = $scope.currentMapSystem.maptype === 'arcgis' ? 'map' + outerMapNumber + '_root' : 'map' + outerMapNumber;
             });
 
-            $scope.calculateDimensions = function(gesture) {
+            $scope.calculateDimensions = function (gesture) {
                 $scope.mapwidth = $window.innerWidth;
                 $scope.mapheight = $window.innerHeight - 70;
             };
 
-            angular.element($window).bind('resize', function(){
-                $scope.$apply(function() {
-                  $scope.calculateDimensions();
+            angular.element($window).bind('resize', function () {
+                $scope.$apply(function () {
+                    $scope.calculateDimensions();
                 });
             });
 
@@ -690,6 +690,29 @@
             }
         }
 
+        function stopLintUnusedComplaints(lnkr, minmaxr) {
+            console.log("stopLintUnusedComplaints");
+        }
+
+        function appendControls(templateLnkr, templateMinMaxr, cnvs) {
+            return new Promise(function (resolve, reject) {
+                var lnkr1,
+                    lnkr,
+                    minmaxr,
+                    minmaxr1;
+                stopLintUnusedComplaints(lnkr, minmaxr);
+                lnkr1 = angular.element(templateLnkr);
+                lnkr = cnvs.append(lnkr1);
+
+                minmaxr1 = angular.element(templateMinMaxr);
+                minmaxr = cnvs.append(minmaxr1);
+                $scope.safeApply();
+                setTimeout(function () {
+                    resolve();
+                }, 1000);
+            });
+        }
+
         function placeCustomControls() {
             var currentMapNumber = mapStartup.getMapNumber(),
                 contextScope = $scope,
@@ -708,9 +731,6 @@
                 lnkrText,
                 lnkrSymbol,
                 refreshDelay;
-            function stopLintUnusedComplaints(lnkr, minmaxr) {
-                console.log("stopLintUnusedComplaints");
-            }
             if (document.getElementById("linkerDirectiveId" + currentMapNumber) === null) {
 
                 whichCanvas = CurrentMapTypeService.getMapTypeKey() === 'arcgis' ? 'map' + currentMapNumber + '_root' : 'map' + currentMapNumber;
@@ -734,16 +754,9 @@
                          style="cursor:url(../img/LinkerCursor.png) 9 9,auto;"> \
                     </div>';
                 templateMinMaxr = templateMinMaxrUnformatted.format(currentMapNumber, currentMapNumber, currentMapNumber);
-                lnkr1 = angular.element(templateLnkr);
-                lnkr = cnvs.append(lnkr1);
 
-                minmaxr1 = angular.element(templateMinMaxr);
-                minmaxr = cnvs.append(minmaxr1);
 
-                stopLintUnusedComplaints(lnkr, minmaxr);
-                $scope.safeApply();
-
-                setTimeout(function () {
+                appendControls(templateLnkr, templateMinMaxr, cnvs).then(function () {
                     lnkrdiv = document.getElementById('linkerDirectiveId' + currentMapNumber);
                     lnkrdiv.addEventListener('click', function (event) {
                         console.log('lnkr[0].onclick   display LinkerEvent');
@@ -760,8 +773,7 @@
                         contextScope.$apply();
                         refreshMinMax();
                     });
-                }, 500);
-
+                });
 
                 lnkrText = document.getElementById("idLinkerText" + currentMapNumber);
                 lnkrSymbol = document.getElementById("idLinkerSymbol" + currentMapNumber);

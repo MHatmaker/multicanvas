@@ -1,0 +1,11 @@
+{
+  "name": "multican",
+  "app_id": "MultiCanvas",
+  "documentRoot": "www",
+  "watchPatterns": [
+    "partials/**/*",
+    "templates/**/*",
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

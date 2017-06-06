@@ -51,6 +51,7 @@
             queryForSameDisplay = "",
             $scope,
             $window,
+            $timeout,
             $compile,
             $routeParams,
             firstMap = true,
@@ -96,13 +97,14 @@
             }
         }
 
-        function initializeCommon(scope, window, routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
+        function initializeCommon(scope, window, timeout, routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
                     CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg, $state) {
             var outerMapNumber;
             console.log('initializeCommon and set $scope');
 
             $scope = scope;
             $window = window;
+            $timeout = timeout,
             $compile = compileArg;
             $routeParams = routeParamsArg;
             CurrentMapTypeService = CurrentMapTypeSvc;
@@ -672,13 +674,13 @@
         }
           // google.maps.event.addDomListener(window, 'load', initialize);
         function removeChildrenFromNode(node) {
-             if(node === undefined || node === null) {
+            if (node === undefined || node === null) {
                 return;
-            	}
-              while (node.firstChild) {
-                  node.removeChild(node.firstChild);
-              }
-          }
+            }
+            while (node.firstChild) {
+                node.removeChild(node.firstChild);
+            }
+        }
 
         function removeCustomControls(mapNo) {
             var elem,
@@ -703,13 +705,13 @@
                 stopLintUnusedComplaints(lnkr, minmaxr);
                 lnkr1 = angular.element(templateLnkr);
                 lnkr = cnvs.append(lnkr1);
+                console.debug(lnkr);
 
                 minmaxr1 = angular.element(templateMinMaxr);
                 minmaxr = cnvs.append(minmaxr1);
-                $scope.safeApply();
-                setTimeout(function () {
-                    resolve();
-                }, 1000);
+                console.log("appendControls ready for safeApply");
+                // $scope.safeApply(resolve);
+                $scope.$apply(resolve);
             });
         }
 
@@ -722,10 +724,6 @@
                 templateLnkrUnformatted,
                 templateMinMaxr,
                 templateMinMaxrUnformatted,
-                lnkr1,
-                lnkr,
-                minmaxr1,
-                minmaxr,
                 lnkrdiv,
                 mnmxdiv,
                 lnkrText,
@@ -755,24 +753,28 @@
                     </div>';
                 templateMinMaxr = templateMinMaxrUnformatted.format(currentMapNumber, currentMapNumber, currentMapNumber);
 
-
                 appendControls(templateLnkr, templateMinMaxr, cnvs).then(function () {
-                    lnkrdiv = document.getElementById('linkerDirectiveId' + currentMapNumber);
-                    lnkrdiv.addEventListener('click', function (event) {
-                        console.log('lnkr[0].onclick   display LinkerEvent');
-                        event.stopPropagation();
+                    $timeout(function () {
+                        lnkrdiv = document.getElementById('linkerDirectiveId' + currentMapNumber);
+                        if (lnkrdiv) {
+                            foundit = true;
+                            lnkrdiv.addEventListener('click', function (event) {
+                                console.log('lnkr[0].onclick   display LinkerEvent');
+                                event.stopPropagation();
 
-                        LinkrSvc.showLinkr();
-                    });
-                    mnmxdiv = document.getElementById('mapmaximizerDirectiveId' + currentMapNumber);
+                                LinkrSvc.showLinkr();
+                            });
+                            mnmxdiv = document.getElementById('mapmaximizerDirectiveId' + currentMapNumber);
 
-                    mnmxdiv.addEventListener('click', function (event) {
-                        console.log('minmaxr[0].onclick   mapMaximizerEvent');
-                        event.stopPropagation();
-                        contextScope.$emit('mapMaximizerEvent');
-                        contextScope.$apply();
-                        refreshMinMax();
-                    });
+                            mnmxdiv.addEventListener('click', function (event) {
+                                console.log('minmaxr[0].onclick   mapMaximizerEvent');
+                                event.stopPropagation();
+                                contextScope.$emit('mapMaximizerEvent');
+                                contextScope.$apply();
+                                refreshMinMax();
+                            });
+                        }
+                    }, 1000);
                 });
 
                 lnkrText = document.getElementById("idLinkerText" + currentMapNumber);
@@ -810,7 +812,7 @@
         // }
 
 
-        function MapCtrlMobile($scopeArg, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack,
+        function MapCtrlMobile($scopeArg, $window, $timeout, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $routeParams, $compile, $uibModal, $uibModalStack,
                     LinkrSvc, MapInstanceService, CurrentMapTypeService, GoogleQueryService, SiteViewService) {
             var watchOptions,
                 watch;
@@ -891,7 +893,7 @@
                     }
                     $ionicLoading.hide();
                     console.log("fell thru navigator.geolocation.getCurrentPosition");
-                    initializeCommon($scope, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
+                    initializeCommon($scope, $window, $timeout, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                         CurrentMapTypeService, GoogleQueryService, SiteViewService);
                 });
 
@@ -943,7 +945,7 @@
             // }, 5000);
         }
 
-        function MapCtrlBrowser($scopeArg, $window, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
+        function MapCtrlBrowser($scopeArg, $window, $timeout, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                     CurrentMapTypeService, GoogleQueryService, SiteViewService) {
             console.log("in MapCtrlBrowser");
             $scope = $scopeArg;
@@ -1002,7 +1004,7 @@
             if (firstMap === true) {
                 initializeLocation();
                 if (commonInitialized === false) {
-                    initializeCommon($scope, $window, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
+                    initializeCommon($scope, $window, $timeout, $routeParams, $compile, $uibModal, $uibModalStack, MapInstanceService, LinkrSvc,
                                 CurrentMapTypeService, GoogleQueryService, SiteViewService);
                 }
             }
@@ -1046,12 +1048,12 @@
             var App = angular.module('mapModule');
 
             if (isMob) {
-                MapCtrl = App.controller('MapCtrl', ['$scope', '$cordovaGeolocation',
+                MapCtrl = App.controller('MapCtrl', ['$scope', '$window', '$timeout', '$cordovaGeolocation',
                     '$ionicLoading', '$ionicPlatform', '$routeParams', '$compile', '$uibModal', '$uibModalStack',
                     'MapInstanceService', 'LinkrService', 'CurrentMapTypeService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlMobile]);
             } else {
-                MapCtrl = App.controller('MapCtrl', ['$scope', '$window',
+                MapCtrl = App.controller('MapCtrl', ['$scope', '$window', '$timeout',
                     '$routeParams', '$compile', '$uibModal', '$uibModalStack', 'MapInstanceService',
                     'LinkrService', 'CurrentMapTypeService',
                     'GoogleQueryService', 'SiteViewService', MapCtrlBrowser]);

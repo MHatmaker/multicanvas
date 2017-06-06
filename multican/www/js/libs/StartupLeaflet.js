@@ -49,7 +49,8 @@
 
                     configure = function (newMapId, mapLocOpts) {
                         var $inj = self.mlconfig.getInjector(),
-                            mapInstanceSvc = $inj.get('MapInstanceService');
+                            mapInstanceSvc = $inj.get('MapInstanceService'),
+                            mapTypeSvc = $inj.get('CurrentMapTypeService');
                         self.newSelectedWebMapId = newMapId;
                         // mapInstanceSvc.setCurrentMapType('leaflet');
                         window.loading = dojo.byId("loadingImg");
@@ -83,6 +84,7 @@
                         self.mapHoster.config(self.lMap, mapLocOpts, self.mlconfig);
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                         mapInstanceSvc.setConfigInstanceForMap(self.mapNumber, self.mlconfig);
+                        mapTypeSvc.setCurrentMapType('leaflet');
                         self.mlconfig.setUserId(self.mlconfig.getUserName() + self.mapNumber);
                         self.pusherChannel = self.mlconfig.masherChannel(false);
                         console.debug(self.pusherChannel);

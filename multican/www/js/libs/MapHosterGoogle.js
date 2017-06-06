@@ -635,13 +635,10 @@
                 });
 
                 function gotResize() {
-                    console.log("resize event hit in MapHosterGoogle");
-                                    // mphmap.setZoom(20);
-                                    // mphmap.setZoom(13);
                     var center = mphmap.getCenter();
                     google.maps.event.trigger(mphmap, "resize");
                     mphmap.setCenter(center);
-                    console.log(mphmap.getBounds());
+                    // console.log(mphmap.getBounds());
                 }
 
                 // google.maps.event.addListener(mphmap, 'resize', gotResize); //function() {

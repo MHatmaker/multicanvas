@@ -757,7 +757,6 @@
                     $timeout(function () {
                         lnkrdiv = document.getElementById('linkerDirectiveId' + currentMapNumber);
                         if (lnkrdiv) {
-                            foundit = true;
                             lnkrdiv.addEventListener('click', function (event) {
                                 console.log('lnkr[0].onclick   display LinkerEvent');
                                 event.stopPropagation();

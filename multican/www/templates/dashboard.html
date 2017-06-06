@@ -15,7 +15,7 @@
     <ion-content style="height: 100%; width: 100%;" class="has-header">
         <div id='canvasholder' ng-controller='CanvasHolderCtrl' onmousedown="return false">
             <div style="height: 100%;" class='icon-row'>
-                <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl">
+                <div class="carouselbox {{ActNoAct}}" ng-controller="CarouselCtrl" style="margin: 0.2em;">
                     <div class="buttons icon-row ">
                         <div class="col-md-1 col-xs-1">
                             <button class="chevron-prev" ng-class="{'mapsshowing' : slidesCount > 1, 'mapshidden' : slidesCount < 2}" ng-click="onClickPrev()">

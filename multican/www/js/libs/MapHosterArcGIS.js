@@ -515,7 +515,7 @@
 
                 // mpWrap = document.getElementById("map_wrapper");
                 // mpCan = document.getElementById("map_" + mlconfig.getMapNumber());
-                mpCanRoot = document.getElementById("map_canvas_root" + mlconfig.getMapNumber());
+                mpCanRoot = document.getElementById("map" + mlconfig.getMapNumber() + "_root");
             }
 
             function retrievedNewPosition(pos) {

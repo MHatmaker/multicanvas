@@ -106,7 +106,7 @@
             console.log('CarouselCtrl init');
             var locApp = angular.module('mapModule');
 
-            locApp.controller('CarouselCtrl', ['$scope', 'MapInstanceService', CarouselCtrl]);
+            locApp.controller('CarouselCtrl', ['$scope', '$window', 'MapInstanceService', CarouselCtrl]);
             // angular.bootstrap(document.getElementById('year'), ['example']);
 
             return CarouselCtrl;

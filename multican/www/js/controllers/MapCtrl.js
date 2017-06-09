@@ -300,14 +300,15 @@
                 selfMethods.fillMapWithMarkers = fillMapWithMarkers;
 
                 onAcceptDestination = function (info) {
-                    var sourceMapType = 'google',
-                        newSelectedWebMapId,
+                    var newSelectedWebMapId,
                         destWnd,
+                        slideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                        mph = MapInstanceService.getMapHosterInstance(slideNumber),
                         customControlElement;
 
 
                     if (info) {
-                        sourceMapType = 'google';
+                        // sourceMapType = 'google';
                         destWnd = info.dstSel;
                     }
                     newSelectedWebMapId = "NoId";
@@ -317,7 +318,7 @@
                             PusherSetupCtrl.setupPusherClient(stageStartNewCanvas,
                                 {
                                     'destination' : destWnd,
-                                    'currentMapHolder' : sourceMapType,
+                                    'currentMapHolder' : mph,
                                     'newWindowId' : newSelectedWebMapId,
                                     'query' : queryForNewDisplay
                                 });
@@ -327,15 +328,19 @@
                             // }).then(function() {
                             //     fillNewCanvas(selfVars.placesFromSearch);
                             // });
-                        } else {
+                        }
+
+                        if (destWnd === 'New Tab') {
                             startNewCanvas('google').then(function (mapType) {
                                 // CanvasHolderCtrl.addCanvas(mapType);
                                 console.log("do nothing in first then section");
                             }).then(function () {
                                 fillNewCanvas(selfVars.placesFromSearch);
                             });
-                            // WindowStarter.openNewDisplay(mlconfig.masherChannel(false),
-                            //     mlconfig.getUserName(), destWnd, sourceMapType, newSelectedWebMapId, queryForNewDisplay);
+                        }
+                        else {
+                            WindowStarter.getInstance().openNewDisplay(mlconfig.masherChannel(false),
+                                mlconfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
                             queryForNewDisplay = "";
                         }
 

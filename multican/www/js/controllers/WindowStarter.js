@@ -1,5 +1,5 @@
-/*global require*/
-/*global define*/
+/*global require, define, console, angular, document, alert, window*/
+/*jslint es5: true */
 
 (function () {
     "use strict";
@@ -9,12 +9,38 @@
     define([
         'libs/utils',
         'libs/MLConfig',
+        'libs/HostConfig',
         'controllers/PopupBlockerCtrl'
-    ], function (utils, MLConfig) {
+    ], function (utils, MLConfig, HostConfig) {
 
-        var
+        var instance = null,
+
+            setHostEnvironment = function () {
+                return new Promise(function (resolve, reject) {
+                    var
+                        $inj = angular.element(document.body).injector(),
+                        $http = $inj.get('$http'),
+                        hostPathPre = "http://",
+                        hostPathNgrok = "ca8771c9",
+                        hostPathPost = ".ngrok.io/hostenvironment";
+
+                    $http({method: 'GET', url: hostPathPre + hostPathNgrok + hostPathPost}).
+                        success(function (data, status, headers, config) {
+                            HostConfig.HostConfig().sethost(data.host);
+                            HostConfig.HostConfig().sethostport(data.port);
+                            resolve();
+                        }).
+                        error(function (data, status, headers, config) {
+                                // called asynchronously if an error occurs
+                                // or server returns response with an error status.
+                            console.log('Oops and environment error', data);
+                            alert('Oops getting host environment');
+                            reject();
+                        });
+                    });
+            },
+
             setupNewDisplay = function (channel, userName, wndIndex, destWnd, curmph, newSelectedWebMapId, query) {
-
                 var
                     wndName = newSelectedWebMapId + wndIndex,
                     baseUrl,
@@ -24,26 +50,27 @@
                     $inj,
                     $uibModal,
                     restUrl,
-                    urlToUnblock = MLConfig.gethost(), //'OpenShift.Arcadian.com',
+                    mlconfig = curmph.getMLConfig(),
+                    urlToUnblock = HostConfig.HostConfig().gethost(), //'OpenShift.Arcadian.com',
                     url = "?id=" + wndName + curmph.getGlobalsForUrl() +
                     "&channel=" + channel + "&userName=" + userName +
-                    "&maphost=google" + "&referrerId=" + MLConfig.getUserId(),
+                    "&maphost=google" + "&referrerId=" + mlconfig.getUserId(),
                     gmQuery = query; //MLConfig.getQuery();
 
                 if (gmQuery !== '') {
                     url += "&gmquery=" + gmQuery;
-                    displayBnds = MLConfig.getBoundsForUrl();
+                    displayBnds = mlconfig.getBoundsForUrl();
                     url += displayBnds;
                 }
                 console.log("open new Google window with URI " + url);
                 console.log("using channel " + channel + "with userName " + userName);
-                MLConfig.setUrl(url);
-                MLConfig.setUserName(userName);
+                mlconfig.setUrl(url);
+                mlconfig.setUserName(userName);
 
                 if (destWnd === "New Pop-up Window") {
-                    baseUrl = MLConfig.getbaseurl();
+                    baseUrl = HostConfig.HostConfig().getbaseurl();
 
-                    popresult = window.open(baseUrl + "/google/" + url,  wndName, MLConfig.getSmallFormDimensions());
+                    popresult = window.open(baseUrl + "/google/" + url,  wndName, mlconfig.getSmallFormDimensions());
                     if (popresult === null) {
                         $inj = angular.element(document.body).injector();
                         $uibModal = $inj.get('$uibModal');
@@ -68,7 +95,7 @@
 
                 } else {
                     if (destWnd === "New Tab") {
-                        baseUrl = MLConfig.getbaseurl();
+                        baseUrl = HostConfig.HostConfig().getbaseurl();
                         restUrl = $inj.get('CurrentMapTypeService').getMapRestUrlForType('google');
                         window.open(baseUrl + restUrl + url, '_blank');
                         window.focus();
@@ -78,9 +105,12 @@
 
             openNewDisplay = function (channel, userName, destWnd, curmph, newSelectedWebMapId, query) {
                 var $inj = angular.element(document.body).injector(),
-                    $http = $inj.get('$http');
+                    $http = $inj.get('$http'),
+                    pusherPathPre = "http://",
+                    pusherPathNgrok = "ca8771c9",
+                    pusherPathPost = ".ngrok.io/wndseqno";
 
-                $http({method: 'GET', url: '/wndseqno'}).
+                $http({method: 'GET', url: pusherPathPre + pusherPathNgrok + pusherPathPost}).
                     success(function (data, status, headers, config) {
                         setupNewDisplay(channel, userName, data.wndNameSeqNo, destWnd, curmph, newSelectedWebMapId, query);
                     }).
@@ -88,18 +118,35 @@
                             // called asynchronously if an error occurs
                             // or server returns response with an error status.
                         console.log('Oops and error', data);
-                        alert('Oops getting next window sequence number ' + data.wndseqno);
+                        alert('Oops getting next window sequence number');
                     });
             };
 
         function init() {
             return {openNewDisplay : openNewDisplay};
         }
+        function initializeHostEnvironment() {
+            setHostEnvironment().then( function (response) {
+                return {openNewDisplay : openNewDisplay};
+            }, function (error) {
+                console.log("setHostEnvironment promise error");
+            });
+        }
         return {
-            start: init,
-            openNewDisplay : openNewDisplay,
-            setupNewDisplay : setupNewDisplay
-        };
+            getInstance : function () {
+                if (!instance) {
+                    instance = init();
+                    // initializeHostEnvironment();
+                }
+                // return instance;
+                return {
+                    start: init,
+                    openNewDisplay : openNewDisplay,
+                    setupNewDisplay : setupNewDisplay,
+                    initializeHostEnvironment : initializeHostEnvironment
+                };
+            }
+        }
     });
 
 }());

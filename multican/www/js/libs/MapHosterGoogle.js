@@ -914,6 +914,10 @@
                 return pusherEvtHandler;
             }
 
+            function getMLConfig() {
+                return mlconfig;
+            }
+
             return {
                 config : configureMap,
                 retrievedBounds: retrievedBounds,
@@ -931,7 +935,8 @@
                 setSearchBox : setSearchBox,
                 getMap : getMap,
                 placeMarkers : placeMarkers,
-                geoLocate : geoLocate
+                geoLocate : geoLocate,
+                getMLConfig: getMLConfig
             };
         };
 

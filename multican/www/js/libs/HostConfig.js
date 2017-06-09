@@ -1,22 +1,19 @@
-/*global angular, console, define, document, MLConfig */
+/*global angular, console, define, document, HostConfig */
 
 define(function () {
     "use strict";
-    console.log("entering MLConfig");
-    var staticMethods = {};
+    console.log("entering HostConfig");
+    var staticMethods = {},
+        instance = null,
+        returnDetails = {};
 
-    function MLConfig(ndx) {
-        console.log("MLConfig ctor");
+    function HostConfig(ndx) {
+        console.log("HostConfig ctor");
 
         console.log("mapId to be set to " + ndx);
 
         var
             details = {
-                mapId : ndx,
-                mapType : 'google',
-                mapHosterInstance : null,
-                mapNumber: null,
-                mapHoster : null,
                 webmapId : "a4bb8a91ecfb4131aa544eddfbc2f1d0",
                 lat : '',
                 lon : '',
@@ -30,9 +27,7 @@ define(function () {
                 hostport : '3035',
                 href : '', //"http://localhost",
                 userName: 'defaultuser',
-                search: '/',
-                startupView : {'summaryShowing' : true, 'websiteDisplayMode' : true},
-                smallFormDimensions : { 'top' : 1, 'left' : 1, 'width' : 450, 'height' : 570}
+                search: '/'
             },
             getParameterByName = function (name, details) {
                 // console.log("get paramater " + name + " from " + details.search);
@@ -40,26 +35,6 @@ define(function () {
                 var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                     results = regex.exec(details.search);
                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-            },
-            setMapId = function (id) {
-                console.log("MLConfig setMapId to " + id);
-                details.mapId = id;
-                console.log("MapId is now " + details.mapId);
-            },
-            getMapId = function () {
-                return details.mapId;
-            },
-            setMapType = function (type) {
-                details.mapType = type;
-            },
-            getMapType = function () {
-                return details.mapType;
-            },
-            setMapNumber = function (mapNo) {
-                details.mapNumber = mapNo;
-            },
-            getMapNumber = function () {
-                return details.mapNumber;
             },
             masherChannel = function (newWindow) {
                 // alert(getParameterByName('channel'));
@@ -90,22 +65,6 @@ define(function () {
             isNameChannelAccepted = function () {
                 return details.nameChannelAccepted;
             },
-            setMapHosterInstance = function (inst) {
-                details.mapHosterInstance = inst;
-                if (!inst) {
-                    console.log("attempting to setMapHosterInstance to null/undefined");
-                }
-                console.log("MLConfig.setMapHosterInstance is set to " + details.mapNumber);
-                console.debug(details.mapHosterInstance);
-            },
-            getMapHosterInstance = function () {
-                console.log("MLConfig.getMapHosterInstance is returning instance " + details.mapId);
-                console.debug(details.mapHosterInstance);
-                if (!details.mapHosterInstance) {
-                    console.log("attempting to getMapHosterInstance containing null/undefined");
-                }
-                return details.mapHosterInstance;
-            },
             getWebmapId = function (newWindow) {
                 var result = "";
                 if (newWindow === true) {
@@ -117,6 +76,41 @@ define(function () {
                     result = details.webmapId;
                 }
                 return result;
+            },
+            setLocationPath = function (locPath) {
+                details.locationPath = locPath;
+            },
+            getLocationPath = function () {
+                return details.locationPath;
+            },
+            setSearch = function (searchDetails) {
+                details.search = searchDetails;
+            },
+            setprotocol = function (p) {
+                details.protocol = p;
+                console.log("protocol : " + details.protocol);
+            },
+            getprotocol = function () {
+                return details.protocol;
+            },
+            sethostport = function (hp) {
+                details.hostport = hp;
+                console.log("hostport : " + details.hostport);
+            },
+            gethostport = function () {
+                return details.hostport;
+            },
+            sethref = function (hrf) {
+                console.log("sethref : " + hrf);
+                details.href = hrf;
+                console.log("details href : " + details.href);
+            },
+            gethref = function () {
+                var pos = details.href.indexOf("/arcgis");
+                if (pos  > -1) {
+                    return details.href; //.substring(0, pos);
+                }
+                return details.href;
             },
             setWebmapId = function (id) {
                 console.log("Setting webmapId to " + id);
@@ -170,17 +164,18 @@ define(function () {
             getUrl = function () {
                 return details.url;
             },
-            getbaseurl = function () {
-                var baseurl = details.protocol + "//" + details.host + "/";
-                console.log("getbaseurl --> " + baseurl);
-                return baseurl;
-            },
             sethost = function (h) {
                 details.host = h;
                 console.log("host : " + details.host);
             },
             gethost = function () {
                 return details.host;
+            },
+            setInitialUserStatus = function (tf) {
+                details.isInitialUser = tf;
+            },
+            getInitialUserStatus = function () {
+                return details.isInitialUser;
             },
             hasCoordinates = function () {
                 var result = "";
@@ -215,41 +210,10 @@ define(function () {
                 // details.query.push(getParameterByName('gmquery'));
                 return details.query;
             },
-            getBoundsForUrl = function () {
-                var bnds = details.bounds,
-                    bndsUrl = "&llx=" + bnds.llx + "&lly=" + bnds.lly + "&urx=" + bnds.urx + "&ury=" + bnds.ury;
-                return bndsUrl;
-            },
-            getBoundsFromUrl = function () {
-                var llx = getParameterByName('llx'),
-                    lly = getParameterByName('lly'),
-                    urx = getParameterByName('urx'),
-                    ury = getParameterByName('ury');
-                return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
-            },
-            getSmallFormDimensions = function () {
-                var d = details.smallFormDimensions,
-                    ltwh = 'top={0}, left={1}, height={2},width={3}'.format(d.top, d.left, d.height, d.width);
-                return ltwh;
-            },
-            setBounds = function (bnds) {
-                details.bounds = bnds;
-            },
-            getBounds = function () {
-                return details.bounds;
-            },
-            setInjector = function (inj) {
-                details.nginj = inj;
-            },
-            getInjector = function () {
-                return details.nginj;
-            },
-            setStartupView = function (sum, site) {
-                details.startupView.summaryShowing = sum;
-                details.startupView.websiteDisplayMode = site;
-            },
-            getStartupView = function () {
-                return details.startupView;
+            getbaseurl = function () {
+                var baseurl = details.protocol + "://" + details.host + "/";
+                console.log("getbaseurl --> " + baseurl);
+                return baseurl;
             },
             showConfigDetails = function (msg) {
                 console.log(msg);
@@ -267,33 +231,21 @@ define(function () {
                         "masherChannel : "  + details.masherChannel + "\n" +
                         "lon :" + details.lon + '\n' +
                         "lat : " + details.lat + "\n" +
-                        "zoom : " + details.zoom +
-                        "startupView.summaryShowing : " + details.startupView.summaryShowing + ", startupView.websiteDisplayMode : " + details.startupView.websiteDisplayMode
+                        "zoom : " + details.zoom
                 );
             };
         staticMethods.showConfigDetails = showConfigDetails;
 
 
-        setInjector(angular.element(document.body).injector());
-        return {
-            setMapId: setMapId,
-            getMapId: getMapId,
-            getMapType: getMapType,
-            setMapType: setMapType,
+        returnDetails = {
             getUserId: getUserId,
             setUserId: setUserId,
             getReferrerId: getReferrerId,
             getReferrerIdFromUrl: getReferrerIdFromUrl,
             getReferrerNameFromUrl: getReferrerNameFromUrl,
             setReferrerId: setReferrerId,
-            setMapNumber: setMapNumber,
-            getMapNumber: getMapNumber,
-            setMapHosterInstance: setMapHosterInstance,
-            getMapHosterInstance: getMapHosterInstance,
             setUserName: setUserName,
             getUserName: getUserName,
-            setInjector: setInjector,
-            getInjector: getInjector,
             getWebmapId: getWebmapId,
             setWebmapId: setWebmapId,
             masherChannel: masherChannel,
@@ -303,17 +255,10 @@ define(function () {
             setChannel: setChannel,
             setNameChannelAccepted: setNameChannelAccepted,
             getUserNameFromUrl: getUserNameFromUrl,
-            getbaseurl: getbaseurl,
             testUrlArgs: testUrlArgs,
             sethost: sethost,
             gethost: gethost,
-            setPosition: setPosition,
-            getPosition: getPosition,
-            getBounds: getBounds,
-            setBounds: setBounds,
             showConfigDetails: showConfigDetails,
-            getStartupView: getStartupView,
-            setStartupView: setStartupView,
             query: query,
             setQuery: setQuery,
             getQueryFromUrl: getQueryFromUrl,
@@ -323,18 +268,35 @@ define(function () {
             hasCoordinates : hasCoordinates,
             setUrl: setUrl,
             getUrl: getUrl,
-            getSmallFormDimensions: getSmallFormDimensions,
-            getBoundsForUrl: getBoundsForUrl,
-            getBoundsFromUrl: getBoundsFromUrl
+            setPosition: setPosition,
+            getPosition: getPosition,
+            setLocationPath: setLocationPath,
+            getLocationPath: getLocationPath,
+            setprotocol: setprotocol,
+            getprotocol: getprotocol,
+            setSearch: setSearch,
+            sethostport: sethostport,
+            gethostport: gethostport,
+            sethref: sethref,
+            gethref: gethref,
+            setInitialUserStatus: setInitialUserStatus,
+            getInitialUserStatus: getInitialUserStatus,
+            getbaseurl: getbaseurl
         };
     }
 
-    MLConfig.prototype.showConfigDetails = function () {
-        staticMethods.showConfigDetails();
-    };
+    // HostConfig.showConfigDetails = function () {
+    //     staticMethods.showConfigDetails();
+    // };
     return {
-        MLConfig : function (ndx) {
-            return MLConfig(ndx);
+        HostConfig : function () {
+            if (instance) {
+                return returnDetails;
+            } else {
+                instance = this;
+                HostConfig();
+                return returnDetails;
+            }
         }
     };
 }());

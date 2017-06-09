@@ -7,8 +7,9 @@ console.log("bootstrap outer wrapper");
 // requires routes, config, run they implicit requiring the app
     define([
         'libs/PusherConfig',
-        'controllers/ControllerStarter'
-    ], function (PusherConfig, ControllerStarter) {
+        'controllers/ControllerStarter',
+        'controllers/WindowStarter'
+    ], function (PusherConfig, ControllerStarter, WindowStarter) {
         function init(portalForSearch) {
             var modules = [],
                 dependencies = ['ui.router', 'ionic', 'ui.bootstrap', 'ngAnimate', 'ui.grid', 'ui.grid.expandable',
@@ -157,29 +158,52 @@ console.log("bootstrap outer wrapper");
                 angular.bootstrap(document, ['mapModule']);
                 var $inj = angular.element(document.body).injector();
                 PusherConfig.setInjector($inj);
+                WindowStarter.getInstance().initializeHostEnvironment();
             });
             // window.onload = function () {
             //   console.log('ready to bootstrap');
             //   angular.bootstrap(document, ['app']);
             // }
 
-            app.run([
-                '$ionicPlatform',
-                function ($ionicPlatform) {
+            if (isMobile) {
+                app.run(function ($ionicPlatform, $window) {
                     $ionicPlatform.ready(function () {
-                        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-                        // for form inputs)
-                        if (window.cordova && window.cordova.plugins.Keyboard) {
-                            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-                            cordova.plugins.Keyboard.disableScroll(true);
+                        if ($window.cordova && $window.cordova.plugins.Keyboard) {
+                            // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+                            // for form inputs)
+                            $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+
+                            // Don't remove this line unless you know what you are doing. It stops the viewport
+                            // from snapping when text inputs are focused. Ionic handles this internally for
+                            // a much nicer keyboard experience.
+                            $window.cordova.plugins.Keyboard.disableScroll(true);
                         }
-                        if (window.StatusBar) {
-                            // org.apache.cordova.statusbar required
-                            StatusBar.styleDefault();
+                        if ($window.StatusBar) {
+                            $window.StatusBar.styleDefault();
                         }
                     });
-                }
-            ]);
+                });
+
+
+            } else {
+                app.run([
+                    '$ionicPlatform',
+                    function ($ionicPlatform) {
+                        $ionicPlatform.ready(function () {
+                            // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+                            // for form inputs)
+                            if (window.cordova && window.cordova.plugins.Keyboard) {
+                                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+                                cordova.plugins.Keyboard.disableScroll(true);
+                            }
+                            if (window.StatusBar) {
+                                // org.apache.cordova.statusbar required
+                                StatusBar.styleDefault();
+                            }
+                        });
+                    }
+                ]);
+            }
         }
         return {
             start : init

@@ -363,7 +363,7 @@
                         pushLL = {
                             "x" : fixedLLG.lon,
                             "y" : fixedLLG.lat,
-                            "z" : "0",
+                            "z" : zmG,
                             "referrerId" : referrerId,
                             "referrerName" : referrerName,
                             'address' : contextContent

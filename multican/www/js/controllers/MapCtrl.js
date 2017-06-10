@@ -97,6 +97,21 @@
             }
         }
 
+        function configureCurrentMapType(mapLocOptions) {
+            currentMapType = CurrentMapTypeService.getMapStartup();
+            if (currentMapType.configure) {
+                currentMapType.configure(null, mapLocOptions);
+                $scope.map = currentMapType.getMap();
+                // $scope.map.width = mapSize['medium'];
+                // $scope.MapWdth = mapSize['small'];
+                $scope.isMapExpanded = false;
+                console.debug($scope.map);
+                curMapTypeInitialized = true;
+            }
+        }
+
+        selfMethods.configureCurrentMapType = configureCurrentMapType;
+
         function initializeCommon(scope, window, timeout, routeParamsArg, compileArg, $uibModal, $uibModalStack, MapInstanceSvc, LinkrSvcArg,
                     CurrentMapTypeSvc, GoogleQueryService, SiteViewServiceArg, $state) {
             var outerMapNumber;
@@ -104,7 +119,7 @@
 
             $scope = scope;
             $window = window;
-            $timeout = timeout,
+            $timeout = timeout;
             $compile = compileArg;
             $routeParams = routeParamsArg;
             CurrentMapTypeService = CurrentMapTypeSvc;
@@ -214,6 +229,7 @@
             $scope.startMap = function (mapNumber, mapType) {
                 initialize(mapNumber, mapType);
             };
+
             function setupMapHoster(mapHoster, aMap) {
                 // var
                 //     popmapString = "click me for map " + mapHoster.getMapNumber(),
@@ -229,12 +245,29 @@
                 // mapHoster.addPopup(compiledMsg[0], centerCoord);
             }
 
+            function removeChildrenFromNode(node) {
+                if (node === undefined || node === null) {
+                    return;
+                }
+                while (node.firstChild) {
+                    node.removeChild(node.firstChild);
+                }
+            }
+
+            function removeCustomControls(mapNo) {
+                var elem,
+                    elems = ['gmsearch' + mapNo, 'linkerDirectiveId' + mapNo, 'mapmaximizerDirectiveId' + mapNo];
+                    // elems = ['linkerDirectiveId', 'idLinkerText', 'idLinkerSymbol', 'mapmaximizerDirectiveId', 'idMinMaxText', 'idMinMaxSymbol', 'idMinMaxSymbol'];
+                for (elem = 0; elem < elems.length; elem += 1) {
+                    //  elem = document.getElementById('slide' + slideToRemove);
+                    removeChildrenFromNode(elem);
+                }
+            }
+
             function placesQueryCallback(placesFromSearchArg, status) {
                 var
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                    googmph,
                     curMapType = "no map",
-                    placesSearchResults,
                     onAcceptDestination,
                     placesFromSearch = placesFromSearchArg,
                     startNewCanvas;
@@ -251,7 +284,6 @@
                         resolve(mapType);
                     });
                     // if (placesFromSearch && placesFromSearch.length > 0) {
-                    //     placesSearchResults = placesFromSearch;
                     //     selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
                     //
                     //     $scope.subsetDestinations(placesFromSearch);
@@ -268,7 +300,6 @@
                         mph = MapInstanceService.getMapHosterInstance(slideNumber);
                     placesFromSearch = placesFromSearchArg;
                     if (placesFromSearch && placesFromSearch.length > 0) {
-                        // placesSearchResults = placesFromSearch;
                         selfVars.searchInput = document.getElementById('pac-input' + slideNumber);
 
                         // $scope.subsetDestinations(placesFromSearch);
@@ -281,9 +312,14 @@
                     }
 
                 }
-
-                function stageStartNewCanvas() {
+                        // channel, clientName,
+                        // selfdict.info.destination, selfdict.info.currentMapHolder, selfdict.info.newWindowId, selfdict.info.query
+                function stageStartNewCanvas(channel, clientName, destination, mph, newWindowId, query) {
                     console.log('stageStartNewCanvas');
+                    WindowStarter.getInstance().openNewDisplay(mlconfig.masherChannel(false),
+                        mlconfig.getUserName(), destination, mph, newWindowId, query);
+                    queryForNewDisplay = "";
+                    /*
                     queryForNewDisplay = "";
                     startNewCanvas('google').then(function (mapType) {
                         console.log("resolve calls addCanvas");
@@ -291,7 +327,7 @@
                     }).then(function () {
                         // fillNewCanvas(selfVars.placesFromSearch);
                         console.log('do nothing here');
-                    });
+                    });*/
                 }
                 function fillMapWithMarkers() {
                     console.log("fillMapWithMarkers calling fillNewCanvas");
@@ -302,9 +338,9 @@
                 onAcceptDestination = function (info) {
                     var newSelectedWebMapId,
                         destWnd,
+                        googmph,
                         slideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                        mph = MapInstanceService.getMapHosterInstance(slideNumber),
-                        customControlElement;
+                        mph = MapInstanceService.getMapHosterInstance(slideNumber);
 
 
                     if (info) {
@@ -337,8 +373,7 @@
                             }).then(function () {
                                 fillNewCanvas(selfVars.placesFromSearch);
                             });
-                        }
-                        else {
+                        } else {
                             WindowStarter.getInstance().openNewDisplay(mlconfig.masherChannel(false),
                                 mlconfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
                             queryForNewDisplay = "";
@@ -355,7 +390,6 @@
                 };
 
                 if (placesFromSearch && placesFromSearch.length > 0) {
-                    placesSearchResults = placesFromSearch;
                     selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
 
                     $scope.subsetDestinations(placesFromSearch);
@@ -614,20 +648,6 @@
             tmpltName = $routeParams.id;
             console.log("$routeParams.id is " + tmpltName);
 
-            function configureCurrentMapType(mapLocOptions) {
-                currentMapType = CurrentMapTypeService.getMapStartup();
-                if (currentMapType.configure) {
-                    currentMapType.configure(null, mapLocOptions);
-                    $scope.map = currentMapType.getMap();
-                    // $scope.map.width = mapSize['medium'];
-                    // $scope.MapWdth = mapSize['small'];
-                    $scope.isMapExpanded = false;
-                    console.debug($scope.map);
-                    curMapTypeInitialized = true;
-                }
-            }
-
-            selfMethods.configureCurrentMapType = configureCurrentMapType;
             commonInitialized = true;
         }
 
@@ -678,24 +698,6 @@
             //   }, 1000);
         }
           // google.maps.event.addDomListener(window, 'load', initialize);
-        function removeChildrenFromNode(node) {
-            if (node === undefined || node === null) {
-                return;
-            }
-            while (node.firstChild) {
-                node.removeChild(node.firstChild);
-            }
-        }
-
-        function removeCustomControls(mapNo) {
-            var elem,
-                elems = ['gmsearch' + mapNo, 'linkerDirectiveId' + mapNo, 'mapmaximizerDirectiveId' + mapNo];
-                // elems = ['linkerDirectiveId', 'idLinkerText', 'idLinkerSymbol', 'mapmaximizerDirectiveId', 'idMinMaxText', 'idMinMaxSymbol', 'idMinMaxSymbol'];
-            for (elem = 0; elem < elems.length; elem += 1) {
-                //  elem = document.getElementById('slide' + slideToRemove);
-                removeChildrenFromNode(elem);
-            }
-        }
 
         function stopLintUnusedComplaints(lnkr, minmaxr) {
             console.log("stopLintUnusedComplaints");
@@ -1042,7 +1044,7 @@
                 selfMethods.fillMapWithMarkers();
             }
         }
-        function configureCurrentMapType(mapLocOptions) {
+        function configCurrentMapType(mapLocOptions) {
             console.log("configureCurrentMapType");
             selfMethods.configureCurrentMapType(mapLocOptions);
         }
@@ -1069,7 +1071,7 @@
 
         return {
             start: init,
-            configureCurrentMapType: configureCurrentMapType,
+            configureCurrentMapType: configCurrentMapType,
             invalidateCurrentMapTypeConfigured : invalidateCurrentMapTypeConfiguredOuter,
             placeCustomControls : placeCustomControls,
             setupQueryListener : setupQueryListener,

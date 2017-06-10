@@ -14,9 +14,12 @@ require([
     'dojo',
     'dojo/domReady',
     'esri/arcgis/Portal',
+    'esri/config',
+    'esri/Color',
+    'esri/map',
     'js/boot',
     'js/libs/HostConfig'
-], function (bs,dojo, dojodomReady, esriPortal, boot, HostConfig) {
+], function (bs,dojo, dojodomReady, esriPortal, esriconfig, esricolor, esrimap, boot, HostConfig) {
     'use strict';
     var locationPath = "/",
         hostConfig = HostConfig.HostConfig();

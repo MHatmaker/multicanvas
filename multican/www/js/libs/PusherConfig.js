@@ -15,7 +15,10 @@
                     masherChannelInitialized : false,
                     nameChannelAccepted : false,
                     userName : 'defaultuser',
-                    nginj : null
+                    nginj : null,
+                    pusherPathPre : "http://",
+                    pusherPathNgrok : "15e2b46f",
+                    pusherPathPost : ".ngrok.io"
                 };
             console.log("entering PusherConfig");
             details.nginj = angular.element(document.body).injector();
@@ -71,6 +74,11 @@
                 },
                 getInjector : function () {
                     return details.nginj;
+                },
+                getPusherPath : function () {
+                    var path = details.pusherPathPre + details.pusherPathNgrok + details.pusherPathPost;
+                    console.log("Pusher ngrok path is " + path);
+                    return path;
                 }
             };
         });

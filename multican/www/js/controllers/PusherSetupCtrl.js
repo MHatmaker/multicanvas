@@ -8,7 +8,7 @@
     console.log('PusherSetup setup');
     var areWeInitialized = false,
         pusherPathPre = "http://",
-        pusherPathNgrok = "3bf3aff5",
+        pusherPathNgrok = "15e2b46f",
         pusherPathPost = ".ngrok.io/pusher/auth";
         // areWeInstantiated = false;
     define([
@@ -80,9 +80,10 @@
                 selfdict.CHANNELNAME = channel.indexOf("private-channel-") > -1 ? channel : 'private-channel-' + channel;
                 console.log("with channel " + selfdict.CHANNELNAME);
 
+                console.log("PusherPath is " + PusherConfig.getPusherPath() + "/pusher/auth");
                 selfdict.pusher = pusher = new Pusher(APP_KEY, {
                     authTransport: 'jsonp',
-                    authEndpoint: pusherPathPre + pusherPathNgrok + pusherPathPost, //'http://linkr622-arcadian.rhcloud.com/',
+                    authEndpoint: PusherConfig.getPusherPath() + "/pusher/auth", //'http://linkr622-arcadian.rhcloud.com/',
                     clientAuth: {
                         key: APP_KEY,
                         secret: APP_SECRET,

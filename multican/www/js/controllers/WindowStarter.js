@@ -10,8 +10,9 @@
         'libs/utils',
         'libs/MLConfig',
         'libs/HostConfig',
+        'libs/PusherConfig',
         'controllers/PopupBlockerCtrl'
-    ], function (utils, MLConfig, HostConfig) {
+    ], function (utils, MLConfig, HostConfig, PusherConfig) {
 
         var instance = null,
 
@@ -20,11 +21,10 @@
                     var
                         $inj = angular.element(document.body).injector(),
                         $http = $inj.get('$http'),
-                        hostPathPre = "http://",
-                        hostPathNgrok = "ca8771c9",
-                        hostPathPost = ".ngrok.io/hostenvironment";
+                        pusherPath = PusherConfig.getPusherPath() + "/hostenvironment";
 
-                    $http({method: 'GET', url: hostPathPre + hostPathNgrok + hostPathPost}).
+                    console.log("WindowStarter.setHostEnvironment with pusher path " + pusherPath);
+                    $http({method: 'GET', url: pusherPath}).
                         success(function (data, status, headers, config) {
                             HostConfig.HostConfig().sethost(data.host);
                             HostConfig.HostConfig().sethostport(data.port);
@@ -106,11 +106,9 @@
             openNewDisplay = function (channel, userName, destWnd, curmph, newSelectedWebMapId, query) {
                 var $inj = angular.element(document.body).injector(),
                     $http = $inj.get('$http'),
-                    pusherPathPre = "http://",
-                    pusherPathNgrok = "ca8771c9",
-                    pusherPathPost = ".ngrok.io/wndseqno";
+                    path = PusherConfig.getPusherPath() + "/wndseqno";
 
-                $http({method: 'GET', url: pusherPathPre + pusherPathNgrok + pusherPathPost}).
+                $http({method: 'GET', url: path}).
                     success(function (data, status, headers, config) {
                         setupNewDisplay(channel, userName, data.wndNameSeqNo, destWnd, curmph, newSelectedWebMapId, query);
                     }).

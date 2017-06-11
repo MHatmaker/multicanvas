@@ -18,7 +18,7 @@ require({
         // 'esri' : 'https://js.arcgis.com/4.2/esri',
         // 'WebMap' : 'https://js.arcgis.com/4.1/esri/WebMap',
         // 'MapView' : 'esri/views/MapView',
-        // 'dojo' : 'https://js.arcgis.com/3.5/dojo',
+        'dojo' : 'https://js.arcgis.com/3.20/dojo',
         // 'dijit' : 'https://js.arcgis.com/3.5/dijit',
         'dojox' : 'https://js.arcgis.com/3.20/dojox',
         'angularBootstrap' : "//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.2.0"

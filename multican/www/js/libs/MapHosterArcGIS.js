@@ -4,7 +4,7 @@
 (function () {
     "use strict";
     console.log('MapHosterArcGIS setup');
-    require(['esri/tasks/locator']);
+    require(['esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing']);
 
     define([
         'controllers/PositionViewCtrl',

@@ -50,7 +50,7 @@ angular.isUndefinedOrNull = function (val) {
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     localMph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                 WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
-                    localMph.getMLConfig().getUserName(), destination, localMph, newWindowId, query);
+                    PusherConfig.getUserName(), destination, localMph, newWindowId, query);
             }
 
             onAcceptDestination = function (destWnd) {
@@ -108,7 +108,7 @@ angular.isUndefinedOrNull = function (val) {
                         mlconfig = angular.copy(MapInstanceService.getConfigInstanceForMap(currentSlideNumber));
                         mapHoster = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                         WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
-                            mlconfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
+                            PusherConfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
                             // queryForNewDisplay = "";
                     }
 

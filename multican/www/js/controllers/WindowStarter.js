@@ -65,7 +65,7 @@
                 console.log("open new Google window with URI " + url);
                 console.log("using channel " + channel + "with userName " + userName);
                 mlconfig.setUrl(url);
-                mlconfig.setUserName(userName);
+                PusherConfig.setUserName(userName);
 
                 if (destWnd === "New Pop-up Window") {
                     baseUrl = HostConfig.HostConfig().getbaseurl();

@@ -11,10 +11,11 @@
         'controllers/PositionViewCtrl',
         'libs/utils',
         'libs/MLConfig',
+        'libs/PusherConfig',
         'libs/PusherEventHandler',
         'controllers/PusherSetupCtrl',
         'controllers/LocateSelfCtrl'
-    ], function (PositionViewCtrl, utils, MLConfig, PusherEventHandler, PusherSetupCtrl, LocateSelfCtrl) {
+    ], function (PositionViewCtrl, utils, MLConfig, PusherConfig, PusherEventHandler, PusherSetupCtrl, LocateSelfCtrl) {
 
         var MapHosterGoogle = function () {
             var
@@ -134,7 +135,7 @@
                             pushLL;
                         fixedLL = utils.toFixed(marker.position.lng(), marker.position.lat(), 6);
                         referrerId = mlconfig.getUserId();
-                        referrerName = mlconfig.getUserName();
+                        referrerName = PusherConfig.getUserName();
                         pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : zmG,
                             "referrerId" : referrerId, "referrerName" : referrerName,
                             'address' : marker.address, 'title' : marker.title };
@@ -689,7 +690,7 @@
                     // {
                         // var fixedLL = utils.toFixed(popPt.lng(), popPt.lat(), 6);
                         // var referrerId = mlconfig.getUserId();
-                        // var referrerName = mlconfig.getUserName();
+                        // var referrerName = PusherConfig.getUserName();
                         // var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                             // "referrerId" : referrerId, "referrerName" : referrerName };
                         // console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
@@ -828,7 +829,7 @@
 
 
             function setUserName(name) {
-                mlconfig.setUserName(name);
+                PusherConfig.setUserName(name);
             }
 
             function getGlobalsForUrl() {

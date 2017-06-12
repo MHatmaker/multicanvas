@@ -359,7 +359,7 @@
 
                     // if (selfPusherDetails.pusher) {
                         referrerId = mlconfig.getUserId();
-                        referrerName = mlconfig.getUserName();
+                        referrerName = PusherConfig.getUserName();
                         pushLL = {
                             "x" : fixedLLG.lon,
                             "y" : fixedLLG.lat,
@@ -384,7 +384,7 @@
                 if (selfPusherDetails.pusher)
                 {
                     var referrerId = mlconfig`.getUserId();
-                         referrerName = mlconfig`.getUserName();
+                         referrerName = PusherConfig.getUserName();
                          pushLL = {"x" : fixedLLG.lon, "y" : fixedLLG.lat, "z" : "0",
                             "referrerId" : referrerId, "referrerName" : referrerName,
                                 'address' : contextContent };

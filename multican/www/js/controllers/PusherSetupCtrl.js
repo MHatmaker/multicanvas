@@ -277,10 +277,10 @@
                     clientName = 'map' + mlconfig.getMapNumber();
 
                 selfdict.CHANNELNAME = PusherConfig.getPusherChannel();
-                selfdict.userName = mlconfig.getUserName();
+                selfdict.userName = PusherConfig.getUserName();
                 selfdict.mapNumber = mlconfig.getMapNumber();
                 if (selfdict.scope) {
-                    selfdict.scope.data.userName = mlconfig.getUserName();
+                    selfdict.scope.data.userName = PusherConfig.getUserName();
                 }
                 selfdict.callbackFunction = cbfn;
                 selfdict.info = nfo;

@@ -135,7 +135,7 @@
                         pushLL;
                     fixedLL = utils.toFixed(contextPos[1], contextPos[0], 6);
                     referrerId = mlconfig.getUserId();
-                    referrerName = mlconfig.getUserName();
+                    referrerName = PusherConfig.getUserName();
                     pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                         "referrerId" : referrerId, "referrerName" :  referrerName,
                         'address' : contextContent, 'title' : contextHint };

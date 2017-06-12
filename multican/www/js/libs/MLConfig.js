@@ -26,7 +26,6 @@ define(function () {
                 host : '', //"http://localhost",
                 hostport : '3035',
                 href : '', //"http://localhost",
-                userName: 'defaultuser',
                 search: '/',
                 startupView : {'summaryShowing' : true, 'websiteDisplayMode' : true},
                 smallFormDimensions : { 'top' : 1, 'left' : 1, 'width' : 450, 'height' : 570}
@@ -89,16 +88,6 @@ define(function () {
             setWebmapId = function (id) {
                 console.log("Setting webmapId to " + id);
                 details.webmapId = id;
-            },
-            getUserName = function () {
-                return details.userName;
-            },
-            getUserNameFromUrl = function () {
-                details.userName = getParameterByName('userName', details);
-                return details.userName;
-            },
-            setUserName = function (name) {
-                details.userName = name;
             },
             getUserId = function () {
                 return details.userId;
@@ -222,8 +211,7 @@ define(function () {
             showConfigDetails = function (msg) {
                 console.log(msg);
                 console.log(
-                    'isInitialUser ' + details.isInitialUser + "\n",
-                    "  userId : "  + details.userId + ', userName ' + details.userName + "\n" +
+                    'isInitialUser ' + details.isInitialUser + "\n" +
                         "referrerId : "  + details.referrerId + "\n" +
                         "locationPath : "  + details.locationPath + "\n" +
                         "host : "  + details.host + "\n" +
@@ -258,13 +246,10 @@ define(function () {
             getMapNumber: getMapNumber,
             setMapHosterInstance: setMapHosterInstance,
             getMapHosterInstance: getMapHosterInstance,
-            setUserName: setUserName,
-            getUserName: getUserName,
             setInjector: setInjector,
             getInjector: getInjector,
             getWebmapId: getWebmapId,
             setWebmapId: setWebmapId,
-            getUserNameFromUrl: getUserNameFromUrl,
             getbaseurl: getbaseurl,
             testUrlArgs: testUrlArgs,
             sethost: sethost,

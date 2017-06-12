@@ -28,7 +28,7 @@
                 this.aView = null;
                 this.mlconfig = mapconfig;
                 this.mlconfig.setMapNumber(mapNo);
-                this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
+                this.mlconfig.setUserId(PusherConfig.getUserName() + mapNo);
                 this.mapHosterSetupCallback = mapHosterSetupCallback;
                 console.log("Setting mapNumber to " + this.mapNumber);
 
@@ -371,7 +371,7 @@
                             PusherSetupCtrl.setupPusherClient(openNewDisplay,
                                     {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId});
                         } else {
-                            openNewDisplay(PusherConfig.masherChannel(false), self.mlconfig.getUserName());
+                            openNewDisplay(PusherConfig.masherChannel(false), PusherConfig.getUserName());
                         }
                     },
 

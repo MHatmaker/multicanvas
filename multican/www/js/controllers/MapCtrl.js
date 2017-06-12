@@ -317,7 +317,7 @@
                 function stageStartNewCanvas(channel, clientName, destination, mph, newWindowId, query) {
                     console.log('stageStartNewCanvas');
                     WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
-                        mlconfig.getUserName(), destination, mph, newWindowId, query);
+                        PusherConfig.getUserName(), destination, mph, newWindowId, query);
                     queryForNewDisplay = "";
                     /*
                     queryForNewDisplay = "";
@@ -375,7 +375,7 @@
                             });
                         } else {
                             WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
-                                mlconfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
+                                PusherConfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
                             queryForNewDisplay = "";
                         }
 

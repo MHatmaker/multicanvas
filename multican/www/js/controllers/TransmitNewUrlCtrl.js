@@ -4,7 +4,7 @@
     "use strict";
 
     console.log('TransmitNewUrlCtrl setup');
-    define(['libs/MLConfig', 'libs/utils'], function (MLConfig, utils) {
+    define(['libs/MLConfig', 'libs/PusherConfig', 'libs/utils'], function (MLConfig, PusherConfigutils) {
         console.log('TransmitNewUrlCtrl define');
         var context = {};
 
@@ -45,7 +45,7 @@
                 updtUrl += '&maphost=' + curmapsys;
                 referrerId = MLConfig.getReferrerId();
                 updtUrl += '&referrerId=' + referrerId;
-                referrerName = MLConfig.getUserName();
+                referrerName = PusherConfig.getUserName();
                 updtUrl += '&referrerName=' + referrerName;
 
                 nativeCenter = curmph.getCenter();

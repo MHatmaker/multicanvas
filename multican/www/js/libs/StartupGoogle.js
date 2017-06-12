@@ -9,8 +9,9 @@
         'libs/MapHosterGoogle',
         'controllers/PusherSetupCtrl',
         'libs/MLConfig',
+        'libs/PusherConfig',
         'libs/utils'
-    ], function (MapHosterGoogle, PusherSetupCtrl, MLConfig, utils) {
+    ], function (MapHosterGoogle, PusherSetupCtrl, MLConfig, PusherConfig, utils) {
         console.log('StartupGoogle define');
         var
             StartupGoogle = function (mapNo, mapconfig) {
@@ -23,7 +24,7 @@
                 this.pusher = null;
                 this.mlconfig = mapconfig;
                 this.mlconfig.setMapNumber(mapNo);
-                this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
+                this.mlconfig.setUserId(PusherConfig.getUserName() + mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var self = this,
@@ -90,7 +91,7 @@
                         self.pusher = PusherSetupCtrl.createPusherClient(
                             self.mlconfig,
                             function (channel, userName) {
-                                self.mlconfig.setUserName(userName);
+                                PusherConfig.setUserName(userName);
                             },
                             null
                         );

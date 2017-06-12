@@ -23,7 +23,7 @@
                 this.pusher = null;
                 this.mlconfig = mlconfig;
                 this.mlconfig.setMapNumber(mapNo);
-                this.mlconfig.setUserId(this.mlconfig.getUserName() + mapNo);
+                this.mlconfig.setUserId(PusherConfig.getUserName() + mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var
@@ -60,12 +60,12 @@
                         // if (self.newSelectedWebMapId !== null) {
                         //     if (self.mlconfig.isChannelInitialized() === false) {
                         //         // PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
-                        //         //     self.mlconfig.getUserName(), openNewDisplay,
+                        //         //     PusherConfig.getUserName(), openNewDisplay,
                         //         //         {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId});
                         //
                         //         PusherSetupCtrl.setupPusherClient(evtSvc.getEventDct(),
-                        //             self.mlconfig.getUserName(), function (channel, userName) {
-                        //                 self.mlconfig.setUserName(userName); /*,openNewDisplay, how did this get in here?
+                        //             PusherConfig.getUserName(), function (channel, userName) {
+                        //                 PusherConfig.setUserName(userName); /*,openNewDisplay, how did this get in here?
                         //                     {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId};*/
                         //                 openAGOWindow(channel, userName);
                         //             });
@@ -86,7 +86,7 @@
                         mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
                         mapInstanceSvc.setConfigInstanceForMap(self.mapNumber, self.mlconfig);
                         mapTypeSvc.setCurrentMapType('leaflet');
-                        self.mlconfig.setUserId(self.mlconfig.getUserName() + self.mapNumber);
+                        self.mlconfig.setUserId(PusherConfig.getUserName() + self.mapNumber);
                         self.pusherChannel = PusherConfig.masherChannel(false);
                         console.debug(self.pusherChannel);
                         self.pusher = PusherSetupCtrl.createPusherClient(

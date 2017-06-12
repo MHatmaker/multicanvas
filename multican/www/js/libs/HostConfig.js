@@ -1,302 +1,305 @@
-/*global angular, console, define, document, HostConfig */
+/*global angular, console, define, document, HostConfig, require */
 
-define(function () {
+(function () {
     "use strict";
-    console.log("entering HostConfig");
-    var staticMethods = {},
-        instance = null,
-        returnDetails = {};
+    require(['libs/PusherConfig']);
+    define(['libs/PusherConfig'], function (PusherConfig) {
+        console.log("entering HostConfig");
+        var staticMethods = {},
+            instance = null,
+            returnDetails = {};
 
-    function HostConfig(ndx) {
-        console.log("HostConfig ctor");
+        function HostConfig(ndx) {
+            console.log("HostConfig ctor");
 
-        console.log("mapId to be set to " + ndx);
+            console.log("mapId to be set to " + ndx);
 
-        var
-            details = {
-                webmapId : "a4bb8a91ecfb4131aa544eddfbc2f1d0",
-                lat : '',
-                lon : '',
-                zoom : '',
-                nginj : null,
-                masherChannel : "private-channel-mashchannel",
-                masherChannelInitialized : false,
-                nameChannelAccepted : false,
-                protocol : 'http',
-                host : '', //"http://localhost",
-                hostport : '3035',
-                href : '', //"http://localhost",
-                userName: 'defaultuser',
-                search: '/'
-            },
-            getParameterByName = function (name, details) {
-                // console.log("get paramater " + name + " from " + details.search);
-                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                    results = regex.exec(details.search);
-                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-            },
-            masherChannel = function (newWindow) {
-                // alert(getParameterByName('channel'));
-                // alert(details.masherChannel);
-                return newWindow ? getParameterByName('channel', details) : details.masherChannel;
-            },
-            getChannelFromUrl = function () {
-                details.masherChannel = getParameterByName('channel', details);
-                details.masherChannelInitialized = true;
-                return details.masherChannel;
-            },
-            setChannel = function (chnl) {
-                if (details.masherChannelInitialized === false) {
+            var
+                details = {
+                    webmapId : "a4bb8a91ecfb4131aa544eddfbc2f1d0",
+                    lat : '',
+                    lon : '',
+                    zoom : '',
+                    nginj : null,
+                    masherChannel : "private-channel-mashchannel",
+                    masherChannelInitialized : false,
+                    nameChannelAccepted : false,
+                    protocol : 'http',
+                    host : '', //"http://localhost",
+                    hostport : '3035',
+                    href : '', //"http://localhost",
+                    userName: 'defaultuser',
+                    search: '/'
+                },
+                getParameterByName = function (name, details) {
+                    // console.log("get paramater " + name + " from " + details.search);
+                    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                        results = regex.exec(details.search);
+                    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+                },
+                masherChannel = function (newWindow) {
+                    // alert(getParameterByName('channel'));
+                    // alert(details.masherChannel);
+                    return newWindow ? getParameterByName('channel', details) : details.masherChannel;
+                },
+                getChannelFromUrl = function () {
+                    details.masherChannel = getParameterByName('channel', details);
                     details.masherChannelInitialized = true;
-                }
-                details.masherChannel = chnl;
-            },
-            isChannelInitialized = function () {
-                return details.masherChannelInitialized;
-            },
+                    return details.masherChannel;
+                },
+                setChannel = function (chnl) {
+                    if (details.masherChannelInitialized === false) {
+                        details.masherChannelInitialized = true;
+                    }
+                    details.masherChannel = chnl;
+                },
+                isChannelInitialized = function () {
+                    return details.masherChannelInitialized;
+                },
 
-            setNameChannelAccepted = function (tf) {
-                if (details.nameChannelAccepted === false) {
-                    details.nameChannelAccepted = true;
-                }
-                details.nameChannelAccepted = tf;
-            },
-            isNameChannelAccepted = function () {
-                return details.nameChannelAccepted;
-            },
-            getWebmapId = function (newWindow) {
-                var result = "";
-                if (newWindow === true) {
-                    result = getParameterByName('id', details);
-                    if (result === "") {
+                setNameChannelAccepted = function (tf) {
+                    if (details.nameChannelAccepted === false) {
+                        details.nameChannelAccepted = true;
+                    }
+                    details.nameChannelAccepted = tf;
+                },
+                isNameChannelAccepted = function () {
+                    return details.nameChannelAccepted;
+                },
+                getWebmapId = function (newWindow) {
+                    var result = "";
+                    if (newWindow === true) {
+                        result = getParameterByName('id', details);
+                        if (result === "") {
+                            result = details.webmapId;
+                        }
+                    } else {
                         result = details.webmapId;
                     }
-                } else {
-                    result = details.webmapId;
-                }
-                return result;
-            },
-            setLocationPath = function (locPath) {
-                details.locationPath = locPath;
-            },
-            getLocationPath = function () {
-                return details.locationPath;
-            },
-            setSearch = function (searchDetails) {
-                details.search = searchDetails;
-            },
-            setprotocol = function (p) {
-                details.protocol = p;
-                console.log("protocol : " + details.protocol);
-            },
-            getprotocol = function () {
-                return details.protocol;
-            },
-            sethostport = function (hp) {
-                details.hostport = hp;
-                console.log("hostport : " + details.hostport);
-            },
-            gethostport = function () {
-                return details.hostport;
-            },
-            sethref = function (hrf) {
-                console.log("sethref : " + hrf);
-                details.href = hrf;
-                console.log("details href : " + details.href);
-            },
-            gethref = function () {
-                var pos = details.href.indexOf("/arcgis");
-                if (pos  > -1) {
-                    return details.href; //.substring(0, pos);
-                }
-                return details.href;
-            },
-            setWebmapId = function (id) {
-                console.log("Setting webmapId to " + id);
-                details.webmapId = id;
-            },
-            getUserName = function () {
-                return details.userName;
-            },
-            getUserNameFromUrl = function () {
-                details.userName = getParameterByName('userName', details);
-                return details.userName;
-            },
-            setUserName = function (name) {
-                details.userName = name;
-            },
-            getUserId = function () {
-                return details.userId;
-            },
-            setUserId = function (id) {
-                details.userId = id;
-            },
-            getReferrerId = function () {
-                return details.referrerId;
-            },
-            getReferrerIdFromUrl = function () {
-                details.referrerId = getParameterByName('referrerId');
-                return details.referrerId;
-            },
-            setReferrerId = function (id) {
-                details.referrerId = id;
-            },
-            getReferrerNameFromUrl = function () {
-                details.referrerName = getParameterByName('referrerName');
-                return details.referrerName;
-            },
-            testUrlArgs = function () {
-                var rslt = getParameterByName('id', details);
-                // alert("getParameterByName('id') = " + rslt);
-                // alert(rslt.length);
-                // alert(rslt.length != 0);
+                    return result;
+                },
+                setLocationPath = function (locPath) {
+                    details.locationPath = locPath;
+                },
+                getLocationPath = function () {
+                    return details.locationPath;
+                },
+                setSearch = function (searchDetails) {
+                    details.search = searchDetails;
+                },
+                setprotocol = function (p) {
+                    details.protocol = p;
+                    console.log("protocol : " + details.protocol);
+                },
+                getprotocol = function () {
+                    return details.protocol;
+                },
+                sethostport = function (hp) {
+                    details.hostport = hp;
+                    console.log("hostport : " + details.hostport);
+                },
+                gethostport = function () {
+                    return details.hostport;
+                },
+                sethref = function (hrf) {
+                    console.log("sethref : " + hrf);
+                    details.href = hrf;
+                    console.log("details href : " + details.href);
+                },
+                gethref = function () {
+                    var pos = details.href.indexOf("/arcgis");
+                    if (pos  > -1) {
+                        return details.href; //.substring(0, pos);
+                    }
+                    return details.href;
+                },
+                setWebmapId = function (id) {
+                    console.log("Setting webmapId to " + id);
+                    details.webmapId = id;
+                },
+                getUserName = function () {
+                    return details.userName;
+                },
+                getUserNameFromUrl = function () {
+                    details.userName = getParameterByName('userName', details);
+                    return details.userName;
+                },
+                setUserName = function (name) {
+                    details.userName = name;
+                },
+                getUserId = function () {
+                    return details.userId;
+                },
+                setUserId = function (id) {
+                    details.userId = id;
+                },
+                getReferrerId = function () {
+                    return details.referrerId;
+                },
+                getReferrerIdFromUrl = function () {
+                    details.referrerId = getParameterByName('referrerId');
+                    return details.referrerId;
+                },
+                setReferrerId = function (id) {
+                    details.referrerId = id;
+                },
+                getReferrerNameFromUrl = function () {
+                    details.referrerName = getParameterByName('referrerName');
+                    return details.referrerName;
+                },
+                testUrlArgs = function () {
+                    var rslt = getParameterByName('id', details);
+                    // alert("getParameterByName('id') = " + rslt);
+                    // alert(rslt.length);
+                    // alert(rslt.length != 0);
 
-                console.log("getParameterByName('id') = " + rslt);
-                console.log(rslt.length);
-                console.log(rslt.length !== 0);
-                return rslt.length !== 0;
-            },
+                    console.log("getParameterByName('id') = " + rslt);
+                    console.log(rslt.length);
+                    console.log(rslt.length !== 0);
+                    return rslt.length !== 0;
+                },
 
-            setUrl = function (u) {
-                details.url = u;
-            },
-            getUrl = function () {
-                return details.url;
-            },
-            sethost = function (h) {
-                details.host = h;
-                console.log("host : " + details.host);
-            },
-            gethost = function () {
-                return details.host;
-            },
-            setInitialUserStatus = function (tf) {
-                details.isInitialUser = tf;
-            },
-            getInitialUserStatus = function () {
-                return details.isInitialUser;
-            },
-            hasCoordinates = function () {
-                var result = "";
-                result = getParameterByName('zoom', details);
-                return result === "" ? false : true;
-            },
-            lon = function () {
-                return getParameterByName('lon', details);
-            },
-            lat = function () {
-                return getParameterByName('lat', details);
-            },
-            zoom = function () {
-                return getParameterByName('zoom', details);
-            },
-            setPosition = function (position) {
-                details.lon = position.lon;
-                details.lat = position.lat;
-                details.zoom = position.zoom;
-            },
-            getPosition = function () {
-                return {"webmapId" : details.webmapId, "mapType" : details.mapType, "lon" : details.lon, "lat" : details.lat, "zoom" : details.zoom};
-            },
+                setUrl = function (u) {
+                    details.url = u;
+                },
+                getUrl = function () {
+                    return details.url;
+                },
+                sethost = function (h) {
+                    details.host = h;
+                    console.log("host : " + details.host);
+                },
+                gethost = function () {
+                    return details.host;
+                },
+                setInitialUserStatus = function (tf) {
+                    details.isInitialUser = tf;
+                },
+                getInitialUserStatus = function () {
+                    return details.isInitialUser;
+                },
+                hasCoordinates = function () {
+                    var result = "";
+                    result = getParameterByName('zoom', details);
+                    return result === "" ? false : true;
+                },
+                lon = function () {
+                    return getParameterByName('lon', details);
+                },
+                lat = function () {
+                    return getParameterByName('lat', details);
+                },
+                zoom = function () {
+                    return getParameterByName('zoom', details);
+                },
+                setPosition = function (position) {
+                    details.lon = position.lon;
+                    details.lat = position.lat;
+                    details.zoom = position.zoom;
+                },
+                getPosition = function () {
+                    return {"webmapId" : details.webmapId, "mapType" : details.mapType, "lon" : details.lon, "lat" : details.lat, "zoom" : details.zoom};
+                },
 
-            setQuery = function (q) {
-                details.query = q;
-            },
-            query = function () {
-                return getParameterByName('gmquery', details);
-            },
-            getQueryFromUrl = function () {
-                // details.query.push(getParameterByName('gmquery'));
-                return details.query;
-            },
-            getbaseurl = function () {
-                var baseurl = details.protocol + "://" + details.host + "/";
-                console.log("getbaseurl --> " + baseurl);
-                return baseurl;
-            },
-            showConfigDetails = function (msg) {
-                console.log(msg);
-                console.log(
-                    'isInitialUser ' + details.isInitialUser + "\n",
-                    "  userId : "  + details.userId + ', userName ' + details.userName + "\n" +
-                        "referrerId : "  + details.referrerId + "\n" +
-                        "locationPath : "  + details.locationPath + "\n" +
-                        "host : "  + details.host + "\n" +
-                        "hostport : "  + details.hostport + "\n" +
-                        "href : "  + details.href + "\n"  +
-                        "search : "  + details.search + "\n" +
-                        "maphost : "  + details.maphost + "\n" +
-                        "webmapId : "  + details.webmapId + "\n" +
-                        "masherChannel : "  + details.masherChannel + "\n" +
-                        "lon :" + details.lon + '\n' +
-                        "lat : " + details.lat + "\n" +
-                        "zoom : " + details.zoom
-                );
+                setQuery = function (q) {
+                    details.query = q;
+                },
+                query = function () {
+                    return getParameterByName('gmquery', details);
+                },
+                getQueryFromUrl = function () {
+                    // details.query.push(getParameterByName('gmquery'));
+                    return details.query;
+                },
+                getbaseurl = function () {
+                    var baseurl = details.protocol + "://" + details.host + "/";
+                    console.log("getbaseurl --> " + baseurl);
+                    return baseurl;
+                },
+                showConfigDetails = function (msg) {
+                    console.log(msg);
+                    console.log(
+                        'isInitialUser ' + details.isInitialUser + "\n",
+                        "  userId : "  + details.userId + ', userName ' + details.userName + "\n" +
+                            "referrerId : "  + details.referrerId + "\n" +
+                            "locationPath : "  + details.locationPath + "\n" +
+                            "host : "  + details.host + "\n" +
+                            "hostport : "  + details.hostport + "\n" +
+                            "href : "  + details.href + "\n"  +
+                            "search : "  + details.search + "\n" +
+                            "maphost : "  + details.maphost + "\n" +
+                            "webmapId : "  + details.webmapId + "\n" +
+                            "masherChannel : "  + PusherConfig.masherChannel(false) + "\n" +
+                            "lon :" + details.lon + '\n' +
+                            "lat : " + details.lat + "\n" +
+                            "zoom : " + details.zoom
+                    );
+                };
+            staticMethods.showConfigDetails = showConfigDetails;
+
+
+            returnDetails = {
+                getUserId: getUserId,
+                setUserId: setUserId,
+                getReferrerId: getReferrerId,
+                getReferrerIdFromUrl: getReferrerIdFromUrl,
+                getReferrerNameFromUrl: getReferrerNameFromUrl,
+                setReferrerId: setReferrerId,
+                setUserName: setUserName,
+                getUserName: getUserName,
+                getWebmapId: getWebmapId,
+                setWebmapId: setWebmapId,
+                masherChannel: masherChannel,
+                getChannelFromUrl: getChannelFromUrl,
+                isChannelInitialized: isChannelInitialized,
+                isNameChannelAccepted: isNameChannelAccepted,
+                setChannel: setChannel,
+                setNameChannelAccepted: setNameChannelAccepted,
+                getUserNameFromUrl: getUserNameFromUrl,
+                testUrlArgs: testUrlArgs,
+                sethost: sethost,
+                gethost: gethost,
+                showConfigDetails: showConfigDetails,
+                query: query,
+                setQuery: setQuery,
+                getQueryFromUrl: getQueryFromUrl,
+                lat: lat,
+                lon: lon,
+                zoom: zoom,
+                hasCoordinates : hasCoordinates,
+                setUrl: setUrl,
+                getUrl: getUrl,
+                setPosition: setPosition,
+                getPosition: getPosition,
+                setLocationPath: setLocationPath,
+                getLocationPath: getLocationPath,
+                setprotocol: setprotocol,
+                getprotocol: getprotocol,
+                setSearch: setSearch,
+                sethostport: sethostport,
+                gethostport: gethostport,
+                sethref: sethref,
+                gethref: gethref,
+                setInitialUserStatus: setInitialUserStatus,
+                getInitialUserStatus: getInitialUserStatus,
+                getbaseurl: getbaseurl
             };
-        staticMethods.showConfigDetails = showConfigDetails;
-
-
-        returnDetails = {
-            getUserId: getUserId,
-            setUserId: setUserId,
-            getReferrerId: getReferrerId,
-            getReferrerIdFromUrl: getReferrerIdFromUrl,
-            getReferrerNameFromUrl: getReferrerNameFromUrl,
-            setReferrerId: setReferrerId,
-            setUserName: setUserName,
-            getUserName: getUserName,
-            getWebmapId: getWebmapId,
-            setWebmapId: setWebmapId,
-            masherChannel: masherChannel,
-            getChannelFromUrl: getChannelFromUrl,
-            isChannelInitialized: isChannelInitialized,
-            isNameChannelAccepted: isNameChannelAccepted,
-            setChannel: setChannel,
-            setNameChannelAccepted: setNameChannelAccepted,
-            getUserNameFromUrl: getUserNameFromUrl,
-            testUrlArgs: testUrlArgs,
-            sethost: sethost,
-            gethost: gethost,
-            showConfigDetails: showConfigDetails,
-            query: query,
-            setQuery: setQuery,
-            getQueryFromUrl: getQueryFromUrl,
-            lat: lat,
-            lon: lon,
-            zoom: zoom,
-            hasCoordinates : hasCoordinates,
-            setUrl: setUrl,
-            getUrl: getUrl,
-            setPosition: setPosition,
-            getPosition: getPosition,
-            setLocationPath: setLocationPath,
-            getLocationPath: getLocationPath,
-            setprotocol: setprotocol,
-            getprotocol: getprotocol,
-            setSearch: setSearch,
-            sethostport: sethostport,
-            gethostport: gethostport,
-            sethref: sethref,
-            gethref: gethref,
-            setInitialUserStatus: setInitialUserStatus,
-            getInitialUserStatus: getInitialUserStatus,
-            getbaseurl: getbaseurl
-        };
-    }
-
-    // HostConfig.showConfigDetails = function () {
-    //     staticMethods.showConfigDetails();
-    // };
-    return {
-        HostConfig : function () {
-            if (instance) {
-                return returnDetails;
-            } else {
-                instance = this;
-                HostConfig();
-                return returnDetails;
-            }
         }
-    };
+
+        // HostConfig.showConfigDetails = function () {
+        //     staticMethods.showConfigDetails();
+        // };
+        return {
+            HostConfig : function () {
+                if (instance) {
+                    return returnDetails;
+                } else {
+                    instance = this;
+                    HostConfig();
+                    return returnDetails;
+                }
+            }
+        };
+    });
 }());

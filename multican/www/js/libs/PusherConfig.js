@@ -18,7 +18,8 @@
                     nginj : null,
                     pusherPathPre : "http://",
                     pusherPathNgrok : "15e2b46f",
-                    pusherPathPost : ".ngrok.io"
+                    pusherPathPost : ".ngrok.io",
+                    search : '/',
                 };
             console.log("entering PusherConfig");
             details.nginj = angular.element(document.body).injector();
@@ -27,7 +28,7 @@
                 // console.log("get paramater " + name + " from " + details.search);
                 name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
                 var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                    results = regex.exec(self.search);
+                    results = regex.exec(details.search);
                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             }
             return {
@@ -79,6 +80,9 @@
                     var path = details.pusherPathPre + details.pusherPathNgrok + details.pusherPathPost;
                     console.log("Pusher ngrok path is " + path);
                     return path;
+                },
+                setSearch : function (searchDetails) {
+                    details.search = searchDetails;
                 }
             };
         });

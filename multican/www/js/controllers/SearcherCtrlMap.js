@@ -50,7 +50,7 @@ angular.isUndefinedOrNull = function (val) {
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     localMph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                 WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
-                    mlconfig.getUserName(), destination, localMph, newWindowId, query);
+                    localMph.getMLConfig().getUserName(), destination, localMph, newWindowId, query);
             }
 
             onAcceptDestination = function (destWnd) {

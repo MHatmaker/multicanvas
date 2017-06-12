@@ -1,4 +1,4 @@
-/*global define, angular, console, require, ionic*/
+/*global define, angular, console, require, ionic, document, esri*/
 
 // define('angular', function () {
 //     "use strict";
@@ -18,10 +18,12 @@ require([
     'esri/Color',
     'esri/map',
     'js/boot',
+    'js/libs/PusherConfig',
     'js/libs/HostConfig'
-], function (bs,dojo, dojodomReady, esriPortal, esriconfig, esricolor, esrimap, boot, HostConfig) {
+], function (bs, dojo, dojodomReady, esriPortal, esriconfig, esricolor, esrimap, boot, PusherConfig, HostConfig) {
     'use strict';
-    var locationPath = "/",
+    var userName,
+        channel,
         hostConfig = HostConfig.HostConfig();
 
     console.log('HostConfig initialization');
@@ -29,6 +31,7 @@ require([
 
     hostConfig.setLocationPath(location.origin + location.pathname);
     hostConfig.setSearch(location.search);
+    PusherConfig.setSearch(location.search);
     hostConfig.setprotocol(location.protocol);
     hostConfig.sethost(location.host);
     hostConfig.sethostport(location.port);
@@ -39,10 +42,14 @@ require([
         hostConfig.setReferrerId(-99);
     } else {
         hostConfig.setInitialUserStatus(false);
-        channel = hostConfig.getChannelFromUrl();
+        channel = PusherConfig.getChannelFromUrl();
         if (channel !== '') {
-            hostConfig.setChannel(channel);
-            hostConfig.setNameChannelAccepted(true);
+            PusherConfig.setChannel(channel);
+            PusherConfig.setNameChannelAccepted(true);
+        }
+        userName = HostConfig.getUserNameFromUrl();
+        if (userName !== '') {
+            PusherConfig.setUserName(userName);
         }
         hostConfig.setStartupView(true, false);
         console.log("hostConfig.SETSTARTUPVIEW to sumvis true, sitevis false");

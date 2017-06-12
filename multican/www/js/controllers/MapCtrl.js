@@ -316,7 +316,7 @@
                         // selfdict.info.destination, selfdict.info.currentMapHolder, selfdict.info.newWindowId, selfdict.info.query
                 function stageStartNewCanvas(channel, clientName, destination, mph, newWindowId, query) {
                     console.log('stageStartNewCanvas');
-                    WindowStarter.getInstance().openNewDisplay(mlconfig.masherChannel(false),
+                    WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
                         mlconfig.getUserName(), destination, mph, newWindowId, query);
                     queryForNewDisplay = "";
                     /*
@@ -374,7 +374,7 @@
                                 fillNewCanvas(selfVars.placesFromSearch);
                             });
                         } else {
-                            WindowStarter.getInstance().openNewDisplay(mlconfig.masherChannel(false),
+                            WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
                                 mlconfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
                             queryForNewDisplay = "";
                         }

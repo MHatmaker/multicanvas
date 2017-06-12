@@ -9,8 +9,9 @@
     define([
         'libs/MapHosterLeaflet',
         'controllers/PusherSetupCtrl',
-        'libs/MLConfig'
-    ], function (MapHosterLeaflet, PusherSetupCtrl, MLConfig) {
+        'libs/MLConfig',
+        'libs/PusherConfig'
+    ], function (MapHosterLeaflet, PusherSetupCtrl, MLConfig, PusherConfig) {
         console.log('StartupLeaflet define');
         var
             StartupLeaflet = function (mapNo, mlconfig) {
@@ -69,7 +70,7 @@
                         //                 openAGOWindow(channel, userName);
                         //             });
                         //     } else {
-                        //         openAGOWindow(self.mlconfig.masherChannel(false));
+                        //         openAGOWindow(PusherConfig.masherChannel(false));
                         //     }
                         // } else {
 
@@ -86,7 +87,7 @@
                         mapInstanceSvc.setConfigInstanceForMap(self.mapNumber, self.mlconfig);
                         mapTypeSvc.setCurrentMapType('leaflet');
                         self.mlconfig.setUserId(self.mlconfig.getUserName() + self.mapNumber);
-                        self.pusherChannel = self.mlconfig.masherChannel(false);
+                        self.pusherChannel = PusherConfig.masherChannel(false);
                         console.debug(self.pusherChannel);
                         self.pusher = PusherSetupCtrl.createPusherClient(
                             self.mlconfig,

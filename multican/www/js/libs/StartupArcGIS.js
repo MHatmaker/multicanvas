@@ -152,7 +152,7 @@
                             // curmph = mapTypeSvc.getSelectedMapType();
                             // console.log('selected map type is ' + curmph);
                             self.mlconfig.setMapHosterInstance = self.mapHoster;
-                            pusherChannel = self.mlconfig.masherChannel(false);
+                            pusherChannel = PusherConfig.masherChannel(false);
                             pusher = PusherSetupCtrl.createPusherClient(
                                 self.mlconfig,
                                 function (callbackChannel, userName) {

@@ -22,9 +22,6 @@ define(function () {
                 lon : '',
                 zoom : '',
                 nginj : null,
-                masherChannel : "private-channel-mashchannel",
-                masherChannelInitialized : false,
-                nameChannelAccepted : false,
                 protocol : 'http',
                 host : '', //"http://localhost",
                 hostport : '3035',
@@ -60,35 +57,6 @@ define(function () {
             },
             getMapNumber = function () {
                 return details.mapNumber;
-            },
-            masherChannel = function (newWindow) {
-                // alert(getParameterByName('channel'));
-                // alert(details.masherChannel);
-                return newWindow ? getParameterByName('channel', details) : details.masherChannel;
-            },
-            getChannelFromUrl = function () {
-                details.masherChannel = getParameterByName('channel', details);
-                details.masherChannelInitialized = true;
-                return details.masherChannel;
-            },
-            setChannel = function (chnl) {
-                if (details.masherChannelInitialized === false) {
-                    details.masherChannelInitialized = true;
-                }
-                details.masherChannel = chnl;
-            },
-            isChannelInitialized = function () {
-                return details.masherChannelInitialized;
-            },
-
-            setNameChannelAccepted = function (tf) {
-                if (details.nameChannelAccepted === false) {
-                    details.nameChannelAccepted = true;
-                }
-                details.nameChannelAccepted = tf;
-            },
-            isNameChannelAccepted = function () {
-                return details.nameChannelAccepted;
             },
             setMapHosterInstance = function (inst) {
                 details.mapHosterInstance = inst;
@@ -296,12 +264,6 @@ define(function () {
             getInjector: getInjector,
             getWebmapId: getWebmapId,
             setWebmapId: setWebmapId,
-            masherChannel: masherChannel,
-            getChannelFromUrl: getChannelFromUrl,
-            isChannelInitialized: isChannelInitialized,
-            isNameChannelAccepted: isNameChannelAccepted,
-            setChannel: setChannel,
-            setNameChannelAccepted: setNameChannelAccepted,
             getUserNameFromUrl: getUserNameFromUrl,
             getbaseurl: getbaseurl,
             testUrlArgs: testUrlArgs,

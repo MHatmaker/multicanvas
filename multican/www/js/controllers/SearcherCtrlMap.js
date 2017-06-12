@@ -18,8 +18,9 @@ angular.isUndefinedOrNull = function (val) {
         'libs/MLConfig',
         'controllers/PusherSetupCtrl',
         'controllers/CarouselCtrl',
-        "controllers/CanvasHolderCtrl"
-    ], function (StartupArcGIS, MapHosterArcGIS, utils, PusherConfig, MLConfig, PusherSetupCtrl, CarouselCtrl, CanvasHolderCtrl) {
+        "controllers/CanvasHolderCtrl",
+        "controllers/WindowStarter"
+    ], function (StartupArcGIS, MapHosterArcGIS, utils, PusherConfig, MLConfig, PusherSetupCtrl, CarouselCtrl, CanvasHolderCtrl, WindowStarter) {
         console.log('SearcherCtrlMap define');
         var scopeDict = {},
             portalForSearch = null;
@@ -42,6 +43,15 @@ angular.isUndefinedOrNull = function (val) {
 
             $scope.destWindow = 'cancelMashOp';
             $scope.selectedItm = "Nada";
+
+            function stageStartNewCanvas(channel, clientName, destination, mph, newWindowId, query) {
+                console.log('stageStartNewCanvas');
+                var
+                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+                    localMph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
+                WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
+                    mlconfig.getUserName(), destination, localMph, newWindowId, query);
+            }
 
             onAcceptDestination = function (destWnd) {
                 var
@@ -78,10 +88,30 @@ angular.isUndefinedOrNull = function (val) {
                     MapInstanceService.setMapHosterInstance(currentSlideNumber, mapHoster);
                     // startupArcGIS.configure(); //currentSlideNumber, mapLocOptions);
                     // startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
-                } else {
-                    mlconfig = new MLConfig.MLConfig(nextSlideNumber);
-                    CanvasHolderCtrl.addCanvas('arcgis', mlconfig);
-                    MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
+                } else if (destWnd.dstSel === "New Tab" || destWnd.dstSel === "New Pop-up Window") {
+
+                    if (PusherConfig.isNameChannelAccepted() === false) {
+                        PusherSetupCtrl.setupPusherClient(stageStartNewCanvas,
+                            {
+                                'destination' : destWnd,
+                                'currentMapHolder' : mapHoster,
+                                'newWindowId' : selectedWebMapId,
+                                'query' : ''
+                            });
+                        // queryForNewDisplay = "";
+                    }
+                    if (destWnd.dstSel === "New Tab") {
+                        mlconfig = new MLConfig.MLConfig(nextSlideNumber);
+                        CanvasHolderCtrl.addCanvas('arcgis', mlconfig);
+                        MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
+                    } else {
+                        mlconfig = angular.copy(MapInstanceService.getConfigInstanceForMap(currentSlideNumber));
+                        mapHoster = MapInstanceService.getMapHosterInstance(currentSlideNumber);
+                        WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
+                            mlconfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
+                            // queryForNewDisplay = "";
+                    }
+
                 }
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
                 mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());

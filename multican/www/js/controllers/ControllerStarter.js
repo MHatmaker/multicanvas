@@ -45,7 +45,7 @@
                         console.log('ControllerStarter getUserName: ', data.name);
                         // MLConfig.setUserId(data.id );
                         if (opts.uname) {
-                            MLConfig.setUserName(data.name);
+                            PusherConfig.setUserName(data.name);
                         }
                         // alert('got user name ' + data.name);
                         if (opts.uid) {

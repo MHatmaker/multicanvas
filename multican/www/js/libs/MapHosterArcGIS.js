@@ -160,7 +160,7 @@
             }
 
             function setUserName(name) {
-                mlconfig.setUserName(name);
+                PusherConfig.setUserName(name);
             }
             function getEventDictionary() {
                 var eventDct = pusherEvtHandler.getEventDct();

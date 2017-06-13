@@ -40,7 +40,7 @@
                     });
             },
 
-            setupNewDisplay = function (channel, userName, wndIndex, destWnd, curmph, newSelectedWebMapId, query) {
+            setupNewDisplay = function (maphosttype, channel, userName, wndIndex, destWnd, curmph, newSelectedWebMapId, query) {
                 var
                     wndName = newSelectedWebMapId + wndIndex,
                     baseUrl,
@@ -54,7 +54,7 @@
                     urlToUnblock = HostConfig.HostConfig().gethost(), //'OpenShift.Arcadian.com',
                     url = "?id=" + wndName + curmph.getGlobalsForUrl() +
                     "&channel=" + channel + "&userName=" + userName +
-                    "&maphost=google" + "&referrerId=" + mlconfig.getUserId(),
+                    "&maphost=" + 'google' + "&referrerId=" + mlconfig.getUserId(),
                     gmQuery = query; //MLConfig.getQuery();
 
                 if (gmQuery !== '') {
@@ -70,7 +70,7 @@
                 if (destWnd === "New Pop-up Window") {
                     baseUrl = HostConfig.HostConfig().getbaseurl();
 
-                    popresult = window.open(baseUrl + "/google/" + url,  wndName, mlconfig.getSmallFormDimensions());
+                    popresult = window.open(baseUrl + '/google' + '/' + url,  wndName, mlconfig.getSmallFormDimensions());
                     if (popresult === null) {
                         $inj = angular.element(document.body).injector();
                         $uibModal = $inj.get('$uibModal');
@@ -103,14 +103,14 @@
                 }
             },
 
-            openNewDisplay = function (channel, userName, destWnd, curmph, newSelectedWebMapId, query) {
+            openNewDisplay = function (maphosttype, channel, userName, destWnd, curmph, newSelectedWebMapId, query) {
                 var $inj = angular.element(document.body).injector(),
                     $http = $inj.get('$http'),
                     path = PusherConfig.getPusherPath() + "/wndseqno";
 
                 $http({method: 'GET', url: path}).
                     success(function (data, status, headers, config) {
-                        setupNewDisplay(channel, userName, data.wndNameSeqNo, destWnd, curmph, newSelectedWebMapId, query);
+                        setupNewDisplay(maphosttype, channel, userName, data.wndNameSeqNo, destWnd, curmph, newSelectedWebMapId, query);
                     }).
                     error(function (data, status, headers, config) {
                             // called asynchronously if an error occurs

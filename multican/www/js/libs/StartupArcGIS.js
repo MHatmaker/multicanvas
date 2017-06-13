@@ -136,7 +136,7 @@
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
                                     console.log("It was a side effect of the createPusherClient:PusherClient process");
-                                    self.mlconfig.setUserName(userName);
+                                    PusherConfig.setUserName(userName);
                                     // MapHosterArcGIS.prototype.setPusherClient(pusher, callbackChannel);
                                 },
                                 {'destination' : "destPlaceHolder", 'currentMapHolder' : self.mapHoster, 'newWindowId' : "windowIdPlaceholder"}
@@ -158,7 +158,7 @@
                                 function (callbackChannel, userName) {
                                     console.log("callback - don't need to setPusherClient");
                                     console.log("It was a side effect of the createPusherClient:PusherClient process");
-                                    self.mlconfig.setUserName(userName);
+                                    PusherConfig.setUserName(userName);
                                     // MapHosterArcGIS.prototype.setPusherClient(pusher, callbackChannel);
                                 },
                                 {'destination' : "destPlaceHolder", 'currentMapHolder' : curmph, 'newWindowId' : "windowIdPlaceholder"}
@@ -355,7 +355,7 @@
                             console.log("open new ArcGIS window with URI " + url);
                             console.log("using channel " + channel + "with userName " + userName);
                             self.mlconfig.setUrl(url);
-                            self.mlconfig.setUserName(userName);
+                            PusherConfig.setUserName(userName);
                             self.mlconfig.setUserId(userName + self.mapNumber);
                             if (displayDestination === 'New Pop-up Window') {
                                 baseUrl = self.mlconfig.getbaseurl();

@@ -49,7 +49,7 @@ angular.isUndefinedOrNull = function (val) {
                 var
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
                     localMph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-                WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
+                WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
                     PusherConfig.getUserName(), destination, localMph, newWindowId, query);
             }
 
@@ -107,7 +107,7 @@ angular.isUndefinedOrNull = function (val) {
                     } else {
                         mlconfig = angular.copy(MapInstanceService.getConfigInstanceForMap(currentSlideNumber));
                         mapHoster = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-                        WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
+                        WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
                             PusherConfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
                             // queryForNewDisplay = "";
                     }

@@ -22,7 +22,7 @@
         'controllers/CanvasHolderCtrl',
         'controllers/CarouselCtrl',
         'libs/MLConfig',
-        'libs/PusherConfig'
+        'libs/PusherConfig',
     ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl,
             MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, CarouselCtrlArg, MLConfig, PusherConfig) {
         var selfMethods = {},
@@ -316,7 +316,7 @@
                         // selfdict.info.destination, selfdict.info.currentMapHolder, selfdict.info.newWindowId, selfdict.info.query
                 function stageStartNewCanvas(channel, clientName, destination, mph, newWindowId, query) {
                     console.log('stageStartNewCanvas');
-                    WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
+                    WindowStarter.getInstance().openNewDisplay(CurrentMapTypeService.getCurrentMapType(), PusherConfig.masherChannel(false),
                         PusherConfig.getUserName(), destination, mph, newWindowId, query);
                     queryForNewDisplay = "";
                     /*

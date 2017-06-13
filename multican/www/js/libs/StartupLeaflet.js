@@ -92,7 +92,7 @@
                         self.pusher = PusherSetupCtrl.createPusherClient(
                             self.mlconfig,
                             function (channel, userName) {
-                                self.mlconfig.setUserName(userName);
+                                PusherConfig.setUserName(userName);
                             },
                             null
                             // {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId}

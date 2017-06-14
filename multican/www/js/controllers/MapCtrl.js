@@ -270,7 +270,8 @@
                     curMapType = "no map",
                     onAcceptDestination,
                     placesFromSearch = placesFromSearchArg,
-                    startNewCanvas;
+                    startNewCanvas,
+                    destinationPromise;
 
                 selfVars.placesFromSearch = placesFromSearchArg || selfVars.placesFromSearch;
                 console.log('status is ' + status);
@@ -335,6 +336,15 @@
                 }
                 selfMethods.fillMapWithMarkers = fillMapWithMarkers;
 
+                function getPusherChannel() {
+                    var promise = new Promise(function (resolve, reject) {
+                        var result = PusherSetupCtrl.setupPusherClient(resolve, reject);
+                        console.log('getPusherChannel returns ' + result);
+                    });
+                    return promise;
+
+                }
+
                 onAcceptDestination = function (info) {
                     var newSelectedWebMapId,
                         destWnd,
@@ -349,36 +359,18 @@
                     }
                     newSelectedWebMapId = "NoId";
 
-                    if (destWnd === 'New Pop-up Window' || destWnd === 'New Tab') {
+                    if (destWnd === 'New Pop-up Window') {
                         if (PusherConfig.isNameChannelAccepted() === false) {
-                            PusherSetupCtrl.setupPusherClient(stageStartNewCanvas,
-                                {
-                                    'destination' : destWnd,
-                                    'currentMapHolder' : mph,
-                                    'newWindowId' : newSelectedWebMapId,
-                                    'query' : queryForNewDisplay
-                                });
-                            queryForNewDisplay = "";
-                            // startNewCanvas(null, null, null, 'google').then(function(mapType) {
-                            //     CanvasHolderCtrl.addCanvas(mapType);
-                            // }).then(function() {
-                            //     fillNewCanvas(selfVars.placesFromSearch);
-                            // });
-                        }
-
-                        if (destWnd === 'New Tab') {
-                            startNewCanvas('google').then(function (mapType) {
-                                // CanvasHolderCtrl.addCanvas(mapType);
-                                console.log("do nothing in first then section");
-                            }).then(function () {
-                                fillNewCanvas(selfVars.placesFromSearch);
+                            getPusherChannel().then(function (response) {
+                                WindowStarter.getInstance().openNewDisplay('google', PusherConfig.masherChannel(false),
+                                    PusherConfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
+                                queryForNewDisplay = "";
                             });
-                        } else {
-                            WindowStarter.getInstance().openNewDisplay(PusherConfig.masherChannel(false),
-                                PusherConfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
-                            queryForNewDisplay = "";
                         }
-
+                    } else if (destWnd === 'New Tab') {
+                        startNewCanvas('google');
+                        fillNewCanvas(selfVars.placesFromSearch);
+                        queryForNewDisplay = "";
                     } else {  //(destWnd == "Same Window")
                         googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                         removeCustomControls(currentSlideNumber);
@@ -396,17 +388,22 @@
 
                     gmQSvc = $scope.GoogleQueryService;
                     scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
-                    $scope.showDestDialog(
-                        onAcceptDestination,
-                        scope,
+                    destinationPromise = getDestination(
                         {
                             'id' : null,
                             'title' : selfVars.searchInput.value,
                             'snippet' : 'No snippet available',
                             'icon' : 'img/googlemap.png',
                             'mapType' : CurrentMapTypeService.getCurrentMapType()
-                        }
-                    );
+                        });
+                    destinationPromise.then(function (results) {
+                        console.log("getDestination promise then returned " + results);
+                        onAcceptDestination(results);
+                        return results;
+                    }).then(function (error) {
+                        console.log("getDestination promise error returned " + error);
+                        return error;
+                    });
                 } else {
                     console.log('searchBox.getPlaces() still returned no results');
                 }
@@ -558,48 +555,55 @@
                 }
             };
 
-            $scope.showDestDialog = function (callback, details, info) {
-                console.log("showDestDialog for currentMapSystem " + $scope.currentMapSystem.title);
-                $scope.preserveState();
+            function getDestination(info) {
+                return new Promise(function (resolve, reject) {
+                    $scope.showDestDialog = function (callback, details, info) {
+                        console.log("showDestDialog for currentMapSystem " + $scope.currentMapSystem.title);
+                        $scope.preserveState();
 
-                $scope.data.mapType = $scope.currentMapSystem.maptype;
-                $scope.data.icon = $scope.currentMapSystem.imgSrc;
-                $scope.data.query = $scope.gsearch.query;
-                $scope.data.callback = callback;
-                if (info) {
-                    $scope.data.icon = info.icon;
-                    $scope.data.title = info.title;
-                    $scope.data.snippet = info.snippet;
-                    $scope.data.mapType = info.mapType;
-                    $scope.data.id = info.id;
-                }
-
-                modalInstance = $uibModal.open({
-                    templateUrl : '/templates/DestSelectDlgGen.html',   // .jade will be appended
-                    controller : 'DestWndSetupCtrl',
-                    backdrop : true,
-                    animation : false,
-                    animate : 'none',
-                    windowClass : 'no-animation-modal',
-                    uibModalAnimationClass : 'none',
-
-                    resolve : {
-                        data: function () {
-                            return $scope.data;
+                        $scope.data.mapType = $scope.currentMapSystem.maptype;
+                        $scope.data.icon = $scope.currentMapSystem.imgSrc;
+                        $scope.data.query = $scope.gsearch.query;
+                        $scope.data.callback = callback;
+                        if (info) {
+                            $scope.data.icon = info.icon;
+                            $scope.data.title = info.title;
+                            $scope.data.snippet = info.snippet;
+                            $scope.data.mapType = info.mapType;
+                            $scope.data.id = info.id;
                         }
-                    }
-                });
 
-                modalInstance.result.then(function (info) {
-                    $scope.updateState(info.dstSel);
-                    $scope.data.callback(info);
-                    $uibModalStack.dismissAll("go away please");
-                }, function () {
-                    console.log('Modal dismissed at: ' + new Date());
-                    $scope.restoreState();
-                });
+                        modalInstance = $uibModal.open({
+                            templateUrl : '/templates/DestSelectDlgGen.html',   // .jade will be appended
+                            controller : 'DestWndSetupCtrl',
+                            backdrop : true,
+                            animation : false,
+                            animate : 'none',
+                            windowClass : 'no-animation-modal',
+                            uibModalAnimationClass : 'none',
 
-            };
+                            resolve : {
+                                data: function () {
+                                    return $scope.data;
+                                }
+                            }
+                        });
+
+                        modalInstance.result.then(function (info) {
+                            $scope.updateState(info.dstSel);
+                            // $scope.data.callback(info);
+                            $uibModalStack.dismissAll("go away please");
+                            resolve(info);
+                        }, function () {
+                            console.log('Modal dismissed at: ' + new Date());
+                            $scope.restoreState();
+                            reject('dismissed');
+                        });
+
+                    };
+                    $scope.showDestDialog(info);
+                });
+            }
 
             $scope.clickTest = function () {
                 var mapNumber = MapInstanceService.getSlideCount();

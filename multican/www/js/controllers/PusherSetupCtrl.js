@@ -1,4 +1,4 @@
-/*global define, console, $modalInstance, angular */
+/*global define, console, $modalInstance, angular, Promise */
 /*global Pusher */
 /*jslint es5: true */
 
@@ -153,17 +153,8 @@
             }
             PusherChannel(PusherConfig.getPusherChannel());
 
-            function PusherClient(evtDct, channel, clientName, cbfn) {
-                var callbackfunction = cbfn;
-
+            function PusherClient(evtDct, clientName) {
                 selfdict.eventHandlers[clientName] = evtDct;
-
-                if (selfdict.info) {
-                    callbackfunction(channel, clientName,
-                        selfdict.info.destination, selfdict.info.currentMapHolder, selfdict.info.newWindowId, selfdict.info.query);
-                } else {
-                    callbackfunction(channel, clientName, null);
-                }
             }
 
             $scope.preserveState = function () {
@@ -192,64 +183,68 @@
                 PusherConfig.setChannel($scope.data.privateChannelMashover);
                 PusherConfig.setNameChannelAccepted(true);
                 PusherConfig.setUserName(selfdict.userName);
-                selfdict.clients[selfdict.clientName] = new PusherClient(null,
-                    $scope.data.privateChannelMashover,
-                    $scope.data.clientName,
-                    selfdict.callbackFunction);
+                selfdict.clients[selfdict.clientName] = new PusherClient(null, selfdict.clientName);
             };
 
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
 
-            $scope.displayPusherDialog = function () {
-                // selfdict.scope = $scope;
-                // selfdict.scope.showModal(true);
-                console.log("displayPusherDialog");
-                var tmplt = ' \
-                  <div class="modal-dialog", style="width: 100%;"> \
-                    <div class="modal-content"> \
-                      <div class="modal-header"> \
-                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button> \
-                          <h4>Sharing Setup</h4> \
-                      </div> \
-                      <div class="modal-body"> \
-                        <h4>Create a Pusher Channel ID :</h4> \
-                        <input type="text" name="input" ng-model="data.privateChannelMashover" ng-init="data.privateChannelMashover" style="width: 100%"> \
-                        <div>channel name : {{data.privateChannelMashover}}</div> \
-                        <h4>Enter a User Name :</h4> \
-                        <input type="text" name="input" ng-model="data.userName", ng-init="data.userName" style="width: 100%"> \
-                        <div style="color: #17244D; margin-top: 10px;">USER NAME : {{data.userName}}</div> \
-                      <div class="modal-footer"> \
-                        <button type="button" class="btn btn-primary" ng-click="accept()">Accept</button> \
-                        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button> \
-                      </div> \
-                    </div><!-- /.modal-content --> \
-                  </div><!-- /.modal-dialog --> \
-                ',
-                    modalInstance = $uibModal.open({
-                        template : tmplt,
-                        controller : 'PusherCtrl',
-                        size : 'sm',
-                        backdrop : 'false',
-//                        appendTo : hostElement,
-                        resolve : {
-                            data: function () {
-                                return $scope.data;
-                            }
-                        }
-                    });
+            function getPusherDetails() {
+                return new Promise(function (resolve, reject) {
+                    $scope.displayPusherDialog = function () {
+                        // selfdict.scope = $scope;
+                        // selfdict.scope.showModal(true);
+                        console.log("displayPusherDialog");
+                        var tmplt = ' \
+                          <div class="modal-dialog", style="width: 100%;"> \
+                            <div class="modal-content"> \
+                              <div class="modal-header"> \
+                                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button> \
+                                  <h4>Sharing Setup</h4> \
+                              </div> \
+                              <div class="modal-body"> \
+                                <h4>Create a Pusher Channel ID :</h4> \
+                                <input type="text" name="input" ng-model="data.privateChannelMashover" ng-init="data.privateChannelMashover" style="width: 100%"> \
+                                <div>channel name : {{data.privateChannelMashover}}</div> \
+                                <h4>Enter a User Name :</h4> \
+                                <input type="text" name="input" ng-model="data.userName", ng-init="data.userName" style="width: 100%"> \
+                                <div style="color: #17244D; margin-top: 10px;">USER NAME : {{data.userName}}</div> \
+                              <div class="modal-footer"> \
+                                <button type="button" class="btn btn-primary" ng-click="accept()">Accept</button> \
+                                <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button> \
+                              </div> \
+                            </div><!-- /.modal-content --> \
+                          </div><!-- /.modal-dialog --> \
+                        ',
+                            modalInstance = $uibModal.open({
+                                template : tmplt,
+                                controller : 'PusherCtrl',
+                                size : 'sm',
+                                backdrop : 'false',
+        //                        appendTo : hostElement,
+                                resolve : {
+                                    data: function () {
+                                        return $scope.data;
+                                    }
+                                }
+                            });
 
-                modalInstance.result.then(function (selectedItem) {
-                    $scope.selected = selectedItem;
-                    selfdict.scope.data.userName = selectedItem.userName;
-                    selfdict.scope.data.privateChannelMashover = selectedItem.privateChannelMashover;
-                    selfdict.scope.onAcceptChannel();
-                }, function () {
-                    console.log('Pusher Modal dismissed at: ' + new Date());
+                        return modalInstance.result.then(function (selectedItem) {
+                            $scope.selected = selectedItem;
+                            selfdict.scope.data.userName = selectedItem.userName;
+                            selfdict.scope.data.privateChannelMashover = selectedItem.privateChannelMashover;
+                            selfdict.scope.onAcceptChannel();
+                            resolve('after onAcceptChannel');
+                        }, function () {
+                            console.log('Pusher Modal dismissed at: ' + new Date());
+                            reject('pusher modal error');
+                        });
+
+                    };
+                    $scope.displayPusherDialog();
                 });
-
-            };
+            }
             selfdict.displayPusherDialog = $scope.displayPusherDialog;
 
             $scope.hitEnter = function (evt) {
@@ -285,20 +280,29 @@
                 selfdict.callbackFunction = cbfn;
                 selfdict.info = nfo;
                 console.log("createPusherClient for map " + clientName);
-                selfdict.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), selfdict.CHANNELNAME, clientName, cbfn);
+                selfdict.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), clientName);
 
                 return selfdict.clients[clientName];
             }
             selfMethods.createPusherClient = createPusherClient;
 
-            setupPusherClient = function (cbfn, nfo) {
+            setupPusherClient = function (resolve, reject) {
+                var promise;
                 selfdict.userName = PusherConfig.getUserName();
                 if (selfdict.scope) {
                     selfdict.scope.data.userName = selfdict.userName;
                 }
-                selfdict.callbackFunction = cbfn;
-                selfdict.info = nfo;
-                selfdict.displayPusherDialog();
+                promise = getPusherDetails();
+                return promise.then(function (response) {
+                    console.log('getPusherDetails resolve response ' + response);
+                    resolve(response);
+                    return promise;
+                }, function (error) {
+                    console.log('getPusherDetails error response ' + error);
+                    return error;
+                });
+                return promise;
+                // selfdict.displayPusherDialog();
             };
             selfMethods.setupPusherClient = setupPusherClient;
 

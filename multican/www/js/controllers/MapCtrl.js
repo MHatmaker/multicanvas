@@ -158,7 +158,12 @@
                 $scope.mapheight = $window.innerHeight - 70;
             };
 
-            angular.element($window).bind('resize', function () {
+            // angular.element($window).bind('resize', function () {
+            //     $scope.$apply(function () {
+            //         $scope.calculateDimensions();
+            //     });
+            // });
+            $scope.$on('CanvasHolderResizeEvt', function (evt, data) {
                 $scope.$apply(function () {
                     $scope.calculateDimensions();
                 });
@@ -281,8 +286,7 @@
                     console.log('startNewCanvas with Promise');
                     return new Promise(function (resolve, reject) {
                         console.log("call CanvasHolderCtrl.addCanvas");
-                        CanvasHolderCtrl.addCanvas(mapType);
-                        resolve(mapType);
+                        CanvasHolderCtrl.addCanvas(mapType, null, resolve);
                     });
                     // if (placesFromSearch && placesFromSearch.length > 0) {
                     //     selfVars.searchInput = document.getElementById('pac-input' + currentSlideNumber);
@@ -306,7 +310,9 @@
                         // $scope.subsetDestinations(placesFromSearch);
 
                         // mph.setPlacesFromSearch(placesFromSearch);
-                        mph.placeMarkers(placesFromSearch);
+                        if (mph) {
+                            mph.placeMarkers(placesFromSearch);
+                        }
 
                     } else {
                         console.log('searchBox.getPlaces() still returned no results');
@@ -336,15 +342,6 @@
                 }
                 selfMethods.fillMapWithMarkers = fillMapWithMarkers;
 
-                function getPusherChannel() {
-                    var promise = new Promise(function (resolve, reject) {
-                        var result = PusherSetupCtrl.setupPusherClient(resolve, reject);
-                        console.log('getPusherChannel returns ' + result);
-                    });
-                    return promise;
-
-                }
-
                 onAcceptDestination = function (info) {
                     var newSelectedWebMapId,
                         destWnd,
@@ -361,16 +358,21 @@
 
                     if (destWnd === 'New Pop-up Window') {
                         if (PusherConfig.isNameChannelAccepted() === false) {
-                            getPusherChannel().then(function (response) {
+                            PusherSetupCtrl.getPusherChannel().then(function (response) {
                                 WindowStarter.getInstance().openNewDisplay('google', PusherConfig.masherChannel(false),
                                     PusherConfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
                                 queryForNewDisplay = "";
                             });
+                        } else {
+                            WindowStarter.getInstance().openNewDisplay('google', PusherConfig.masherChannel(false),
+                                PusherConfig.getUserName(), destWnd, mph, newSelectedWebMapId, queryForNewDisplay);
+                            queryForNewDisplay = "";
                         }
                     } else if (destWnd === 'New Tab') {
-                        startNewCanvas('google');
-                        fillNewCanvas(selfVars.placesFromSearch);
-                        queryForNewDisplay = "";
+                        startNewCanvas('google').then(function () {
+                            fillNewCanvas(selfVars.placesFromSearch);
+                            queryForNewDisplay = "";
+                        });
                     } else {  //(destWnd == "Same Window")
                         googmph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                         removeCustomControls(currentSlideNumber);

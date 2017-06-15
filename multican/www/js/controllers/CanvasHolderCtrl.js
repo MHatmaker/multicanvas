@@ -17,7 +17,7 @@
 
         function CanvasHolderCtrl($scope, $rootScope, $uibModal, LinkrService, MapInstanceService, CanvasService) {
             console.log("ready to create CanvasHolderCtrl");
-            $scope.addCanvas = function (mapType, mlcfg) {
+            $scope.addCanvas = function (mapType, mlcfg, resolve) {
                 console.log("in CanvasHolderCtrl.addCanvas");
                 var currIndex = MapInstanceService.getSlideCount(),
                     // mlConfig = new MLConfig.MLConfig(currIndex),
@@ -54,6 +54,9 @@
                         console.log('CanvasHolderCtrl ready to startMap with currIndex ' + currIndex);
                         scope.startMap(currIndex, mapType);
                         MapInstanceService.incrementMapNumber();
+                        if (resolve) {
+                            resolve();
+                        }
                     }, 10);
                 });
 
@@ -66,6 +69,9 @@
                     mapListItem: newCanvasItem,
                     slideNumber: currIndex,
                     mapName: "Map " + currIndex
+                });
+                angular.element($window).bind('resize', function () {
+                    $scope.$broadcast('CanvasHolderResizeEvt');
                 });
                 $scope.centerOnMe = function () {
                     console.log("centerOnMe");
@@ -104,11 +110,11 @@
 
 
         }
-        function addCanvas(maptype, mlcfg) {
-            selfMethods.addCanvas(maptype, mlcfg);
+        function addCanvas(maptype, mlcfg, resolve) {
+            selfMethods.addCanvas(maptype, mlcfg, resolve);
         }
-        CanvasHolderCtrl.prototype.addCanvas = function (maptype, mlcfg) {
-            selfMethods.addCanvas(maptype, mlcfg);
+        CanvasHolderCtrl.prototype.addCanvas = function (maptype, mlcfg, resolve) {
+            selfMethods.addCanvas(maptype, mlcfg, resolve);
         };
         CanvasHolderCtrl.prototype.removeCanvas = function () {
             selfMethods.removeCanvas();

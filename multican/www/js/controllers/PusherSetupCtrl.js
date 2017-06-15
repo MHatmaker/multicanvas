@@ -330,6 +330,14 @@
         // }
 
 
+        function getPusherChannel() {
+            var promise = new Promise(function (resolve, reject) {
+                var result = setupPusherClient(resolve, reject);
+                console.log('getPusherChannel returns ' + result);
+            });
+            return promise;
+        }
+
         function publishPanEvent(frame) {
             console.log('frame is', frame);
             var handler,
@@ -422,7 +430,9 @@
                   publishPosition : publishPosition,
                   setupPusherClient : setupPusherClient,
                   createPusherClient : createPusherClient,
-                  isInstantiated : isInstantiated};
+                  isInstantiated : isInstantiated,
+                  getPusherChannel : getPusherChannel
+              };
 
     });
 

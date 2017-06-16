@@ -1,5 +1,7 @@
 /*global define */
-/*global dojo, angular, console, window, setTimeout, document, alert */
+/*global dojo, angular, console, window, setTimeout, document, alert, google */
+/*jslint unparam: true*/
+/*jslint browser: true*/
 
 angular.isUndefinedOrNull = function (val) {
     "use strict";
@@ -12,23 +14,23 @@ angular.isUndefinedOrNull = function (val) {
     console.log('SearcherCtrlMap setup');
     define([
         'libs/StartupArcGIS',
-        'libs/MapHosterArcGIS',
         'libs/utils',
         'libs/PusherConfig',
         'libs/MLConfig',
         'controllers/PusherSetupCtrl',
         'controllers/CarouselCtrl',
         "controllers/CanvasHolderCtrl",
+        "controllers/DestinationCtrl",
         "controllers/WindowStarter"
-    ], function (StartupArcGIS, MapHosterArcGIS, utils, PusherConfig, MLConfig, PusherSetupCtrl, CarouselCtrl, CanvasHolderCtrl, WindowStarter) {
+    ], function (StartupArcGIS, utils, PusherConfig, MLConfig, PusherSetupCtrl, CarouselCtrl, CanvasHolderCtrl, DestinationCtrl, WindowStarter) {
         console.log('SearcherCtrlMap define');
         var scopeDict = {},
             portalForSearch = null;
 
-        function SearcherCtrlMap($scope, $rootScope, MapInstanceService, GoogleQueryService) {
+        function SearcherCtrlMap($scope, $rootScope, MapInstanceService) {
             var self = this,
                 selectedWebMapId = "Nada ID",
-                selectedWebMapTitle = "Nada Title",
+                // selectedWebMapTitle = "Nada Title",
                 onAcceptDestination,
                 pos;
 
@@ -44,14 +46,14 @@ angular.isUndefinedOrNull = function (val) {
             $scope.destWindow = 'cancelMashOp';
             $scope.selectedItm = "Nada";
 
-            function stageStartNewCanvas(channel, clientName, destination, mph, newWindowId, query) {
-                console.log('stageStartNewCanvas');
-                var
-                    currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                    localMph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-                WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
-                    PusherConfig.getUserName(), destination, localMph, newWindowId, query);
-            }
+            // function stageStartNewCanvas(channel, clientName, destination, mph, newWindowId, query) {
+            //     console.log('stageStartNewCanvas');
+            //     var
+            //         currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
+            //         localMph = MapInstanceService.getMapHosterInstance(currentSlideNumber);
+            //     WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
+            //         PusherConfig.getUserName(), destination, localMph, newWindowId, query);
+            // }
 
             onAcceptDestination = function (destWnd) {
                 var
@@ -61,10 +63,9 @@ angular.isUndefinedOrNull = function (val) {
                     configInstance = MapInstanceService.getConfigInstanceForMap(currentSlideNumber),
                     startupArcGIS,
                     mapHoster,
-                    mapLinkrBounds,
-                    configMapNumber,
+                    // mapLinkrBounds,
+                    // configMapNumber,
                     centerCoord,
-                    pos,
                     mapLocOptions,
                     mlconfig;
 
@@ -82,36 +83,24 @@ angular.isUndefinedOrNull = function (val) {
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     };
                     startupArcGIS.configure(currentSlideNumber, mapLocOptions);
-                    configMapNumber = mlconfig.getMapId();
+                    // configMapNumber = mlconfig.getMapId();
                     mapHoster = startupArcGIS.getMapHosterInstance(currentSlideNumber);
                     // startupArcGIS.setMapHosterInstance(mapHoster); // MapInstanceService.getMapHosterInstance(mapNumber));
                     MapInstanceService.setMapHosterInstance(currentSlideNumber, mapHoster);
                     // startupArcGIS.configure(); //currentSlideNumber, mapLocOptions);
                     // startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
-                } else if (destWnd.dstSel === "New Tab" || destWnd.dstSel === "New Pop-up Window") {
+                } else if (destWnd.dstSel === "New Pop-up Window") {
 
                     if (PusherConfig.isNameChannelAccepted() === false) {
-                        PusherSetupCtrl.setupPusherClient(stageStartNewCanvas,
-                            {
-                                'destination' : destWnd,
-                                'currentMapHolder' : mapHoster,
-                                'newWindowId' : selectedWebMapId,
-                                'query' : ''
-                            });
-                        // queryForNewDisplay = "";
+                        PusherSetupCtrl.getPusherChannel().then(function (response) {
+                            console.log('SearcherCtrlMap getPusherChannel response is ' + response);
+                            WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
+                                PusherConfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
+                        });
                     }
-                    if (destWnd.dstSel === "New Tab") {
-                        mlconfig = new MLConfig.MLConfig(nextSlideNumber);
-                        CanvasHolderCtrl.addCanvas('arcgis', mlconfig);
-                        MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
-                    } else {
-                        mlconfig = angular.copy(MapInstanceService.getConfigInstanceForMap(currentSlideNumber));
-                        mapHoster = MapInstanceService.getMapHosterInstance(currentSlideNumber);
-                        WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
-                            PusherConfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
-                            // queryForNewDisplay = "";
-                    }
-
+                } else {
+                    CanvasHolderCtrl.addCanvas('arcgis', null);
+                    MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
                 }
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
                 mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
@@ -145,13 +134,14 @@ angular.isUndefinedOrNull = function (val) {
 
             $scope.selectWebMap = function (rowItem) {
                 selectedWebMapId = rowItem.entity.id;
-                selectedWebMapTitle = rowItem.entity.title;
+                // selectedWebMapTitle = rowItem.entity.title;
                 $scope.openWindowSelectionDialog(
                     {
                         'id' : rowItem.entity.id,
                         'title' : rowItem.entity.title,
                         'snippet' : rowItem.entity.snippet,
-                        'icon' : rowItem.entity.thumbnail
+                        'icon' : rowItem.entity.thumbnail,
+                        'maptype' : 'arcgis'
                     }
                 );
             };
@@ -312,7 +302,7 @@ angular.isUndefinedOrNull = function (val) {
                 }
             };
 
-            $scope.findArcGISGroupMaps = function (portal, searchTermMap) {
+            $scope.findArcGISGroupMaps = function () {
                 utils.showLoading();
                 var mf = document.getElementById('mapFinder'),
                     mfa = angular.element(mf),
@@ -327,7 +317,7 @@ angular.isUndefinedOrNull = function (val) {
                 portalForSearch.queryItems(params).then(function (data) {
                     $scope.showMapResults(data);
                 }, function (error) {  //error so reset sign in link
-                    alert('error returning items');
+                    alert('error returning items' + error);
                 });
             };
 
@@ -367,20 +357,18 @@ angular.isUndefinedOrNull = function (val) {
             //display a list of groups that match the input user name
 
 
+
             // $scope.openWindowSelectionDialog = function (modal311, selectedWebMapId, selectedMapTitle) {
             $scope.openWindowSelectionDialog = function (info) {
 
                 var
                     currentSlideNumber = CarouselCtrl.getCurrentSlideNumber(),
-                    mapInstance = MapInstanceService.getMapHosterInstance(currentSlideNumber),
-                    scope = GoogleQueryService.getQueryDestinationDialogScope();
+                    mapInstance = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                 if (mapInstance) {
                     mapInstance.removeEventListeners();
                 }
 
-                scope.showDestDialog(
-                    onAcceptDestination,
-                    scope,
+                DestinationCtrl.getDestination(
                     {
                         'id' : info.id,
                         'title' : info.title,
@@ -388,9 +376,15 @@ angular.isUndefinedOrNull = function (val) {
                         'icon' : info.icon,
                         'mapType' : info.mapType
                     }
-                );
+                ).then(function (results) {
+                    onAcceptDestination(results);
+                }).error(function (error) {
+                    console.log("error in getDestination " + error);
+                });
             };
         }
+
+
 
         function init(portal) {
             console.log('SearcherCtrlMap init');
@@ -398,7 +392,7 @@ angular.isUndefinedOrNull = function (val) {
 
             // App.service("CurrentWebMapIdService");
 
-            App.controller('SearcherCtrlMap',  ['$scope', '$rootScope', 'MapInstanceService', 'GoogleQueryService', SearcherCtrlMap]);
+            App.controller('SearcherCtrlMap',  ['$scope', '$rootScope', 'MapInstanceService',  SearcherCtrlMap]);
 
             portalForSearch = portal;
             return SearcherCtrlMap;

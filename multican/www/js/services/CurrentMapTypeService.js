@@ -118,6 +118,9 @@ define([
             getCurrentMapConfiguration = function () {
                 return mapconfigs[mapType2Config[currentMapType]];
             },
+            getMapConfigurationForType = function (type) {
+                return mapconfigs[mapType2Config[type]];
+            },
             getSpecificMapType = function (key) {
                 return mapTypes[key];
             },
@@ -210,7 +213,8 @@ define([
             getMapRestUrlForType : getMapRestUrlForType,
             getSpecificMapType : getSpecificMapType,
             forceMapSystem : forceMapSystem,
-            forceAGO : forceAGO
+            forceAGO : forceAGO,
+            getMapConfigurationForType : getMapConfigurationForType
         };
     }]);
 });

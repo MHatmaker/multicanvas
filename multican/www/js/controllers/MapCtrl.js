@@ -12,6 +12,7 @@
     define([
         'esri/map',
         'controllers/DestWndSetupCtrl',
+        'controllers/DestinationCtrl',
         'libs/StartupGoogle',
         'libs/StartupArcGIS',
         'libs/StartupLeaflet',
@@ -23,7 +24,7 @@
         'controllers/CarouselCtrl',
         'libs/MLConfig',
         'libs/PusherConfig',
-    ], function (Map, DestWndSetupCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl,
+    ], function (Map, DestWndSetupCtrl, DestinationCtrl, StartupGoogle, StartupArcGIS, StartupLeaflet, libutils, PusherSetupCtrl,
             MapLinkrMgrCtrl, WindowStarterArg, CanvasHolderCtrlArg, CarouselCtrlArg, MLConfig, PusherConfig) {
         var selfMethods = {},
             selfVars = {},
@@ -389,8 +390,8 @@
                     $scope.subsetDestinations(placesFromSearch);
 
                     gmQSvc = $scope.GoogleQueryService;
-                    scope = gmQSvc.getQueryDestinationDialogScope(curMapType);
-                    destinationPromise = getDestination(
+                    scope = gmQSvc.getQueryDestinationDialogScope();
+                    destinationPromise = DestinationCtrl.getDestination(
                         {
                             'id' : null,
                             'title' : selfVars.searchInput.value,

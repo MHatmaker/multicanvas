@@ -6,6 +6,7 @@
 
     console.log('ControllerStarter setup');
     define([
+        'controllers/DestinationCtrl',
         'controllers/CanvasHolderCtrl',
         'controllers/PositionViewCtrl',
         'controllers/MapCtrl',
@@ -26,7 +27,7 @@
         'libs/MLConfig'
     ],
         function (
-            CanvasHolderCtrl, PositionViewCtrl, MapCtrl, MapLinkrPluginCtrl, MapLinkrMgrCtrl,
+            DestinationCtrl, CanvasHolderCtrl, PositionViewCtrl, MapCtrl, MapLinkrPluginCtrl, MapLinkrMgrCtrl,
             SearcherCtrlGrp, SearcherCtrlMap, PusherSetupCtrl, PusherCtrl, DestWndSetupCtrl,
             TransmitNewUrlCtrl, ShareCtrl, PopupBlockerCtrl, LocateSelfCtrl, CarouselCtrl, SideMenuCtrl, GeoCoder, MLConfig
         ) {
@@ -84,6 +85,7 @@
                 //
                 // }
 
+                DestinationCtrl.start();
                 PositionViewCtrl.start();
                 MapLinkrPluginCtrl.start();
                 MapLinkrMgrCtrl.start();

@@ -15,7 +15,7 @@
         var selfMethods = {},
             isInstantiated = false;
 
-        function CanvasHolderCtrl($scope, $rootScope, $uibModal, LinkrService, MapInstanceService, CanvasService) {
+        function CanvasHolderCtrl($scope, $rootScope, $uibModal, LinkrService, MapInstanceService, CanvasService, $window) {
             console.log("ready to create CanvasHolderCtrl");
             $scope.addCanvas = function (mapType, mlcfg, resolve) {
                 console.log("in CanvasHolderCtrl.addCanvas");
@@ -134,7 +134,7 @@
             if (!isInstantiated) {
                 var locApp = angular.module('mapModule');
 
-                locApp.controller('CanvasHolderCtrl',  ['$scope', '$rootScope', '$uibModal', 'LinkrService', 'MapInstanceService', 'CanvasService', CanvasHolderCtrl]);
+                locApp.controller('CanvasHolderCtrl',  ['$scope', '$rootScope', '$uibModal', 'LinkrService', 'MapInstanceService', 'CanvasService', '$window', CanvasHolderCtrl]);
                 // angular.bootstrap(document.getElementById('year'), ['example']);
                 isInstantiated = true;
             }

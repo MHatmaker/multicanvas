@@ -397,7 +397,7 @@
                             'title' : selfVars.searchInput.value,
                             'snippet' : 'No snippet available',
                             'icon' : 'img/googlemap.png',
-                            'mapType' : CurrentMapTypeService.getCurrentMapType()
+                            'maptype' : CurrentMapTypeService.getCurrentMapType()
                         });
                     destinationPromise.then(function (results) {
                         console.log("getDestination promise then returned " + results);

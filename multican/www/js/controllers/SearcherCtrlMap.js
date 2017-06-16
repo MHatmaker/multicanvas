@@ -100,7 +100,8 @@ angular.isUndefinedOrNull = function (val) {
                     }
                 } else {
                     CanvasHolderCtrl.addCanvas('arcgis', null);
-                    MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
+                    // MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
+                    mlconfig = MapInstanceService.getConfigInstanceForMap(nextSlideNumber);
                 }
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
                 mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
@@ -374,11 +375,11 @@ angular.isUndefinedOrNull = function (val) {
                         'title' : info.title,
                         'snippet' : info.snippet,
                         'icon' : info.icon,
-                        'mapType' : info.mapType
+                        'maptype' : info.maptype
                     }
                 ).then(function (results) {
                     onAcceptDestination(results);
-                }).error(function (error) {
+                }, function (error) {
                     console.log("error in getDestination " + error);
                 });
             };

@@ -201,6 +201,9 @@
                             //enter the bing maps key for your organization if you want to display bing maps
                             bingMapsKey: "/*Please enter your own Bing Map key*/"
                         };
+                        if(newSelectedWebMapId) {
+                            configOptions.webmap = newSelectedWebMapId;
+                        }
 
                         console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + self.mapNumber);                        // return self.mapHoster;
                         esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;

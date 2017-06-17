@@ -338,6 +338,9 @@
 
             function retrievedBoundsInternal(xj) {
                 console.log("Back in MapHosterGoogle " + mlconfig.getMapNumber() + " retrievedBounds");
+                if (xj.zoom === '0') {
+                    xj.zoom = zmG;
+                }
                 var zm = xj.zoom,
                     tmpLon,
                     tmpLat,

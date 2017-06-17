@@ -119,6 +119,11 @@
 
                 channelBind.bind('client-MapXtntEvent', function (frame) {
                     console.log('frame is', frame);
+                    if (frame.hasOwnProperty('x')) {
+                        frame.lat = frame.y;
+                        frame.lon = frame.x;
+                        frame.zoom = frame.z;
+                    }
                     var handlerkey,
                         obj;
                     for (handlerkey in selfdict.eventHandlers) {
@@ -132,12 +137,17 @@
 
                 channelBind.bind('client-MapClickEvent', function (frame) {
                     console.log('frame is', frame);
+                    if (frame.hasOwnProperty('x')) {
+                        frame.lat = frame.y;
+                        frame.lon = frame.x;
+                        frame.zoom = frame.z;
+                    }
                     var handlerkey,
                         obj;
                     for (handlerkey in selfdict.eventHandlers) {
                         if (selfdict.eventHandlers.hasOwnProperty(handlerkey)) {
                             obj = selfdict.eventHandlers[handlerkey];
-                            obj['client-MapXtntEvent'](frame);
+                            obj['client-MapClickEvent'](frame);
                         }
                     }
                     console.log("back from clickRetriever");

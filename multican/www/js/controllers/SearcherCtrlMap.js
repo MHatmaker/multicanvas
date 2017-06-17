@@ -105,7 +105,8 @@ angular.isUndefinedOrNull = function (val) {
                 }
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
                 mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
-                mlconfig.webmapId = selectedWebMapId;
+                // mlconfig.webmapId = selectedWebMapId;
+                mlconfig.setWebmapId(selectedWebMapId);
                 if (destWnd.dstSel === 'Same Window') {
                     mapInstance.removeEventListeners();
                 }

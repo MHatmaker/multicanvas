@@ -241,6 +241,9 @@
 
             function retrievedBounds(xj) {
                 console.log("Back in MapHosterArcGIS " + mlconfig.getMapNumber() + " retrievedBounds");
+                if (xj.zoom === '0') {
+                    xj.zoom = zmG;
+                }
                 var zm = xj.zoom,
                     cmp = compareExtents("retrievedBounds",
                         {
@@ -550,6 +553,10 @@
                 console.log("empty function removeEventListners");
             }
 
+            function getMLConfig() {
+                return mlconfig;
+            }
+
             return {
                 getMap: getMap,
                 getMapNumber: getMapNumber,
@@ -565,6 +572,7 @@
                 getGlobalPositionComponents: getGlobalPositionComponents,
                 getCenter: getCenter,
                 removeEventListeners: removeEventListeners,
+                getMLConfig : getMLConfig
             };
         };
         return {

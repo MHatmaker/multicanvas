@@ -320,6 +320,9 @@
 
             function retrievedBounds(xj) {
                 console.log("Back in retrievedBounds");
+                if (xj.zoom === '0') {
+                    xj.zoom = zmG;
+                }
                 var zm = xj.zoom,
                     cmp = compareExtents("retrievedBounds", {'zoom' : zm, 'lon' : xj.lon, 'lat' : xj.lat}),
 

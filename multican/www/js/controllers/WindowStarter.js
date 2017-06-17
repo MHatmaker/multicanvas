@@ -54,7 +54,7 @@
                     urlToUnblock = HostConfig.HostConfig().gethost(), //'OpenShift.Arcadian.com',
                     url = "?id=" + wndName + curmph.getGlobalsForUrl() +
                     "&channel=" + channel + "&userName=" + userName +
-                    "&maphost=" + 'google' + "&referrerId=" + mlconfig.getUserId(),
+                    "&maphost=" + maphosttype + "&referrerId=" + mlconfig.getUserId(),
                     gmQuery = query; //MLConfig.getQuery();
 
                 if (gmQuery !== '') {
@@ -70,7 +70,7 @@
                 if (destWnd === "New Pop-up Window") {
                     baseUrl = HostConfig.HostConfig().getbaseurl();
 
-                    popresult = window.open(baseUrl + '/google' + '/' + url,  wndName, mlconfig.getSmallFormDimensions());
+                    popresult = window.open(baseUrl + '/' + maphosttype + '/' + url,  wndName, mlconfig.getSmallFormDimensions());
                     if (popresult === null) {
                         $inj = angular.element(document.body).injector();
                         $uibModal = $inj.get('$uibModal');

@@ -87,31 +87,31 @@ angular.isUndefinedOrNull = function (val) {
                     mapHoster = startupArcGIS.getMapHosterInstance(currentSlideNumber);
                     // startupArcGIS.setMapHosterInstance(mapHoster); // MapInstanceService.getMapHosterInstance(mapNumber));
                     MapInstanceService.setMapHosterInstance(currentSlideNumber, mapHoster);
+                    mapInstance.removeEventListeners();
+                    mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
+                    mlconfig.setWebmapId(selectedWebMapId);
                     // startupArcGIS.configure(); //currentSlideNumber, mapLocOptions);
                     // startupArcGIS.replaceWebMap(selectedWebMapId, destWnd, selectedWebMapTitle, mapInstance);
                 } else if (destWnd.dstSel === "New Pop-up Window") {
-
+                    mapHoster = MapInstanceService.getMapHosterInstance(currentSlideNumber);
                     if (PusherConfig.isNameChannelAccepted() === false) {
                         PusherSetupCtrl.getPusherChannel().then(function (response) {
                             console.log('SearcherCtrlMap getPusherChannel response is ' + response);
                             WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
                                 PusherConfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
                         });
+                    } else {
+                        WindowStarter.getInstance().openNewDisplay('arcgis', PusherConfig.masherChannel(false),
+                            PusherConfig.getUserName(), destWnd.dstSel, mapHoster, selectedWebMapId, '');
                     }
-                } else {
+                } else { // (destWnd.dstSel === "New Tab")
                     CanvasHolderCtrl.addCanvas('arcgis', null);
                     // MapInstanceService.setConfigInstanceForMap(nextSlideNumber, mlconfig);
                     mlconfig = MapInstanceService.getConfigInstanceForMap(nextSlideNumber);
+                    mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
+                    mlconfig.setWebmapId(selectedWebMapId);
                 }
                 console.log("onAcceptDestination in SearcherCtrlMap with index " + currentSlideNumber);
-                mlconfig.setPosition(MapInstanceService.getConfigInstanceForMap(currentSlideNumber === 0 ? currentSlideNumber : currentSlideNumber - 1).getPosition());
-                // mlconfig.webmapId = selectedWebMapId;
-                mlconfig.setWebmapId(selectedWebMapId);
-                if (destWnd.dstSel === 'Same Window') {
-                    mapInstance.removeEventListeners();
-                }
-                // MapInstanceService.setConfigInstanceForMap(currentSlideNumber, mlconfig);
-                // mapInstance.removeEventListeners();
                 $scope.$parent.accept();
 
                 console.log("onAcceptDestination " + destWnd.dstSel);

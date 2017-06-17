@@ -193,7 +193,7 @@
                 PusherConfig.setChannel($scope.data.privateChannelMashover);
                 PusherConfig.setNameChannelAccepted(true);
                 PusherConfig.setUserName(selfdict.userName);
-                selfdict.clients[selfdict.clientName] = new PusherClient(null, selfdict.clientName);
+                // selfdict.clients[selfdict.clientName] = new PusherClient(null, selfdict.clientName);
             };
 
             $scope.cancel = function () {

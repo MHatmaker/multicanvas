@@ -1,10 +1,10 @@
-/*global require, define, google, console, document, angular, esri, dojo, proj4, alert, window*/
+/*global require, define, google, console, document, angular, esri, dojo, proj4, alert, window, event*/
 /*jslint unparam: true*/
 
 (function () {
     "use strict";
     console.log('MapHosterArcGIS setup');
-    require(['esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing']);
+    require(['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map']);
 
     define([
         'controllers/PositionViewCtrl',
@@ -13,8 +13,9 @@
         'libs/PusherEventHandler',
         'controllers/PusherSetupCtrl',
         'libs/PusherConfig',
-        'esri/geometry/Point'
-    ], function (PositionViewCtrl, utils, MLConfig, PusherEventHandler, PusherSetupCtrl, PusherConfig, GeometryPoint) {
+        'esri/geometry/Point',
+        'dojo/_base/event'
+    ], function (PositionViewCtrl, utils, MLConfig, PusherEventHandler, PusherSetupCtrl, PusherConfig, GeometryPoint, event) {
         console.log('MapHosterArcGIS define');
         var MapHosterArcGIS = function () {
             var self = this,
@@ -458,9 +459,24 @@
                     }
                     // userZoom = true;
                 });
-                dojo.connect(mphmap, "onPanStart", function (extent, startPoint) {
-                    console.log("onPanStart");
+                mphmap.on('pan-start', function (evt) {
+                    event.stop(evt);
+                    console.log('pan-start');
                 });
+                // dojo.connect(mphmap, "onPanStart", function (extent, startPoint) {
+                //     console.log("onPanStart");
+                // });
+                mphmap.on('pan-end', function (evt) {
+                    var extent = evt.extent;
+                    event.stop(evt);
+                    if (userZoom === true) {
+                        cntr = extent.getCenter();
+                        xtnt = extractBounds(mphmap.getLevel(), cntr, 'pan');
+                        // var xtnt = extractBounds(zmG, endPoint, 'pan');
+                        setBounds(xtnt);
+                    }
+                });
+                /*
                 dojo.connect(mphmap, "onPanEnd", function (extent, endPoint) {
                     if (userZoom === true) {
                         cntr = extent.getCenter();
@@ -469,6 +485,7 @@
                         setBounds(xtnt);
                     }
                 });
+                */
                 dojo.connect(mphmap, "onMouseMove", function (e) {
                     var ltln = esri.geometry.webMercatorToGeographic(e.mapPoint),
                         fixedLL = utils.toFixed(ltln.x, ltln.y, 4),

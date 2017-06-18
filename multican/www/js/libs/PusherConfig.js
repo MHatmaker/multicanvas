@@ -1,11 +1,10 @@
-/*global angular, console, define, document, PusherConfig */
+/*global angular, console, define, document, PusherConfig, alert*/
+/*jslint unparam: true*/
 
 (function () {
     "use strict";
 
     console.log("PusherConfig setup");
-    var
-        self = this;
 
     define([],
         function () {
@@ -15,11 +14,12 @@
                     masherChannelInitialized : false,
                     nameChannelAccepted : false,
                     userName : 'defaultuser',
+                    userId : 'uidnone',
                     nginj : null,
                     pusherPathPre : "http://",
                     pusherPathNgrok : "15e2b46f",
                     pusherPathPost : ".ngrok.io",
-                    search : '/',
+                    search : '/'
                 };
             console.log("entering PusherConfig");
             details.nginj = angular.element(document.body).injector();
@@ -69,6 +69,12 @@
                 },
                 setUserName : function (name) {
                     details.userName = name;
+                },
+                setUserId : function (uid) {
+                    details.userId = uid;
+                },
+                getUserId : function () {
+                    return details.userId;
                 },
                 setInjector : function (inj) {
                     details.nginj = inj;

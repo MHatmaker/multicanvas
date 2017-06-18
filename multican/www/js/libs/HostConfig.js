@@ -1,19 +1,20 @@
-/*global angular, console, define, document, HostConfig, require */
+/*global angular, console, define, document, HostConfig, require, alert */
+/*jslint unparam: true*/
 
+var
+    instanceDetails = {'isInstantiated' : false},
+    returnDetails = {};
 (function () {
     "use strict";
+    console.log("amd HostConfig");
+    console.debug(instanceDetails);
     require(['libs/PusherConfig']);
     define(['libs/PusherConfig'], function (PusherConfig) {
         console.log("entering HostConfig");
-        var staticMethods = {},
-            instance = null,
-            returnDetails = {};
-
-        function HostConfig(ndx) {
+        console.debug(instanceDetails);
+        function init() {
             console.log("HostConfig ctor");
-
-            console.log("mapId to be set to " + ndx);
-
+            console.debug(instanceDetails);
             var
                 details = {
                     webmapId : "a4bb8a91ecfb4131aa544eddfbc2f1d0",
@@ -29,7 +30,8 @@
                     hostport : '3035',
                     href : '', //"http://localhost",
                     userName: 'defaultuser',
-                    search: '/'
+                    search: '/',
+                    referrerId: ''
                 },
                 getParameterByName = function (name, details) {
                     // console.log("get paramater " + name + " from " + details.search);
@@ -148,6 +150,35 @@
                     details.referrerName = getParameterByName('referrerName');
                     return details.referrerName;
                 },
+                getUserNameFromServer = function ($http, opts) {
+                    console.log(PusherConfig.getPusherPath());
+                    var pusherPath = PusherConfig.getPusherPath() + '/username';
+                    console.log("pusherPath in getUserNameFromServer");
+                    console.log(pusherPath);
+                    $http({method: 'GET', url: pusherPath}).
+                        success(function (data, status, headers, config) {
+                            // this callback will be called asynchronously
+                            // when the response is available.
+                            console.log('ControllerStarter getUserName: ', data.name);
+                            if (opts.uname) {
+                                PusherConfig.setUserName(data.name);
+                            }
+                            // alert('got user name ' + data.name);
+                            if (opts.uid) {
+                                PusherConfig.setUserId(data.id);
+                            }
+                            if (opts.refId === -99) {
+                                PusherConfig.setReferrerId(data.id);
+                            }
+                        }).
+                        error(function (data, status, headers, config) {
+                                // called asynchronously if an error occurs
+                                // or server returns response with an error status.
+                            console.log('Oops and error', data);
+                            alert('Oops' + data.name);
+                        });
+                },
+
                 testUrlArgs = function () {
                     var rslt = getParameterByName('id', details);
                     // alert("getParameterByName('id') = " + rslt);
@@ -213,7 +244,7 @@
                     return details.query;
                 },
                 getbaseurl = function () {
-                    var baseurl = details.protocol + "://" + details.host + "/";
+                    var baseurl = details.protocol + "//" + details.host + "/";
                     console.log("getbaseurl --> " + baseurl);
                     return baseurl;
                 },
@@ -236,9 +267,6 @@
                             "zoom : " + details.zoom
                     );
                 };
-            staticMethods.showConfigDetails = showConfigDetails;
-
-
             returnDetails = {
                 getUserId: getUserId,
                 setUserId: setUserId,
@@ -257,6 +285,7 @@
                 setChannel: setChannel,
                 setNameChannelAccepted: setNameChannelAccepted,
                 getUserNameFromUrl: getUserNameFromUrl,
+                getUserNameFromServer: getUserNameFromServer,
                 testUrlArgs: testUrlArgs,
                 sethost: sethost,
                 gethost: gethost,
@@ -285,18 +314,17 @@
                 getInitialUserStatus: getInitialUserStatus,
                 getbaseurl: getbaseurl
             };
+            instanceDetails.isInstantiated = true;
         }
 
-        // HostConfig.showConfigDetails = function () {
-        //     staticMethods.showConfigDetails();
-        // };
         return {
-            HostConfig : function () {
-                if (instance) {
+            getInstance : function () {
+                if (instanceDetails.isInstantiated) {
                     return returnDetails;
                 } else {
-                    instance = this;
-                    HostConfig();
+                    console.log("isInstantiated is false, so init()");
+                    init();
+                    instanceDetails.isInstantiated = true;
                     return returnDetails;
                 }
             }

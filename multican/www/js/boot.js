@@ -1,4 +1,4 @@
-/*global require, define, console, angular, document, ionic, window, cordova, StatusBar */
+/*global require, define, console, angular, document, ionic, window, cordova, StatusBar, alert */
 
 console.log("bootstrap outer wrapper");
 (function () {
@@ -7,9 +7,10 @@ console.log("bootstrap outer wrapper");
 // requires routes, config, run they implicit requiring the app
     define([
         'libs/PusherConfig',
+        'libs/HostConfig',
         'controllers/ControllerStarter',
         'controllers/WindowStarter'
-    ], function (PusherConfig, ControllerStarter, WindowStarter) {
+    ], function (PusherConfig, HostConfig, ControllerStarter, WindowStarter) {
         function init(portalForSearch) {
             var modules = [],
                 dependencies = ['ui.router', 'ionic', 'ui.bootstrap', 'ngAnimate', 'ui.grid', 'ui.grid.expandable',
@@ -21,7 +22,7 @@ console.log("bootstrap outer wrapper");
             if (isMobile) {
                 dependencies.push('ngCordova');
             }
-            console.debug(dependencies.concat(modules));
+            // console.debug(dependencies.concat(modules));
             console.log("ready to create module mapModule");
             app = angular.module('mapModule', dependencies.concat(modules)).
 
@@ -92,7 +93,7 @@ console.log("bootstrap outer wrapper");
                                         controller: function ($scope, $state) {
                                             $scope.backToMaps = function ($scope) {
                                                 $state.go("mapModule.dashboard");
-                                            }
+                                            };
                                         }
                                     }
                                 }
@@ -109,14 +110,14 @@ console.log("bootstrap outer wrapper");
 
                         $urlRouterProvider.otherwise("/mapModule/dashboard");
                     }]);
-            app.directive('sideMenuClick', function() {
+            app.directive('sideMenuClick', function () {
                 return {
-                    link: function($scope, element) {
-                        element.on('click', function() {
+                    link: function ($scope, element) {
+                        element.on('click', function () {
                             alert('click');
                         });
                     }
-                }
+                };
             });
 /*
             app.controller('SideMenuCtrl', function ($scope, $rootScope) { // ($scope) {
@@ -156,7 +157,25 @@ console.log("bootstrap outer wrapper");
                 localApp = angular.module('mapModule');
                 console.debug(localApp);
                 angular.bootstrap(document, ['mapModule']);
-                var $inj = angular.element(document.body).injector();
+                var $inj = angular.element(document.body).injector(),
+                    $http = $inj.get('$http'),
+                    hostConfig = HostConfig.getInstance(),
+                    referrerId = hostConfig.getReferrerId(),
+                    urlUserName;
+
+                console.log("Check if referrerId is -99");
+                if (referrerId === -99) {
+                    hostConfig.getUserNameFromServer($http, {uname : true, uid : true, refId : referrerId === -99});
+                } else {
+                    urlUserName = hostConfig.getUserNameFromUrl();
+                    // MLConfig.getReferrerIdFromUrl();
+                    if (urlUserName) {
+                        hostConfig.getUserName($http, {uname : false, uid : true, refId : referrerId === -99});
+                    } else {
+                        hostConfig.getUserName($http, {uname : true, uid : true, refId : referrerId === -99});
+                    }
+
+                }
                 PusherConfig.setInjector($inj);
                 WindowStarter.getInstance().initializeHostEnvironment();
             });

@@ -26,8 +26,8 @@
                     console.log("WindowStarter.setHostEnvironment with pusher path " + pusherPath);
                     $http({method: 'GET', url: pusherPath}).
                         success(function (data, status, headers, config) {
-                            HostConfig.HostConfig().sethost(data.host);
-                            HostConfig.HostConfig().sethostport(data.port);
+                            HostConfig.getInstance().sethost(data.host);
+                            HostConfig.getInstance().sethostport(data.port);
                             resolve();
                         }).
                         error(function (data, status, headers, config) {
@@ -51,7 +51,7 @@
                     $uibModal,
                     restUrl,
                     mlconfig = curmph.getMLConfig(),
-                    urlToUnblock = HostConfig.HostConfig().gethost(), //'OpenShift.Arcadian.com',
+                    urlToUnblock = HostConfig.getInstance().gethost(), //'OpenShift.Arcadian.com',
                     url = "?id=" + wndName + curmph.getGlobalsForUrl() +
                     "&channel=" + channel + "&userName=" + userName +
                     "&maphost=" + maphosttype + "&referrerId=" + mlconfig.getUserId(),
@@ -68,7 +68,7 @@
                 PusherConfig.setUserName(userName);
 
                 if (destWnd === "New Pop-up Window") {
-                    baseUrl = HostConfig.HostConfig().getbaseurl();
+                    baseUrl = HostConfig.getInstance().getbaseurl();
 
                     popresult = window.open(baseUrl + '/' + maphosttype + '/' + url,  wndName, mlconfig.getSmallFormDimensions());
                     if (popresult === null) {
@@ -95,7 +95,7 @@
 
                 } else {
                     if (destWnd === "New Tab") {
-                        baseUrl = HostConfig.HostConfig().getbaseurl();
+                        baseUrl = HostConfig.getInstance().getbaseurl();
                         restUrl = $inj.get('CurrentMapTypeService').getMapRestUrlForType('google');
                         window.open(baseUrl + restUrl + url, '_blank');
                         window.focus();

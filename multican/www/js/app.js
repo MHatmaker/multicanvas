@@ -17,14 +17,14 @@ require([
     'esri/config',
     'esri/Color',
     'esri/map',
-    'js/boot',
     'js/libs/PusherConfig',
-    'js/libs/HostConfig'
-], function (bs, dojo, dojodomReady, esriPortal, esriconfig, esricolor, esrimap, boot, PusherConfig, HostConfig) {
+    'js/libs/HostConfig',
+    'js/boot'
+], function (bs, dojo, dojodomReady, esriPortal, esriconfig, esricolor, esrimap, PusherConfig, HostConfig, boot) {
     'use strict';
     var userName,
         channel,
-        hostConfig = HostConfig.HostConfig();
+        hostConfig = HostConfig.getInstance();
 
     console.log('HostConfig initialization');
     hostConfig.showConfigDetails('MapLinkr App startup before modifying default settings and dojodomReady');

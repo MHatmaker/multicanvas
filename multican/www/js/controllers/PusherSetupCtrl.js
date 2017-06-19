@@ -6,11 +6,8 @@
     "use strict";
 
     console.log('PusherSetup setup');
-    var areWeInitialized = false,
-        pusherPathPre = "http://",
-        pusherPathNgrok = "15e2b46f",
-        pusherPathPost = ".ngrok.io/pusher/auth";
-        // areWeInstantiated = false;
+    var areWeInitialized = false
+        // ngrok initialization moved to PusherConfig
     define([
         'libs/PusherConfig',
     ], function (PusherConfig) {

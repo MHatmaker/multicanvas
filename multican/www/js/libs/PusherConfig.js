@@ -17,7 +17,7 @@
                     userId : 'uidnone',
                     nginj : null,
                     pusherPathPre : "http://",
-                    pusherPathNgrok : "15e2b46f",
+                    pusherPathNgrok : "d09a4f08",
                     pusherPathPost : ".ngrok.io",
                     search : '/'
                 };

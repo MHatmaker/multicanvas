@@ -447,47 +447,29 @@
                 bounds = mphmap.geographicExtent;
                 userZoom = true;
 
-                dojo.connect(mphmap, "onZoomStart", function (extent, zoomFactor, anchor, level) {
-                    zmG = level;
+                mphmap.on('zoom-start', function (evt) {
+                    zmG = evt.level;
                 });
-                dojo.connect(mphmap, "onZoomEnd", function (extent, zoomFactor, anchor, level) {
+                mphmap.on('zoom-end', function (evt) {
                     console.debug("onZoomEnd with userZoom = " + userZoom);
                     if (userZoom === true) {
-                        cntr = extent.getCenter();
-                        xtnt = extractBounds(mphmap.getLevel(), cntr, 'zoom');
-                        setBounds(xtnt);
+                        setBounds(extractBounds(mphmap.getLevel(), evt.extent.getCenter(), 'zoom'));
                     }
                     // userZoom = true;
                 });
+
                 mphmap.on('pan-start', function (evt) {
-                    event.stop(evt);
+                    // event.stop(evt);
                     console.log('pan-start');
                 });
-                // dojo.connect(mphmap, "onPanStart", function (extent, startPoint) {
-                //     console.log("onPanStart");
-                // });
+
                 mphmap.on('pan-end', function (evt) {
-                    var extent = evt.extent;
-                    event.stop(evt);
                     if (userZoom === true) {
-                        cntr = extent.getCenter();
-                        xtnt = extractBounds(mphmap.getLevel(), cntr, 'pan');
-                        // var xtnt = extractBounds(zmG, endPoint, 'pan');
-                        setBounds(xtnt);
+                        setBounds(extractBounds(mphmap.getLevel(), evt.extent.getCenter(), 'pan'));
                     }
                 });
-                /*
-                dojo.connect(mphmap, "onPanEnd", function (extent, endPoint) {
-                    if (userZoom === true) {
-                        cntr = extent.getCenter();
-                        xtnt = extractBounds(mphmap.getLevel(), cntr, 'pan');
-                        // var xtnt = extractBounds(zmG, endPoint, 'pan');
-                        setBounds(xtnt);
-                    }
-                });
-                */
-                dojo.connect(mphmap, "onMouseMove", function (e) {
-                    var ltln = esri.geometry.webMercatorToGeographic(e.mapPoint),
+                mphmap.on('mouse-move', function (evt) {
+                    var ltln = esri.geometry.webMercatorToGeographic(evt.mapPoint),
                         fixedLL = utils.toFixed(ltln.x, ltln.y, 4),
                         evlng = fixedLL.lon,
                         evlat = fixedLL.lat,
@@ -508,6 +490,7 @@
                         'evlat' : evlat
                     });
                 });
+
                 mphmap.on("click", onMapClick);
                 geoLocator.on("location-to-address-complete", function (evt) {
                     var location;

@@ -17,3 +17,4 @@ www/js/libs/arcgis_js_v41*
 gitpass
 extras/
 ngrok*
+npm-debug.log

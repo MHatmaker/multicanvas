@@ -154,8 +154,11 @@ console.log("bootstrap outer wrapper");
                     'libs/MapHosterLeaflet',
                     'controllers/MapDirective'
                 ]);
+                console.log('ready to get localApp module for bootstrap');
                 localApp = angular.module('mapModule');
+                console.log('do we have a localApp to dump?');
                 console.debug(localApp);
+                console.log("now booooootstrap");
                 angular.bootstrap(document, ['mapModule']);
                 var $inj = angular.element(document.body).injector(),
                     $http = $inj.get('$http'),

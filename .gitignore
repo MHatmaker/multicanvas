@@ -18,3 +18,7 @@ gitpass
 extras/
 ngrok*
 npm-debug.log
+.gradle/
+gradle/
+gradlew
+gradlew.bat
